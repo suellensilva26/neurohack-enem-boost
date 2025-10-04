@@ -3,25 +3,37 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle2, XCircle, Trophy, Clock, Target } from "lucide-react";
+import { CheckCircle2, XCircle, Trophy, Clock, Target, BookOpen, Grid3x3 } from "lucide-react";
 import { simuladoQuestoes } from "@/data/simuladoData";
 
 const SimuladoSection = () => {
+  const [selectedBlock, setSelectedBlock] = useState<number | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<{ [key: number]: string }>({});
   const [showResults, setShowResults] = useState(false);
   const [startTime] = useState(Date.now());
   const [endTime, setEndTime] = useState<number | null>(null);
 
-  const question = simuladoQuestoes[currentQuestion];
-  const progress = ((currentQuestion + 1) / simuladoQuestoes.length) * 100;
+  const blocks = Array.from({ length: 10 }, (_, i) => ({
+    id: i + 1,
+    start: i * 10,
+    end: i * 10 + 9,
+    label: `Bloco ${i + 1} (Q${i * 10 + 1}-Q${i * 10 + 10})`
+  }));
+
+  const activeQuestions = selectedBlock === null 
+    ? simuladoQuestoes 
+    : simuladoQuestoes.slice(blocks[selectedBlock - 1].start, blocks[selectedBlock - 1].end + 1);
+
+  const question = activeQuestions[currentQuestion];
+  const progress = ((currentQuestion + 1) / activeQuestions.length) * 100;
 
   const handleSelectAnswer = (option: string) => {
     setAnswers({ ...answers, [currentQuestion]: option });
   };
 
   const handleNext = () => {
-    if (currentQuestion < simuladoQuestoes.length - 1) {
+    if (currentQuestion < activeQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     }
   };
@@ -39,7 +51,7 @@ const SimuladoSection = () => {
 
   const calculateScore = () => {
     let correct = 0;
-    simuladoQuestoes.forEach((q, idx) => {
+    activeQuestions.forEach((q, idx) => {
       if (answers[idx] === q.gabarito) {
         correct++;
       }
@@ -54,9 +66,66 @@ const SimuladoSection = () => {
     return `${minutes}min ${seconds}s`;
   };
 
+  if (selectedBlock === null && !showResults && !activeQuestions.length) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3">
+              <Grid3x3 className="h-6 w-6" />
+              Escolha seu Modo de Prática
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <p className="text-muted-foreground">
+              Você pode fazer todas as 100 questões de uma vez ou praticar em blocos de 10 questões
+            </p>
+
+            <div className="grid gap-4">
+              <Button
+                size="lg"
+                className="w-full h-auto py-8"
+                onClick={() => {
+                  setSelectedBlock(null);
+                  setCurrentQuestion(0);
+                  setAnswers({});
+                }}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <BookOpen className="h-8 w-8" />
+                  <span className="text-lg font-bold">Simulado Completo</span>
+                  <span className="text-sm opacity-90">100 Questões</span>
+                </div>
+              </Button>
+
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                {blocks.map((block) => (
+                  <Button
+                    key={block.id}
+                    variant="outline"
+                    className="h-auto py-4"
+                    onClick={() => {
+                      setSelectedBlock(block.id);
+                      setCurrentQuestion(0);
+                      setAnswers({});
+                    }}
+                  >
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="font-semibold text-sm">{block.label}</span>
+                    </div>
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (showResults) {
     const score = calculateScore();
-    const percentage = (score / simuladoQuestoes.length) * 100;
+    const percentage = (score / activeQuestions.length) * 100;
 
     return (
       <div className="space-y-6">
@@ -89,7 +158,7 @@ const SimuladoSection = () => {
             <div className="space-y-4">
               <h3 className="font-semibold text-lg">Gabarito Detalhado</h3>
               <div className="space-y-2 max-h-[500px] overflow-y-auto">
-                {simuladoQuestoes.map((q, idx) => {
+                {activeQuestions.map((q, idx) => {
                   const userAnswer = answers[idx];
                   const isCorrect = userAnswer === q.gabarito;
                   
@@ -135,17 +204,32 @@ const SimuladoSection = () => {
               </div>
             </div>
 
-            <Button
-              onClick={() => {
-                setCurrentQuestion(0);
-                setAnswers({});
-                setShowResults(false);
-              }}
-              className="w-full"
-              size="lg"
-            >
-              Refazer Simulado
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                onClick={() => {
+                  setSelectedBlock(null);
+                  setCurrentQuestion(0);
+                  setAnswers({});
+                  setShowResults(false);
+                }}
+                variant="outline"
+                className="flex-1"
+                size="lg"
+              >
+                Voltar ao Menu
+              </Button>
+              <Button
+                onClick={() => {
+                  setCurrentQuestion(0);
+                  setAnswers({});
+                  setShowResults(false);
+                }}
+                className="flex-1"
+                size="lg"
+              >
+                Refazer {selectedBlock ? `Bloco ${selectedBlock}` : 'Simulado'}
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -156,10 +240,15 @@ const SimuladoSection = () => {
     <div className="space-y-6">
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
-          <span>Questão {currentQuestion + 1} de {simuladoQuestoes.length}</span>
-          <Badge variant="outline">
-            {Object.keys(answers).length} respondidas
-          </Badge>
+          <span>Questão {currentQuestion + 1} de {activeQuestions.length}</span>
+          <div className="flex gap-2">
+            <Badge variant="outline">
+              {Object.keys(answers).length} respondidas
+            </Badge>
+            {selectedBlock && (
+              <Badge>Bloco {selectedBlock}</Badge>
+            )}
+          </div>
         </div>
         <Progress value={progress} className="h-2" />
       </div>
@@ -202,6 +291,18 @@ const SimuladoSection = () => {
 
           <div className="flex gap-3 pt-4">
             <Button
+              onClick={() => {
+                setSelectedBlock(null);
+                setCurrentQuestion(0);
+                setAnswers({});
+                setShowResults(false);
+              }}
+              variant="outline"
+              className="flex-1"
+            >
+              Voltar ao Menu
+            </Button>
+            <Button
               onClick={handlePrevious}
               disabled={currentQuestion === 0}
               variant="outline"
@@ -209,9 +310,9 @@ const SimuladoSection = () => {
             >
               Anterior
             </Button>
-            {currentQuestion === simuladoQuestoes.length - 1 ? (
+            {currentQuestion === activeQuestions.length - 1 ? (
               <Button onClick={handleFinish} className="flex-1" size="lg">
-                Finalizar Simulado
+                Finalizar {selectedBlock ? `Bloco ${selectedBlock}` : 'Simulado'}
               </Button>
             ) : (
               <Button onClick={handleNext} className="flex-1">
