@@ -176,6 +176,7 @@ const Index = () => {
               { title: "Estratégias Secretas", price: "R$ 89", icon: Target },
               { title: "Aprendizado Acelerado", price: "R$ 99", icon: Brain },
               { title: "Padrões do ENEM", price: "R$ 129", icon: TrendingUp },
+              { title: "150 Questões Recorrentes", price: "R$ 99", icon: CheckCircle },
             ].map((tab, index) => (
               <div key={index} className="card-premium relative">
                 <div className="absolute right-4 top-4">

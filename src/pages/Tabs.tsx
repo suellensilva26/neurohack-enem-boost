@@ -92,12 +92,13 @@ const TabsPage = () => {
     },
     {
       id: "banco-questoes",
-      title: "100 Questões Recorrentes",
+      title: "150 Questões Recorrentes",
       icon: BookOpen,
-      price: "R$ 79",
-      description: "Banco completo com gabarito e explicações detalhadas",
-      modules: 5,
-      hours: 8,
+      price: "R$ 99",
+      description: "50 questões resolvidas + 100 questões simulado",
+      modules: 2,
+      hours: 10,
+      directLink: "/questoes-recorrentes",
     },
   ];
 

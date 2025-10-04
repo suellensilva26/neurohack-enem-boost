@@ -16,6 +16,7 @@ import RedacaoCompleta from "./pages/RedacaoCompleta";
 import RevisaoExpress from "./pages/RevisaoExpress";
 import EstrategiasSecretas from "./pages/EstrategiasSecretas";
 import PadroesEnem from "./pages/PadroesEnem";
+import QuestoesRecorrentes from "./pages/QuestoesRecorrentes";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/revisao-express" element={<RevisaoExpress />} />
           <Route path="/estrategias-secretas" element={<EstrategiasSecretas />} />
           <Route path="/padroes-enem" element={<PadroesEnem />} />
+          <Route path="/questoes-recorrentes" element={<QuestoesRecorrentes />} />
           <Route path="/quiz/:lessonId" element={<Quiz />} />
           <Route path="/simulado" element={<Simulado />} />
           <Route path="/pricing" element={<Pricing />} />
