@@ -88,6 +88,7 @@ const TabsPage = () => {
       description: "Acerte 40% a mais identificando padrões recorrentes",
       modules: 10,
       hours: 5.5,
+      directLink: "/padroes-enem",
     },
     {
       id: "banco-questoes",

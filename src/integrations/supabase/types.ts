@@ -334,6 +334,69 @@ export type Database = {
         }
         Relationships: []
       }
+      pattern_insights: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          insight_type: string
+          pattern_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          insight_type: string
+          pattern_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          insight_type?: string
+          pattern_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      pattern_progress: {
+        Row: {
+          completed: boolean | null
+          created_at: string | null
+          exercises_completed: number | null
+          id: string
+          last_studied_at: string | null
+          module: string
+          notes: string | null
+          pattern_id: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string | null
+          exercises_completed?: number | null
+          id?: string
+          last_studied_at?: string | null
+          module: string
+          notes?: string | null
+          pattern_id: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string | null
+          exercises_completed?: number | null
+          id?: string
+          last_studied_at?: string | null
+          module?: string
+          notes?: string | null
+          pattern_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
