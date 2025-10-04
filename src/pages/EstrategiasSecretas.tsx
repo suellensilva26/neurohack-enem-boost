@@ -131,7 +131,7 @@ export default function EstrategiasSecretas() {
                 {MODULOS[moduloAtual - 1].title}
               </h2>
               
-              <ModuloAtualComponent />
+              <ModuloAtualComponent key={moduloAtual} />
 
               {/* Navigation Buttons */}
               <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
