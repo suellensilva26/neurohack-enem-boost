@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DecifrandoMenteElaboradores } from "@/components/estrategias/DecifrandoMenteElaboradores";
 import { MetodoSherlockHolmes } from "@/components/estrategias/MetodoSherlockHolmes";
+import { DrillEliminadores } from "@/components/estrategias/DrillEliminadores";
 import { EstrategiasPorArea } from "@/components/estrategias/EstrategiasPorArea";
 import { GestaoTempo } from "@/components/estrategias/GestaoTempo";
 import { ChuteCientifico } from "@/components/estrategias/ChuteCientifico";
@@ -14,10 +15,11 @@ import { ProtocoloFinal } from "@/components/estrategias/ProtocoloFinal";
 const MODULOS = [
   { id: 1, title: "Decifrando a Mente dos Elaboradores", component: DecifrandoMenteElaboradores },
   { id: 2, title: "O Método Sherlock Holmes de Eliminação", component: MetodoSherlockHolmes },
-  { id: 3, title: "Estratégias Psicológicas por Área", component: EstrategiasPorArea },
-  { id: 4, title: "O Sistema TRI e Gestão do Tempo", component: GestaoTempo },
-  { id: 5, title: "Chute Científico por Alternativa", component: ChuteCientifico },
-  { id: 6, title: "Protocolo Final de Emergência", component: ProtocoloFinal },
+  { id: 3, title: "Drill de Treinamento dos Eliminadores", component: DrillEliminadores },
+  { id: 4, title: "Estratégias Psicológicas por Área", component: EstrategiasPorArea },
+  { id: 5, title: "O Sistema TRI e Gestão do Tempo", component: GestaoTempo },
+  { id: 6, title: "Chute Científico por Alternativa", component: ChuteCientifico },
+  { id: 7, title: "Protocolo Final de Emergência", component: ProtocoloFinal },
 ];
 
 export default function EstrategiasSecretas() {
