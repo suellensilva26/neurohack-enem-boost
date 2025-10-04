@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { 
   Home, BookOpen, Brain, Target, Zap, TrendingUp, Award, 
@@ -6,9 +6,11 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
 
 const TabsPage = () => {
   const [userAccess] = useState<string[]>(["free"]); // Simula acesso do usuário
+  const [ebooksFromDB, setEbooksFromDB] = useState<any[]>([]);
 
   const freeTabs = [
     {
@@ -93,6 +95,21 @@ const TabsPage = () => {
 
   const hasAccess = (tabId: string) => {
     return userAccess.includes("full_access") || userAccess.includes(tabId);
+  };
+
+  useEffect(() => {
+    loadEbooks();
+  }, []);
+
+  const loadEbooks = async () => {
+    const { data } = await supabase
+      .from("ebooks")
+      .select("*")
+      .order("premium", { ascending: true });
+    
+    if (data) {
+      setEbooksFromDB(data);
+    }
   };
 
   return (
@@ -214,47 +231,49 @@ const TabsPage = () => {
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {premiumTabs.map((tab) => (
-                <div key={tab.id} className={`card-premium ${!hasAccess(tab.id) ? 'tab-locked' : ''}`}>
-                  <div className="mb-4 flex items-center gap-3">
-                    <div className="rounded-lg bg-primary/20 p-3">
-                      <tab.icon className="h-6 w-6 text-primary" />
+              {ebooksFromDB.filter(e => e.premium).map((ebook) => {
+                const tabData = premiumTabs.find(t => t.id === ebook.id);
+                const Icon = tabData?.icon || BookOpen;
+                
+                return (
+                  <Link
+                    key={ebook.id}
+                    to={`/tab/${ebook.id}`}
+                    className={`card-premium group hover:scale-105 transition-all ${!hasAccess(ebook.id) ? 'tab-locked' : ''}`}
+                  >
+                    <div className="mb-4 flex items-center gap-3">
+                      <div className="rounded-lg bg-gold/20 p-3 group-hover:bg-gold/30 transition-colors">
+                        <Icon className="h-6 w-6 text-gold" />
+                      </div>
+                      {!hasAccess(ebook.id) && <Lock className="ml-auto h-5 w-5 text-gold" />}
+                      {hasAccess(ebook.id) && <CheckCircle className="ml-auto h-5 w-5 text-primary" />}
                     </div>
-                    {!hasAccess(tab.id) && <Lock className="ml-auto h-5 w-5 text-primary" />}
-                    {hasAccess(tab.id) && <CheckCircle className="ml-auto h-5 w-5 text-primary" />}
-                  </div>
-                  
-                  <h3 className="mb-2">{tab.title}</h3>
-                  <p className="mb-4 text-sm text-muted-foreground">{tab.description}</p>
-                  
-                  <div className="mb-4 flex gap-4 text-xs text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <BookOpen className="h-4 w-4" />
-                      {tab.modules} módulos
+                    
+                    <h3 className="mb-2 group-hover:text-gold transition-colors">{ebook.title}</h3>
+                    <p className="mb-4 text-sm text-muted-foreground line-clamp-3">{ebook.description}</p>
+                    
+                    <div className="mb-4 flex gap-4 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <BookOpen className="h-4 w-4" />
+                        {tabData?.modules || 3} módulos
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Target className="h-4 w-4" />
+                        Questões
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      {tab.hours}h de conteúdo
-                    </div>
-                  </div>
 
-                  <div className="mb-3 text-2xl font-bold text-gold">{tab.price}</div>
-                  
-                  {hasAccess(tab.id) ? (
-                    <Link to={`/tab/${tab.id}`} className="block">
-                      <Button className="w-full rounded-xl bg-primary text-primary-foreground hover:bg-primary/90">
-                        Acessar Conteúdo
-                      </Button>
-                    </Link>
-                  ) : (
-                    <Link to="/pricing">
-                      <Button className="btn-premium w-full text-sm">
-                        Desbloquear Aba
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-              ))}
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="text-2xl font-bold text-gold">R$ {ebook.price?.toFixed(2)}</span>
+                      <span className="text-xs px-3 py-1.5 rounded-full bg-gold/20 text-gold font-semibold">Premium</span>
+                    </div>
+                    
+                    <Button className={`w-full rounded-xl ${hasAccess(ebook.id) ? 'bg-primary' : 'btn-premium'}`}>
+                      {hasAccess(ebook.id) ? 'Acessar Conteúdo' : 'Ver Mais →'}
+                    </Button>
+                  </Link>
+                );
+              })}
             </div>
           </TabsContent>
         </Tabs>
