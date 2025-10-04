@@ -24,6 +24,7 @@ export const PadroesHumanas = ({ onUpdate }: Props) => {
           id: "hist-republica",
           title: "Brasil República",
           percentage: "40%",
+          description: "O período republicano domina as questões. Foco em autoritarismo, movimentos sociais e transições políticas.",
           topics: [
             "Era Vargas (1930-1945): autoritarismo, trabalhismo",
             "Ditadura Militar (1964-1985): repressão, resistência",
@@ -34,6 +35,7 @@ export const PadroesHumanas = ({ onUpdate }: Props) => {
           id: "hist-imperio",
           title: "Brasil Império e Colônia",
           percentage: "35%",
+          description: "Colonização portuguesa, escravidão e formação do Estado brasileiro são temas recorrentes.",
           topics: [
             "Sistema colonial: exploração, escravidão",
             "Independência: processo, consequências",
@@ -44,6 +46,7 @@ export const PadroesHumanas = ({ onUpdate }: Props) => {
           id: "hist-geral",
           title: "História Geral Conectada",
           percentage: "25%",
+          description: "História mundial sempre conectada ao Brasil. Revoluções, guerras e seus impactos no país.",
           topics: [
             "Revoluções Industrial e Francesa",
             "Primeira e Segunda Guerra Mundial",
@@ -60,6 +63,7 @@ export const PadroesHumanas = ({ onUpdate }: Props) => {
           id: "geo-urbano",
           title: "Brasil Urbano e Industrial",
           percentage: "30%",
+          description: "Processo de urbanização e seus problemas sociais são tema garantido na prova.",
           topics: [
             "Urbanização acelerada, migração interna",
             "Regiões metropolitanas, favelas, desemprego"
@@ -69,6 +73,7 @@ export const PadroesHumanas = ({ onUpdate }: Props) => {
           id: "geo-ambiente",
           title: "Questões Ambientais",
           percentage: "25%",
+          description: "Meio ambiente e sustentabilidade são prioridade absoluta no ENEM atual.",
           topics: [
             "Aquecimento global, desmatamento",
             "Recursos hídricos, energia"
@@ -78,6 +83,7 @@ export const PadroesHumanas = ({ onUpdate }: Props) => {
           id: "geo-agricultura",
           title: "Agricultura e Território",
           percentage: "25%",
+          description: "Conflitos agrários e modelos de produção rural aparecem com frequência.",
           topics: [
             "Agronegócio, reforma agrária, MST",
             "Concentração fundiária"
@@ -87,6 +93,7 @@ export const PadroesHumanas = ({ onUpdate }: Props) => {
           id: "geo-globalizacao",
           title: "Globalização e Economia",
           percentage: "20%",
+          description: "Integração econômica mundial e suas consequências para o Brasil.",
           topics: [
             "Blocos econômicos, comércio internacional",
             "Desigualdades regionais"
@@ -190,11 +197,16 @@ export const PadroesHumanas = ({ onUpdate }: Props) => {
               <Card key={pattern.id} className="card-premium ml-0 md:ml-4">
                 <CardHeader>
                   <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
+                  <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
                         <span className="text-primary font-bold text-xs md:text-sm">{pattern.percentage}</span>
                         <CardTitle className="text-sm md:text-base">{pattern.title}</CardTitle>
                       </div>
+                      {pattern.description && (
+                        <CardDescription className="text-[10px] md:text-xs mt-1">
+                          {pattern.description}
+                        </CardDescription>
+                      )}
                     </div>
                     <Button
                       variant="ghost"
