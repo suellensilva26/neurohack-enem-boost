@@ -67,6 +67,8 @@ const TabsPage = () => {
       description: "Técnicas de chute estratégico para acertar sem saber",
       modules: 7,
       hours: 3,
+      isPremium: true,
+      directLink: "/estrategias-secretas",
     },
     {
       id: "aprendizado",
