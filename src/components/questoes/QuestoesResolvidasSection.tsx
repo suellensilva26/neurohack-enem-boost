@@ -4,14 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Brain, GraduationCap, CheckCircle2, XCircle, ChevronRight, ChevronLeft } from "lucide-react";
-import { questoesResolvidas } from "@/data/questoesResolvidasData";
+import { questoesResolvidasData } from "@/data/questoesResolvidasData";
 
 const QuestoesResolvidasSection = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
 
-  const question = questoesResolvidas[currentQuestion];
+  const question = questoesResolvidasData[currentQuestion];
 
   const handleSelectAnswer = (option: string) => {
     setSelectedAnswer(option);
@@ -22,7 +22,7 @@ const QuestoesResolvidasSection = () => {
   };
 
   const handleNext = () => {
-    if (currentQuestion < questoesResolvidas.length - 1) {
+    if (currentQuestion < questoesResolvidasData.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(null);
       setShowExplanation(false);
@@ -43,7 +43,7 @@ const QuestoesResolvidasSection = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Badge variant="outline" className="text-sm">
-          Questão {currentQuestion + 1} de {questoesResolvidas.length}
+          Questão {currentQuestion + 1} de {questoesResolvidasData.length}
         </Badge>
         <Badge variant="secondary">{question.materia}</Badge>
       </div>
@@ -51,7 +51,7 @@ const QuestoesResolvidasSection = () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">
-            Questão {question.numero} - {question.tema}
+            Questão {question.id} - {question.sub_materia}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -118,56 +118,46 @@ const QuestoesResolvidasSection = () => {
               </div>
 
               {/* Explicação Técnica */}
-              <Card className="border-primary/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-base">
-                    <GraduationCap className="h-5 w-5 text-primary" />
-                    Explicação Técnica
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold mb-2">Passo a passo:</h4>
-                    <ol className="list-decimal list-inside space-y-2 text-sm">
-                      {question.explicacaoTecnica.passos.map((passo, idx) => (
-                        <li key={idx} className="text-muted-foreground">{passo}</li>
-                      ))}
-                    </ol>
-                  </div>
-                  <div className="bg-primary/5 p-4 rounded-lg">
-                    <p className="text-sm">
-                      <strong>Por que {question.gabarito} está correta:</strong>{" "}
-                      {question.explicacaoTecnica.justificativa}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+              {question.explicacaoTecnica && (
+                <Card className="border-primary/30">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <GraduationCap className="h-5 w-5 text-primary" />
+                      Explicação Técnica
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground whitespace-pre-line">{question.explicacaoTecnica}</p>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Explicação Lógica */}
-              <Card className="border-accent/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-base">
-                    <Brain className="h-5 w-5 text-accent" />
-                    Explicação Lógica (sem conhecimento prévio)
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold mb-2">Raciocínio puro:</h4>
-                    <ol className="list-decimal list-inside space-y-2 text-sm">
-                      {question.explicacaoLogica.raciocinio.map((item, idx) => (
-                        <li key={idx} className="text-muted-foreground">{item}</li>
-                      ))}
-                    </ol>
-                  </div>
-                  <div className="bg-accent/5 p-4 rounded-lg border-l-4 border-accent">
+              {question.explicacaoLogica && (
+                <Card className="border-accent/30">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <Brain className="h-5 w-5 text-accent" />
+                      Explicação Lógica (sem conhecimento prévio)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground whitespace-pre-line">{question.explicacaoLogica}</p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Dica de Chute */}
+              {question.dicaChute && (
+                <Card className="border-accent/30 bg-accent/5">
+                  <CardContent className="pt-6">
                     <p className="text-sm">
                       <strong className="text-accent">💡 Dica de chute inteligente:</strong>{" "}
-                      {question.explicacaoLogica.dica}
+                      {question.dicaChute}
                     </p>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
 
@@ -184,7 +174,7 @@ const QuestoesResolvidasSection = () => {
             </Button>
             <Button
               onClick={handleNext}
-              disabled={currentQuestion === questoesResolvidas.length - 1}
+              disabled={currentQuestion === questoesResolvidasData.length - 1}
               className="flex-1"
             >
               Próxima

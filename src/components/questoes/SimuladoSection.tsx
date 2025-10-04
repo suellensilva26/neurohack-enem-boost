@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle2, XCircle, Trophy, Clock, Target, BookOpen, Grid3x3 } from "lucide-react";
-import { simuladoQuestoes } from "@/data/simuladoData";
+import { simuladoData } from "@/data/simuladoData";
 
 const SimuladoSection = () => {
   const [selectedBlock, setSelectedBlock] = useState<number | null>(null);
@@ -17,13 +17,13 @@ const SimuladoSection = () => {
   const blocks = Array.from({ length: 10 }, (_, i) => ({
     id: i + 1,
     start: i * 10,
-    end: Math.min(i * 10 + 9, simuladoQuestoes.length - 1),
-    label: `Bloco ${i + 1} (Q${i * 10 + 1}-Q${Math.min(i * 10 + 10, simuladoQuestoes.length)})`
+    end: Math.min(i * 10 + 9, simuladoData.length - 1),
+    label: `Bloco ${i + 1} (Q${i * 10 + 1}-Q${Math.min(i * 10 + 10, simuladoData.length)})`
   }));
 
   const activeQuestions = selectedBlock === null || selectedBlock === 0
-    ? simuladoQuestoes 
-    : simuladoQuestoes.slice(blocks[selectedBlock - 1].start, blocks[selectedBlock - 1].end + 1);
+    ? simuladoData 
+    : simuladoData.slice(blocks[selectedBlock - 1].start, blocks[selectedBlock - 1].end + 1);
 
   const question = activeQuestions[currentQuestion];
   const progress = ((currentQuestion + 1) / activeQuestions.length) * 100;
@@ -79,7 +79,7 @@ const SimuladoSection = () => {
           </CardHeader>
           <CardContent className="space-y-6">
             <p className="text-muted-foreground">
-              Você pode fazer todas as {simuladoQuestoes.length} questões de uma vez ou praticar em blocos de 10 questões
+              Você pode fazer todas as {simuladoData.length} questões de uma vez ou praticar em blocos de 10 questões
             </p>
 
             <div className="grid gap-4">
@@ -95,12 +95,12 @@ const SimuladoSection = () => {
                 <div className="flex flex-col items-center gap-2">
                   <BookOpen className="h-8 w-8" />
                   <span className="text-lg font-bold">Simulado Completo</span>
-                  <span className="text-sm opacity-90">{simuladoQuestoes.length} Questões</span>
+                  <span className="text-sm opacity-90">{simuladoData.length} Questões</span>
                 </div>
               </Button>
 
               <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                {blocks.filter((_, i) => i * 10 < simuladoQuestoes.length).map((block) => (
+                {blocks.filter((_, i) => i * 10 < simuladoData.length).map((block) => (
                   <Button
                     key={block.id}
                     variant="outline"
@@ -178,7 +178,7 @@ const SimuladoSection = () => {
                       <div className="flex items-center justify-between gap-4">
                         <div className="flex-1">
                           <p className="font-semibold">
-                            Questão {q.numero} - {q.tema}
+                            Questão {q.id} - {q.sub_materia}
                           </p>
                           <p className="text-sm text-muted-foreground mt-1">
                             {userAnswer ? (
@@ -260,7 +260,7 @@ const SimuladoSection = () => {
         <CardHeader>
           <div className="flex items-center justify-between">
             <Badge variant="secondary">{question.materia}</Badge>
-            <Badge variant="outline">{question.tema}</Badge>
+            <Badge variant="outline">{question.sub_materia}</Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
