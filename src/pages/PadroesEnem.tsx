@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Calculator, BookOpen, Atom, Globe, TrendingUp, FileText } from "lucide-react";
+import { ArrowLeft, Calculator, BookOpen, Atom, Globe, TrendingUp, FileText, BookOpenCheck } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { PadroesMatematica } from "@/components/padroes/PadroesMatematica";
@@ -97,7 +97,15 @@ const PadroesEnem = () => {
             </h1>
             <p className="text-xs text-muted-foreground">Acerte 40% a mais • Padrões que se repetem</p>
           </div>
-          <div className="w-20" /> {/* Spacer */}
+          <a 
+            href="/pdfs/padroes-enem.pdf" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+          >
+            <BookOpenCheck className="h-5 w-5" />
+            <span className="font-semibold text-sm hidden md:inline">Ver PDF</span>
+          </a>
         </div>
       </header>
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Brain, Zap, Eye, Target, Lightbulb, Clock, FileText } from "lucide-react";
+import { ArrowLeft, Brain, Zap, Eye, Target, Lightbulb, Clock, FileText, BookOpen } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -112,7 +112,15 @@ const AprendizagemAcelerada = () => {
             </h1>
             <p className="text-xs text-muted-foreground">Protocolo 60=10 • Absorva em 1h o que outros levam 10h</p>
           </div>
-          <div className="w-20" /> {/* Spacer for centering */}
+          <a 
+            href="/pdfs/aprendizagem-acelerada-enem.pdf" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+          >
+            <BookOpen className="h-5 w-5" />
+            <span className="font-semibold text-sm hidden md:inline">Ver PDF</span>
+          </a>
         </div>
       </header>
 
