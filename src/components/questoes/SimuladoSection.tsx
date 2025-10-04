@@ -271,7 +271,7 @@ const SimuladoSection = () => {
           </div>
 
           <div className="space-y-3">
-            {["A", "B", "C", "D", "E"].map((option) => (
+            {["A", "B", "C", "D", "E"].map((option, index) => (
               <button
                 key={option}
                 onClick={() => handleSelectAnswer(option)}
@@ -283,7 +283,7 @@ const SimuladoSection = () => {
               >
                 <div className="flex items-start gap-3">
                   <span className="font-bold text-lg">{option})</span>
-                  <span className="flex-1">{question.alternativas[option]}</span>
+                  <span className="flex-1">{question.alternativas[index]}</span>
                   {answers[currentQuestion] === option && (
                     <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
                   )}
