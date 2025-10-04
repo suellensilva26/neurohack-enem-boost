@@ -39,7 +39,7 @@ const TabsPage = () => {
   const premiumTabs = [
     {
       id: "redacao",
-      title: "Redação Nota 1000",
+      title: "Redação Nota Mil",
       icon: Award,
       price: "R$ 149",
       description: "Fórmula coringa para qualquer tema + repertórios versáteis",
