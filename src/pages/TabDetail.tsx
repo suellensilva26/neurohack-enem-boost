@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { EbookReader } from "@/components/EbookReader";
-import { ArrowLeft, Lock, Play } from "lucide-react";
+import { ArrowLeft, Lock, Play, Home, Target, Sparkles, Calendar, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Ebook {
@@ -12,6 +12,27 @@ interface Ebook {
   description: string;
   price: number;
 }
+
+const FREE_TABS = {
+  dashboard: {
+    id: "dashboard",
+    title: "Dashboard Inicial",
+    description: "Seu centro de comando para os próximos 30 dias",
+    icon: Home,
+  },
+  "daily-question": {
+    id: "daily-question",
+    title: "Questão do Dia",
+    description: "Uma questão recorrente do ENEM com explicação completa",
+    icon: Target,
+  },
+  "ai-tip": {
+    id: "ai-tip",
+    title: "Dica da IA",
+    description: "Dica diária de estudo gerada por IA personalizada",
+    icon: Sparkles,
+  },
+};
 
 const TabDetail = () => {
   const { tabId } = useParams();
@@ -34,14 +55,34 @@ const TabDetail = () => {
         return;
       }
 
-      // Load ebook data
+      // Check if it's a free tab
+      if (tabId && tabId in FREE_TABS) {
+        const freeTab = FREE_TABS[tabId as keyof typeof FREE_TABS];
+        setEbook({
+          id: freeTab.id,
+          title: freeTab.title,
+          description: freeTab.description,
+          price: 0,
+        });
+        setHasAccess(true);
+        setLoading(false);
+        return;
+      }
+
+      // Load ebook data for premium tabs
       const { data: ebookData, error: ebookError } = await supabase
         .from("ebooks")
         .select("*")
         .eq("id", tabId)
-        .single();
+        .maybeSingle();
 
       if (ebookError) throw ebookError;
+      
+      if (!ebookData) {
+        setLoading(false);
+        return;
+      }
+      
       setEbook(ebookData);
 
       // Check entitlements
@@ -120,6 +161,55 @@ const TabDetail = () => {
                 Desbloquear Agora
               </Button>
             </Link>
+          </div>
+        ) : tabId && tabId in FREE_TABS ? (
+          <div className="space-y-8">
+            {tabId === "dashboard" && (
+              <>
+                <div className="grid gap-6 md:grid-cols-3">
+                  <div className="rounded-xl bg-primary/10 p-6 text-center">
+                    <Calendar className="mx-auto mb-2 h-8 w-8 text-primary" />
+                    <div className="text-3xl font-bold text-primary">30</div>
+                    <div className="text-sm text-muted-foreground">Dias até o ENEM</div>
+                  </div>
+                  <div className="rounded-xl bg-primary/10 p-6 text-center">
+                    <Target className="mx-auto mb-2 h-8 w-8 text-primary" />
+                    <div className="text-3xl font-bold text-primary">0%</div>
+                    <div className="text-sm text-muted-foreground">Progresso Atual</div>
+                  </div>
+                  <div className="rounded-xl bg-primary/10 p-6 text-center">
+                    <Clock className="mx-auto mb-2 h-8 w-8 text-primary" />
+                    <div className="text-3xl font-bold text-primary">0h</div>
+                    <div className="text-sm text-muted-foreground">Horas de Estudo</div>
+                  </div>
+                </div>
+                <div className="card-premium">
+                  <div className="mb-4 flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 text-primary" />
+                    <span className="font-semibold text-primary">Citação Motivacional do Dia</span>
+                  </div>
+                  <p className="italic text-foreground">
+                    "O sucesso é a soma de pequenos esforços repetidos dia após dia."
+                  </p>
+                </div>
+              </>
+            )}
+            {tabId === "daily-question" && (
+              <div className="card-premium">
+                <h3 className="mb-4 text-xl font-semibold">🎯 Questão Recorrente do Dia</h3>
+                <p className="text-muted-foreground">
+                  Conteúdo em desenvolvimento. Em breve você terá acesso a questões diárias do ENEM.
+                </p>
+              </div>
+            )}
+            {tabId === "ai-tip" && (
+              <div className="card-premium">
+                <h3 className="mb-4 text-xl font-semibold">✨ Dica da IA</h3>
+                <p className="text-muted-foreground">
+                  Conteúdo em desenvolvimento. Em breve você receberá dicas personalizadas de estudo.
+                </p>
+              </div>
+            )}
           </div>
         ) : (
           <EbookReader ebookId={tabId || ""} />
