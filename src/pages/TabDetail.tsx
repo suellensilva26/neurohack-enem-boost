@@ -212,7 +212,12 @@ const TabDetail = () => {
             )}
           </div>
         ) : (
-          <EbookReader ebookId={tabId || ""} />
+          <EbookReader 
+            ebookId={tabId || ""} 
+            hasAccess={hasAccess}
+            ebookPrice={ebook.price}
+            ebookTitle={ebook.title}
+          />
         )}
       </div>
     </div>

@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import TabDetail from "./pages/TabDetail";
 import Quiz from "./pages/Quiz";
+import Simulado from "./pages/Simulado";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/tabs" element={<Tabs />} />
           <Route path="/tab/:tabId" element={<TabDetail />} />
           <Route path="/quiz/:lessonId" element={<Quiz />} />
+          <Route path="/simulado" element={<Simulado />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/auth" element={<Auth />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

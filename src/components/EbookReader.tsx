@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { BookOpen, ChevronLeft, ChevronRight, Target } from "lucide-react";
+import { BookOpen, ChevronLeft, ChevronRight, Target, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import PaywallModal from "./PaywallModal";
 
 interface Chapter {
   id: string;
@@ -22,14 +23,18 @@ interface Lesson {
 
 interface EbookReaderProps {
   ebookId: string;
+  hasAccess?: boolean;
+  ebookPrice?: number;
+  ebookTitle?: string;
 }
 
-export const EbookReader = ({ ebookId }: EbookReaderProps) => {
+export const EbookReader = ({ ebookId, hasAccess = false, ebookPrice = 0, ebookTitle = "" }: EbookReaderProps) => {
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [currentChapter, setCurrentChapter] = useState<Chapter | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showPaywall, setShowPaywall] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,9 +74,10 @@ export const EbookReader = ({ ebookId }: EbookReaderProps) => {
         .from("lessons")
         .select("*")
         .eq("chapter_id", chapterId)
-        .order("ord");
+        .order("ord")
+        .limit(hasAccess ? 100 : 1); // Show only first lesson as preview if no access
 
-      if (error) throw error;
+      if (error && error.code !== 'PGRST116') throw error;
       
       setLessons(data || []);
       if (data && data.length > 0) {
@@ -154,33 +160,66 @@ export const EbookReader = ({ ebookId }: EbookReaderProps) => {
           {currentLesson ? (
             <>
               <h2 className="text-2xl font-bold mb-4">{currentLesson.title}</h2>
+              
+              {!hasAccess && (
+                <div className="mb-4 p-4 bg-gold/10 border border-gold/30 rounded-xl">
+                  <div className="flex items-center gap-3">
+                    <Lock className="h-5 w-5 text-gold" />
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-foreground">Preview Gratuito</p>
+                      <p className="text-xs text-muted-foreground">
+                        Esta é uma prévia. Desbloqueie o conteúdo completo para acessar todas as lições, vídeos e exercícios.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               <ScrollArea className="h-[500px] mb-6">
                 <div className="prose prose-invert max-w-none">
                   <p className="text-foreground whitespace-pre-wrap">
-                    {currentLesson.content || "Conteúdo em desenvolvimento..."}
+                    {hasAccess 
+                      ? (currentLesson.content || "Conteúdo em desenvolvimento...") 
+                      : (currentLesson.content?.substring(0, 500) + "..." || "Conteúdo em desenvolvimento...")}
                   </p>
+                  
+                  {!hasAccess && (
+                    <div className="mt-6 p-6 bg-background/50 border border-primary/30 rounded-xl text-center">
+                      <Lock className="h-12 w-12 text-primary mx-auto mb-3" />
+                      <h3 className="text-lg font-semibold mb-2">Conteúdo Bloqueado</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Desbloqueie para continuar lendo e acessar todo o material de estudo
+                      </p>
+                      <Button className="btn-premium" onClick={() => setShowPaywall(true)}>
+                        Desbloquear Agora
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </ScrollArea>
 
               <div className="flex items-center justify-between pt-4 border-t border-border">
                 <Button
-                  onClick={previousLesson}
+                  onClick={hasAccess ? previousLesson : () => setShowPaywall(true)}
                   variant="outline"
-                  disabled={lessons.findIndex(l => l.id === currentLesson.id) === 0}
+                  disabled={hasAccess && lessons.findIndex(l => l.id === currentLesson.id) === 0}
                 >
                   <ChevronLeft className="h-4 w-4 mr-2" />
                   Anterior
                 </Button>
 
-                <Button onClick={startQuiz} className="btn-premium">
+                <Button 
+                  onClick={hasAccess ? startQuiz : () => setShowPaywall(true)} 
+                  className="btn-premium"
+                >
                   <Target className="h-4 w-4 mr-2" />
                   Praticar
                 </Button>
 
                 <Button
-                  onClick={nextLesson}
+                  onClick={hasAccess ? nextLesson : () => setShowPaywall(true)}
                   variant="outline"
-                  disabled={lessons.findIndex(l => l.id === currentLesson.id) === lessons.length - 1}
+                  disabled={hasAccess && lessons.findIndex(l => l.id === currentLesson.id) === lessons.length - 1}
                 >
                   Próximo
                   <ChevronRight className="h-4 w-4 ml-2" />
@@ -194,6 +233,15 @@ export const EbookReader = ({ ebookId }: EbookReaderProps) => {
           )}
         </div>
       </div>
+
+      <PaywallModal
+        open={showPaywall}
+        onClose={() => setShowPaywall(false)}
+        price={ebookPrice * 100}
+        productId={`prod_tab_${ebookId}`}
+        tabName={ebookTitle}
+        ebookId={ebookId}
+      />
     </div>
   );
 };

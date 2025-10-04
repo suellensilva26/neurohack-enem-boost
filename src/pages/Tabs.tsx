@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { 
   Home, BookOpen, Brain, Target, Zap, TrendingUp, Award, 
-  Lock, CheckCircle, ArrowLeft, Sparkles, Clock, Calendar
+  Lock, CheckCircle, ArrowLeft, Sparkles, Clock, Calendar, Trophy
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -207,6 +207,25 @@ const TabsPage = () => {
                 <Button className="w-full rounded-xl" variant="outline">
                   Resolver Questão do Dia
                 </Button>
+              </div>
+
+              <div className="mt-6 rounded-2xl border-2 border-gold/30 bg-gradient-to-br from-gold/5 to-gold/10 p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <Trophy className="h-8 w-8 text-gold" />
+                  <div>
+                    <h3 className="font-bold text-lg text-gold">Simulado 100 Questões</h3>
+                    <p className="text-sm text-muted-foreground">As questões que mais caem no ENEM</p>
+                  </div>
+                </div>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  Teste seu conhecimento com 100 questões recorrentes e receba relatório completo de desempenho
+                </p>
+                <Link to="/simulado">
+                  <Button className="btn-premium w-full">
+                    <Target className="h-4 w-4 mr-2" />
+                    Iniciar Simulado
+                  </Button>
+                </Link>
               </div>
             </div>
           </TabsContent>
