@@ -1,0 +1,262 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { 
+  Home, BookOpen, Brain, Target, Zap, TrendingUp, Award, 
+  Lock, CheckCircle, ArrowLeft, Sparkles, Clock, Calendar
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+const TabsPage = () => {
+  const [userAccess] = useState<string[]>(["free"]); // Simula acesso do usuário
+
+  const freeTabs = [
+    {
+      id: "dashboard",
+      title: "Dashboard Inicial",
+      icon: Home,
+      description: "Seu centro de comando para os próximos 30 dias",
+      content: "dashboard"
+    },
+    {
+      id: "daily-question",
+      title: "Questão do Dia",
+      icon: Target,
+      description: "Uma questão recorrente do ENEM com explicação completa",
+      content: "question"
+    },
+    {
+      id: "ai-tip",
+      title: "Dica da IA",
+      icon: Sparkles,
+      description: "Dica diária de estudo gerada por IA personalizada",
+      content: "ai-tip"
+    },
+  ];
+
+  const premiumTabs = [
+    {
+      id: "redacao",
+      title: "Redação Nota 1000",
+      icon: Award,
+      price: "R$ 149",
+      description: "Fórmula coringa para qualquer tema + repertórios versáteis",
+      modules: 8,
+      hours: 4.5,
+    },
+    {
+      id: "revisao",
+      title: "Kit Revisão Express",
+      icon: Zap,
+      price: "R$ 119",
+      description: "240 tópicos essenciais que cobrem 85% das questões",
+      modules: 12,
+      hours: 6,
+    },
+    {
+      id: "estrategias",
+      title: "Estratégias Secretas",
+      icon: Target,
+      price: "R$ 89",
+      description: "Técnicas de chute estratégico para acertar sem saber",
+      modules: 7,
+      hours: 3,
+    },
+    {
+      id: "aprendizado",
+      title: "Aprendizado Acelerado",
+      icon: Brain,
+      price: "R$ 99",
+      description: "Absorva em 1 hora o que outros levam 10",
+      modules: 9,
+      hours: 5,
+    },
+    {
+      id: "padroes",
+      title: "Padrões do ENEM",
+      icon: TrendingUp,
+      price: "R$ 129",
+      description: "Acerte 40% a mais identificando padrões recorrentes",
+      modules: 10,
+      hours: 5.5,
+    },
+    {
+      id: "banco-questoes",
+      title: "100 Questões Recorrentes",
+      icon: BookOpen,
+      price: "R$ 79",
+      description: "Banco completo com gabarito e explicações detalhadas",
+      modules: 5,
+      hours: 8,
+    },
+  ];
+
+  const hasAccess = (tabId: string) => {
+    return userAccess.includes("full_access") || userAccess.includes(tabId);
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b border-border bg-card/50 backdrop-blur-sm">
+        <div className="container mx-auto flex items-center justify-between px-4 py-4">
+          <Link to="/" className="flex items-center gap-2 text-foreground hover:text-primary">
+            <ArrowLeft className="h-5 w-5" />
+            <span className="font-semibold">Voltar</span>
+          </Link>
+          <h1 className="text-xl font-bold">
+            <span className="text-gold">ENEM 30 Dias</span>
+          </h1>
+          <Link to="/pricing">
+            <Button className="btn-premium text-sm">
+              Upgrade
+            </Button>
+          </Link>
+        </div>
+      </header>
+
+      <div className="container mx-auto max-w-7xl px-4 py-12">
+        <Tabs defaultValue="free" className="w-full">
+          <TabsList className="mb-8 grid w-full grid-cols-2 bg-card">
+            <TabsTrigger value="free" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              Abas Gratuitas
+            </TabsTrigger>
+            <TabsTrigger value="premium" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              Abas Premium
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Free Tabs Content */}
+          <TabsContent value="free" className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {freeTabs.map((tab) => (
+                <div key={tab.id} className="card-premium border-primary/50">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="rounded-lg bg-primary/20 p-3">
+                      <tab.icon className="h-6 w-6 text-primary" />
+                    </div>
+                    <CheckCircle className="ml-auto h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="mb-2">{tab.title}</h3>
+                  <p className="mb-4 text-sm text-muted-foreground">{tab.description}</p>
+                  <Button className="w-full rounded-xl bg-primary/20 text-primary hover:bg-primary/30">
+                    Acessar Conteúdo
+                  </Button>
+                </div>
+              ))}
+            </div>
+
+            {/* Dashboard Preview */}
+            <div className="card-premium mt-8">
+              <h2 className="mb-6 text-2xl">📊 Seu Dashboard</h2>
+              
+              <div className="grid gap-6 md:grid-cols-3">
+                <div className="rounded-xl bg-primary/10 p-6 text-center">
+                  <Calendar className="mx-auto mb-2 h-8 w-8 text-primary" />
+                  <div className="text-3xl font-bold text-primary">30</div>
+                  <div className="text-sm text-muted-foreground">Dias até o ENEM</div>
+                </div>
+                
+                <div className="rounded-xl bg-primary/10 p-6 text-center">
+                  <Target className="mx-auto mb-2 h-8 w-8 text-primary" />
+                  <div className="text-3xl font-bold text-primary">0%</div>
+                  <div className="text-sm text-muted-foreground">Progresso Atual</div>
+                </div>
+                
+                <div className="rounded-xl bg-primary/10 p-6 text-center">
+                  <Clock className="mx-auto mb-2 h-8 w-8 text-primary" />
+                  <div className="text-3xl font-bold text-primary">0h</div>
+                  <div className="text-sm text-muted-foreground">Horas de Estudo</div>
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-2xl border border-primary/30 bg-primary/5 p-6">
+                <div className="mb-2 flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  <span className="font-semibold text-primary">Citação Motivacional do Dia</span>
+                </div>
+                <p className="italic text-foreground">
+                  "O sucesso é a soma de pequenos esforços repetidos dia após dia. Cada questão que você resolve hoje é um passo em direção à sua aprovação."
+                </p>
+              </div>
+
+              <div className="mt-6 rounded-2xl bg-card p-6">
+                <h3 className="mb-4 font-semibold">🎯 Questão do Dia</h3>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  Resolva uma questão recorrente do ENEM todos os dias e acompanhe sua evolução
+                </p>
+                <Button className="w-full rounded-xl" variant="outline">
+                  Resolver Questão do Dia
+                </Button>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Premium Tabs Content */}
+          <TabsContent value="premium" className="space-y-6">
+            <div className="mb-8 card-premium border-primary/50 text-center">
+              <h2 className="mb-2">🔓 Desbloqueie Todo o Potencial</h2>
+              <p className="mb-4 text-muted-foreground">
+                Acesso completo a 6 abas premium com conteúdo exclusivo
+              </p>
+              <div className="mb-4">
+                <span className="text-sm text-muted-foreground">Pacote Completo:</span>
+                <div className="text-4xl font-bold text-gold">R$ 297,00</div>
+                <span className="text-sm text-muted-foreground">ou compre abas individuais</span>
+              </div>
+              <Link to="/pricing">
+                <Button className="btn-premium">
+                  Ver Planos e Preços
+                </Button>
+              </Link>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {premiumTabs.map((tab) => (
+                <div key={tab.id} className={`card-premium ${!hasAccess(tab.id) ? 'tab-locked' : ''}`}>
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="rounded-lg bg-primary/20 p-3">
+                      <tab.icon className="h-6 w-6 text-primary" />
+                    </div>
+                    {!hasAccess(tab.id) && <Lock className="ml-auto h-5 w-5 text-primary" />}
+                    {hasAccess(tab.id) && <CheckCircle className="ml-auto h-5 w-5 text-primary" />}
+                  </div>
+                  
+                  <h3 className="mb-2">{tab.title}</h3>
+                  <p className="mb-4 text-sm text-muted-foreground">{tab.description}</p>
+                  
+                  <div className="mb-4 flex gap-4 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <BookOpen className="h-4 w-4" />
+                      {tab.modules} módulos
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      {tab.hours}h de conteúdo
+                    </div>
+                  </div>
+
+                  <div className="mb-3 text-2xl font-bold text-gold">{tab.price}</div>
+                  
+                  {hasAccess(tab.id) ? (
+                    <Button className="w-full rounded-xl bg-primary text-primary-foreground hover:bg-primary/90">
+                      Acessar Conteúdo
+                    </Button>
+                  ) : (
+                    <Link to="/pricing">
+                      <Button className="btn-premium w-full text-sm">
+                        Desbloquear Aba
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+};
+
+export default TabsPage;
