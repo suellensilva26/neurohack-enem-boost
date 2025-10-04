@@ -10,6 +10,7 @@ import { DualCodingSystem } from "@/components/learning/sections/DualCodingSyste
 import { TestingEffect } from "@/components/learning/sections/TestingEffect";
 import { GenerationEffect } from "@/components/learning/sections/GenerationEffect";
 import { Protocolo6010 } from "@/components/learning/sections/Protocolo6010";
+import { MeuProgresso } from "@/components/learning/sections/MeuProgresso";
 import { supabase } from "@/integrations/supabase/client";
 
 const AprendizagemAcelerada = () => {
@@ -87,6 +88,12 @@ const AprendizagemAcelerada = () => {
       title: "Protocolo 60=10",
       icon: Clock,
       description: "60 minutos = 10 horas"
+    },
+    {
+      id: "progresso",
+      title: "Meu Progresso",
+      icon: FileText,
+      description: "Visualize tudo que você criou"
     }
   ];
 
@@ -128,7 +135,7 @@ const AprendizagemAcelerada = () => {
 
         {/* Navigation Tabs */}
         <Tabs defaultValue="fundacao" className="w-full">
-          <TabsList className="mb-8 grid w-full grid-cols-3 md:grid-cols-6 bg-card gap-2 p-2">
+          <TabsList className="mb-8 grid w-full grid-cols-3 md:grid-cols-7 bg-card gap-2 p-2">
             {sections.map((section) => {
               const Icon = section.icon;
               return (
@@ -167,6 +174,10 @@ const AprendizagemAcelerada = () => {
 
           <TabsContent value="protocolo">
             <Protocolo6010 onSessionComplete={loadStats} />
+          </TabsContent>
+
+          <TabsContent value="progresso">
+            <MeuProgresso />
           </TabsContent>
         </Tabs>
       </div>
