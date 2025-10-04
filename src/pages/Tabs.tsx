@@ -45,6 +45,8 @@ const TabsPage = () => {
       description: "Fórmula coringa para qualquer tema + repertórios versáteis",
       modules: 8,
       hours: 4.5,
+      isPremium: true,
+      directLink: "/redacao-completa",
     },
     {
       id: "revisao",

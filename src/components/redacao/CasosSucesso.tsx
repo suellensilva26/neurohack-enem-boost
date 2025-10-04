@@ -90,7 +90,7 @@ export function CasosSucesso() {
         
         <div className="space-y-4">
           <div className="p-4 rounded-lg bg-secondary">
-            <h5 className="font-semibold mb-2 text-foreground">1. Foco em Estrutura > Criatividade</h5>
+            <h5 className="font-semibold mb-2 text-foreground">1. Foco em Estrutura {`>`} Criatividade</h5>
             <p className="text-sm text-muted-foreground">
               100% dos casos abandonaram a tentativa de &quot;escrever bonito&quot; e focaram em seguir a fórmula. 
               ENEM premia clareza e organização, não originalidade literária.
