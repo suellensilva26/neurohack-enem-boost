@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 
 const TabsPage = () => {
-  const [userAccess] = useState<string[]>(["free"]); // Simula acesso do usuário
+  const [userAccess] = useState<string[]>(["full_access"]); // Modo teste: acesso completo
   const [ebooksFromDB, setEbooksFromDB] = useState<any[]>([]);
 
   const freeTabs = [
