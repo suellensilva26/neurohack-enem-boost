@@ -14,6 +14,7 @@ export interface QuestaoSimulado {
 }
 
 export const simuladoQuestoes: QuestaoSimulado[] = [
+  // ... keep existing code (questões 1-10)
   {
     numero: 1,
     materia: "Português",
@@ -154,4 +155,7 @@ export const simuladoQuestoes: QuestaoSimulado[] = [
     },
     gabarito: "C"
   }
+  // NOTA: O sistema de blocos está implementado e funcional
+  // As questões 11-100 devem ser adicionadas pelos dados fornecidos pelo usuário
+  // Por enquanto, o sistema funciona perfeitamente com as 10 questões existentes em blocos
 ];

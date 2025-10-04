@@ -17,11 +17,11 @@ const SimuladoSection = () => {
   const blocks = Array.from({ length: 10 }, (_, i) => ({
     id: i + 1,
     start: i * 10,
-    end: i * 10 + 9,
-    label: `Bloco ${i + 1} (Q${i * 10 + 1}-Q${i * 10 + 10})`
+    end: Math.min(i * 10 + 9, simuladoQuestoes.length - 1),
+    label: `Bloco ${i + 1} (Q${i * 10 + 1}-Q${Math.min(i * 10 + 10, simuladoQuestoes.length)})`
   }));
 
-  const activeQuestions = selectedBlock === null 
+  const activeQuestions = selectedBlock === null || selectedBlock === 0
     ? simuladoQuestoes 
     : simuladoQuestoes.slice(blocks[selectedBlock - 1].start, blocks[selectedBlock - 1].end + 1);
 
@@ -66,7 +66,8 @@ const SimuladoSection = () => {
     return `${minutes}min ${seconds}s`;
   };
 
-  if (selectedBlock === null && !showResults && !activeQuestions.length) {
+  // Menu de seleção
+  if (selectedBlock === null && !showResults) {
     return (
       <div className="space-y-6">
         <Card>
@@ -78,7 +79,7 @@ const SimuladoSection = () => {
           </CardHeader>
           <CardContent className="space-y-6">
             <p className="text-muted-foreground">
-              Você pode fazer todas as 100 questões de uma vez ou praticar em blocos de 10 questões
+              Você pode fazer todas as {simuladoQuestoes.length} questões de uma vez ou praticar em blocos de 10 questões
             </p>
 
             <div className="grid gap-4">
@@ -86,7 +87,7 @@ const SimuladoSection = () => {
                 size="lg"
                 className="w-full h-auto py-8"
                 onClick={() => {
-                  setSelectedBlock(null);
+                  setSelectedBlock(0);
                   setCurrentQuestion(0);
                   setAnswers({});
                 }}
@@ -94,12 +95,12 @@ const SimuladoSection = () => {
                 <div className="flex flex-col items-center gap-2">
                   <BookOpen className="h-8 w-8" />
                   <span className="text-lg font-bold">Simulado Completo</span>
-                  <span className="text-sm opacity-90">100 Questões</span>
+                  <span className="text-sm opacity-90">{simuladoQuestoes.length} Questões</span>
                 </div>
               </Button>
 
               <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                {blocks.map((block) => (
+                {blocks.filter((_, i) => i * 10 < simuladoQuestoes.length).map((block) => (
                   <Button
                     key={block.id}
                     variant="outline"
@@ -111,7 +112,7 @@ const SimuladoSection = () => {
                     }}
                   >
                     <div className="flex flex-col items-center gap-1">
-                      <span className="font-semibold text-sm">{block.label}</span>
+                      <span className="font-semibold text-xs">{block.label}</span>
                     </div>
                   </Button>
                 ))}
@@ -123,6 +124,7 @@ const SimuladoSection = () => {
     );
   }
 
+  // Tela de resultados
   if (showResults) {
     const score = calculateScore();
     const percentage = (score / activeQuestions.length) * 100;
@@ -133,7 +135,7 @@ const SimuladoSection = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Trophy className="h-6 w-6 text-primary" />
-              Resultado do Simulado
+              Resultado do {selectedBlock && selectedBlock !== 0 ? `Bloco ${selectedBlock}` : 'Simulado'}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -176,7 +178,7 @@ const SimuladoSection = () => {
                       <div className="flex items-center justify-between gap-4">
                         <div className="flex-1">
                           <p className="font-semibold">
-                            Questão {idx + 1} - {q.tema}
+                            Questão {q.numero} - {q.tema}
                           </p>
                           <p className="text-sm text-muted-foreground mt-1">
                             {userAnswer ? (
@@ -227,7 +229,7 @@ const SimuladoSection = () => {
                 className="flex-1"
                 size="lg"
               >
-                Refazer {selectedBlock ? `Bloco ${selectedBlock}` : 'Simulado'}
+                Refazer {selectedBlock && selectedBlock !== 0 ? `Bloco ${selectedBlock}` : 'Simulado'}
               </Button>
             </div>
           </CardContent>
@@ -236,6 +238,7 @@ const SimuladoSection = () => {
     );
   }
 
+  // Tela de questão
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -245,7 +248,7 @@ const SimuladoSection = () => {
             <Badge variant="outline">
               {Object.keys(answers).length} respondidas
             </Badge>
-            {selectedBlock && (
+            {selectedBlock && selectedBlock !== 0 && (
               <Badge>Bloco {selectedBlock}</Badge>
             )}
           </div>
@@ -298,9 +301,8 @@ const SimuladoSection = () => {
                 setShowResults(false);
               }}
               variant="outline"
-              className="flex-1"
             >
-              Voltar ao Menu
+              Menu
             </Button>
             <Button
               onClick={handlePrevious}
@@ -312,7 +314,7 @@ const SimuladoSection = () => {
             </Button>
             {currentQuestion === activeQuestions.length - 1 ? (
               <Button onClick={handleFinish} className="flex-1" size="lg">
-                Finalizar {selectedBlock ? `Bloco ${selectedBlock}` : 'Simulado'}
+                Finalizar
               </Button>
             ) : (
               <Button onClick={handleNext} className="flex-1">
