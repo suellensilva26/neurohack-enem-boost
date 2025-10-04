@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Calculator, BookOpen, Atom, Globe, TrendingUp, FileText, BookOpenCheck } from "lucide-react";
+import { ArrowLeft, Calculator, BookOpen, Atom, Globe, TrendingUp, FileText } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { PadroesMatematica } from "@/components/padroes/PadroesMatematica";
@@ -97,15 +98,7 @@ const PadroesEnem = () => {
             </h1>
             <p className="text-xs text-muted-foreground">Acerte 40% a mais • Padrões que se repetem</p>
           </div>
-          <a 
-            href="/pdfs/padroes-enem.pdf" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
-          >
-            <BookOpenCheck className="h-5 w-5" />
-            <span className="font-semibold text-sm hidden md:inline">Ver PDF</span>
-          </a>
+          <div className="w-20" />
         </div>
       </header>
 
@@ -148,6 +141,36 @@ const PadroesEnem = () => {
 
           {/* Section Contents */}
           <TabsContent value="matematica">
+            {/* PDF Section */}
+            <Card className="mb-6 border-primary/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Material de Apoio
+                </CardTitle>
+                <CardDescription>
+                  Baixe o PDF completo dos Padrões do ENEM
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <a
+                  href="/pdfs/padroes-enem.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center gap-3">
+                    <FileText className="h-8 w-8 text-primary" />
+                    <div>
+                      <p className="font-semibold">Padrões que se Repetem no ENEM</p>
+                      <p className="text-sm text-muted-foreground">Clique para visualizar o PDF completo</p>
+                    </div>
+                  </div>
+                  <FileText className="h-5 w-5 text-primary" />
+                </a>
+              </CardContent>
+            </Card>
+            
             <PadroesMatematica onUpdate={loadStats} />
           </TabsContent>
 
