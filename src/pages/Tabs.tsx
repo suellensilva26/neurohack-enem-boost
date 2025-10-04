@@ -72,6 +72,7 @@ const TabsPage = () => {
       description: "Absorva em 1 hora o que outros levam 10",
       modules: 9,
       hours: 5,
+      directLink: "/aprendizagem-acelerada"
     },
     {
       id: "padroes",
@@ -254,10 +255,12 @@ const TabsPage = () => {
                 const tabData = premiumTabs.find(t => t.id === ebook.id);
                 const Icon = tabData?.icon || BookOpen;
                 
+                const linkTo = tabData?.directLink || `/tab/${ebook.id}`;
+                
                 return (
                   <Link
                     key={ebook.id}
-                    to={`/tab/${ebook.id}`}
+                    to={linkTo}
                     className={`card-premium group hover:scale-105 transition-all ${!hasAccess(ebook.id) ? 'tab-locked' : ''}`}
                   >
                     <div className="mb-4 flex items-center gap-3">

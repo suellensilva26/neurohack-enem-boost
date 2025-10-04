@@ -58,6 +58,11 @@
     /* Animation Timings */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* Learning Tab Specific Colors */
+    --primary-neuro: 156 100% 50%;
+    --accent-brain: 14 100% 60%;
+    --card-glass: 0 0% 10% / 0.8;
   }
 }
 

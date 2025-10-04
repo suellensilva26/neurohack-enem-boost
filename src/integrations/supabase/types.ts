@@ -81,6 +81,39 @@ export type Database = {
           },
         ]
       }
+      dual_coding_content: {
+        Row: {
+          content: Json
+          created_at: string | null
+          id: string
+          image_url: string | null
+          subject: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          subject?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          subject?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ebooks: {
         Row: {
           created_at: string | null
@@ -105,6 +138,69 @@ export type Database = {
           premium?: boolean | null
           price?: number | null
           title?: string
+        }
+        Relationships: []
+      }
+      error_tracking: {
+        Row: {
+          created_at: string | null
+          error_type: string
+          frequency: number | null
+          id: string
+          strategy: string | null
+          subject: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          error_type: string
+          frequency?: number | null
+          id?: string
+          strategy?: string | null
+          subject: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          error_type?: string
+          frequency?: number | null
+          id?: string
+          strategy?: string | null
+          subject?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      feynman_recordings: {
+        Row: {
+          audio_url: string | null
+          created_at: string | null
+          duration_seconds: number | null
+          engagements: Json | null
+          id: string
+          transcript: string | null
+          user_id: string
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          engagements?: Json | null
+          id?: string
+          transcript?: string | null
+          user_id: string
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          engagements?: Json | null
+          id?: string
+          transcript?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -139,6 +235,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      generated_content: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       lessons: {
         Row: {
@@ -184,6 +307,33 @@ export type Database = {
           },
         ]
       }
+      neuro_prep_sessions: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          duration_seconds: number
+          id: string
+          objective: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          duration_seconds: number
+          id?: string
+          objective: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          duration_seconds?: number
+          id?: string
+          objective?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -208,6 +358,39 @@ export type Database = {
           full_name?: string | null
           id?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      protocol_sessions: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          efficiency_score: number | null
+          id: string
+          notes: string | null
+          phases_completed: Json
+          total_duration_seconds: number
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          efficiency_score?: number | null
+          id?: string
+          notes?: string | null
+          phases_completed: Json
+          total_duration_seconds: number
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          efficiency_score?: number | null
+          id?: string
+          notes?: string | null
+          phases_completed?: Json
+          total_duration_seconds?: number
+          user_id?: string
         }
         Relationships: []
       }
@@ -346,6 +529,42 @@ export type Database = {
           entitlement?: string
           granted_at?: string | null
           id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_flashcards: {
+        Row: {
+          answer: string
+          created_at: string | null
+          id: string
+          next_review_at: string | null
+          question: string
+          review_count: number | null
+          source: string | null
+          tags: string[] | null
+          user_id: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string | null
+          id?: string
+          next_review_at?: string | null
+          question: string
+          review_count?: number | null
+          source?: string | null
+          tags?: string[] | null
+          user_id: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string | null
+          id?: string
+          next_review_at?: string | null
+          question?: string
+          review_count?: number | null
+          source?: string | null
+          tags?: string[] | null
           user_id?: string
         }
         Relationships: []

@@ -11,6 +11,7 @@ import Auth from "./pages/Auth";
 import TabDetail from "./pages/TabDetail";
 import Quiz from "./pages/Quiz";
 import Simulado from "./pages/Simulado";
+import AprendizagemAcelerada from "./pages/AprendizagemAcelerada";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/tabs" element={<Tabs />} />
           <Route path="/tab/:tabId" element={<TabDetail />} />
+          <Route path="/aprendizagem-acelerada" element={<AprendizagemAcelerada />} />
           <Route path="/quiz/:lessonId" element={<Quiz />} />
           <Route path="/simulado" element={<Simulado />} />
           <Route path="/pricing" element={<Pricing />} />
