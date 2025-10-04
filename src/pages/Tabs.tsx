@@ -56,6 +56,8 @@ const TabsPage = () => {
       description: "240 tópicos essenciais que cobrem 85% das questões",
       modules: 12,
       hours: 6,
+      isPremium: true,
+      directLink: "/revisao-express",
     },
     {
       id: "estrategias",

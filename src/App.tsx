@@ -13,6 +13,7 @@ import Quiz from "./pages/Quiz";
 import Simulado from "./pages/Simulado";
 import AprendizagemAcelerada from "./pages/AprendizagemAcelerada";
 import RedacaoCompleta from "./pages/RedacaoCompleta";
+import RevisaoExpress from "./pages/RevisaoExpress";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/tab/:tabId" element={<TabDetail />} />
           <Route path="/aprendizagem-acelerada" element={<AprendizagemAcelerada />} />
           <Route path="/redacao-completa" element={<RedacaoCompleta />} />
+          <Route path="/revisao-express" element={<RevisaoExpress />} />
           <Route path="/quiz/:lessonId" element={<Quiz />} />
           <Route path="/simulado" element={<Simulado />} />
           <Route path="/pricing" element={<Pricing />} />
