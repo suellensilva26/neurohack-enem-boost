@@ -80,7 +80,7 @@ const Index = () => {
             </div>
 
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Link to="/tabs">
+              <Link to="/auth">
                 <Button className="btn-premium w-full sm:w-auto">
                   Começar Agora Grátis
                 </Button>

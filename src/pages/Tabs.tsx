@@ -139,9 +139,11 @@ const TabsPage = () => {
                   </div>
                   <h3 className="mb-2">{tab.title}</h3>
                   <p className="mb-4 text-sm text-muted-foreground">{tab.description}</p>
-                  <Button className="w-full rounded-xl bg-primary/20 text-primary hover:bg-primary/30">
-                    Acessar Conteúdo
-                  </Button>
+                  <Link to={`/tab/${tab.id}`} className="block">
+                    <Button className="w-full rounded-xl bg-primary/20 text-primary hover:bg-primary/30">
+                      Acessar Conteúdo
+                    </Button>
+                  </Link>
                 </div>
               ))}
             </div>
@@ -239,9 +241,11 @@ const TabsPage = () => {
                   <div className="mb-3 text-2xl font-bold text-gold">{tab.price}</div>
                   
                   {hasAccess(tab.id) ? (
-                    <Button className="w-full rounded-xl bg-primary text-primary-foreground hover:bg-primary/90">
-                      Acessar Conteúdo
-                    </Button>
+                    <Link to={`/tab/${tab.id}`} className="block">
+                      <Button className="w-full rounded-xl bg-primary text-primary-foreground hover:bg-primary/90">
+                        Acessar Conteúdo
+                      </Button>
+                    </Link>
                   ) : (
                     <Link to="/pricing">
                       <Button className="btn-premium w-full text-sm">
