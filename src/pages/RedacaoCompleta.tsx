@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, CheckCircle, FileText, Download } from "lucide-react";
+import { ArrowLeft, CheckCircle, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -111,32 +111,34 @@ export default function RedacaoCompleta() {
                 <CardContent className="space-y-3">
                   <a
                     href="/pdfs/modelo-redacao-formula-coringa.pdf"
-                    download
-                    className="flex items-center justify-between p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-colors"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
                       <FileText className="h-8 w-8 text-primary" />
                       <div>
                         <p className="font-semibold">Modelo de Redação - Fórmula Coringa</p>
-                        <p className="text-sm text-muted-foreground">Template completo para qualquer tema</p>
+                        <p className="text-sm text-muted-foreground">Clique para visualizar o PDF</p>
                       </div>
                     </div>
-                    <Download className="h-5 w-5 text-primary" />
+                    <FileText className="h-5 w-5 text-primary" />
                   </a>
                   
                   <a
                     href="/pdfs/modelo-coringa-redacao-enem.pdf"
-                    download
-                    className="flex items-center justify-between p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-colors"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
                       <FileText className="h-8 w-8 text-primary" />
                       <div>
                         <p className="font-semibold">Modelo Coringa de Redação ENEM</p>
-                        <p className="text-sm text-muted-foreground">Estrutura nota 1000 passo a passo</p>
+                        <p className="text-sm text-muted-foreground">Clique para visualizar o PDF</p>
                       </div>
                     </div>
-                    <Download className="h-5 w-5 text-primary" />
+                    <FileText className="h-5 w-5 text-primary" />
                   </a>
                 </CardContent>
               </Card>
