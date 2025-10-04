@@ -135,21 +135,23 @@ const AprendizagemAcelerada = () => {
 
         {/* Navigation Tabs */}
         <Tabs defaultValue="fundacao" className="w-full">
-          <TabsList className="mb-4 md:mb-8 grid w-full grid-cols-4 md:grid-cols-7 bg-card gap-1 md:gap-2 p-1 md:p-2">
-            {sections.map((section) => {
-              const Icon = section.icon;
-              return (
-                <TabsTrigger
-                  key={section.id}
-                  value={section.id}
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex flex-col items-center gap-0.5 md:gap-1 py-2 md:py-3 rounded-lg md:rounded-xl"
-                >
-                  <Icon className="h-4 w-4 md:h-5 md:w-5" />
-                  <span className="text-[9px] md:text-xs leading-tight text-center">{section.title.split(' ')[0]}</span>
-                </TabsTrigger>
-              );
-            })}
-          </TabsList>
+          <div className="mb-4 md:mb-8 overflow-x-auto">
+            <TabsList className="inline-flex md:grid w-auto md:w-full md:grid-cols-7 bg-card gap-1 md:gap-2 p-1 md:p-2">
+              {sections.map((section) => {
+                const Icon = section.icon;
+                return (
+                  <TabsTrigger
+                    key={section.id}
+                    value={section.id}
+                    className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex flex-col items-center gap-0.5 md:gap-1 py-2 md:py-3 rounded-lg md:rounded-xl min-w-[70px] flex-shrink-0"
+                  >
+                    <Icon className="h-4 w-4 md:h-5 md:w-5" />
+                    <span className="text-[9px] md:text-xs leading-tight text-center">{section.title.split(' ')[0]}</span>
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+          </div>
 
           {/* Section Contents */}
           <TabsContent value="fundacao">
