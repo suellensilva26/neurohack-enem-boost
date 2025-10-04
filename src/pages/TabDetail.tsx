@@ -34,6 +34,9 @@ const FREE_TABS = {
   },
 };
 
+// Modo de teste: desbloquear abas premium sem checagem de compra
+const TEST_UNLOCK = true;
+
 const TabDetail = () => {
   const { tabId } = useParams();
   const [ebook, setEbook] = useState<Ebook | null>(null);
@@ -84,6 +87,13 @@ const TabDetail = () => {
       }
       
       setEbook(ebookData);
+
+      // Test unlock: bypass entitlement checks for premium tabs
+      if (TEST_UNLOCK) {
+        setHasAccess(true);
+        setLoading(false);
+        return;
+      }
 
       // Check entitlements
       const { data: entitlements } = await supabase
