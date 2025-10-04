@@ -117,35 +117,35 @@ const AprendizagemAcelerada = () => {
       </header>
 
       {/* Stats Dashboard */}
-      <div className="container mx-auto max-w-7xl px-4 py-8">
-        <div className="grid gap-4 md:grid-cols-3 mb-8">
-          <div className="card-premium text-center p-6">
-            <div className="text-4xl font-bold text-primary mb-2">{stats.completedSessions}</div>
-            <div className="text-sm text-muted-foreground">Sessões Completas</div>
+      <div className="container mx-auto max-w-7xl px-3 md:px-4 py-4 md:py-8">
+        <div className="grid gap-2 md:gap-4 grid-cols-3 mb-4 md:mb-8">
+          <div className="card-premium text-center p-3 md:p-6">
+            <div className="text-2xl md:text-4xl font-bold text-primary mb-1 md:mb-2">{stats.completedSessions}</div>
+            <div className="text-[10px] md:text-sm text-muted-foreground">Sessões</div>
           </div>
-          <div className="card-premium text-center p-6">
-            <div className="text-4xl font-bold text-primary mb-2">{stats.averageEfficiency}%</div>
-            <div className="text-sm text-muted-foreground">Eficiência Média</div>
+          <div className="card-premium text-center p-3 md:p-6">
+            <div className="text-2xl md:text-4xl font-bold text-primary mb-1 md:mb-2">{stats.averageEfficiency}%</div>
+            <div className="text-[10px] md:text-sm text-muted-foreground">Eficiência</div>
           </div>
-          <div className="card-premium text-center p-6">
-            <div className="text-4xl font-bold text-primary mb-2">{stats.timeSaved}h</div>
-            <div className="text-sm text-muted-foreground">Tempo Economizado</div>
+          <div className="card-premium text-center p-3 md:p-6">
+            <div className="text-2xl md:text-4xl font-bold text-primary mb-1 md:mb-2">{stats.timeSaved}h</div>
+            <div className="text-[10px] md:text-sm text-muted-foreground">Economizado</div>
           </div>
         </div>
 
         {/* Navigation Tabs */}
         <Tabs defaultValue="fundacao" className="w-full">
-          <TabsList className="mb-8 grid w-full grid-cols-3 md:grid-cols-7 bg-card gap-2 p-2">
+          <TabsList className="mb-4 md:mb-8 grid w-full grid-cols-4 md:grid-cols-7 bg-card gap-1 md:gap-2 p-1 md:p-2">
             {sections.map((section) => {
               const Icon = section.icon;
               return (
                 <TabsTrigger
                   key={section.id}
                   value={section.id}
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex flex-col items-center gap-1 py-3 rounded-xl"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex flex-col items-center gap-0.5 md:gap-1 py-2 md:py-3 rounded-lg md:rounded-xl"
                 >
-                  <Icon className="h-5 w-5" />
-                  <span className="text-xs hidden md:inline">{section.title}</span>
+                  <Icon className="h-4 w-4 md:h-5 md:w-5" />
+                  <span className="text-[9px] md:text-xs leading-tight text-center">{section.title.split(' ')[0]}</span>
                 </TabsTrigger>
               );
             })}
