@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Brain, Zap, Eye, Target, Lightbulb, Clock } from "lucide-react";
+import { ArrowLeft, Brain, Zap, Eye, Target, Lightbulb, Clock, FileText } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FundacaoNeural } from "@/components/learning/sections/FundacaoNeural";
