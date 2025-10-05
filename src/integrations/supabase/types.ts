@@ -46,6 +46,36 @@ export type Database = {
           },
         ]
       }
+      checklist_progress: {
+        Row: {
+          completed: boolean | null
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          subject: string
+          topic_id: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          subject: string
+          topic_id: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          subject?: string
+          topic_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chunks: {
         Row: {
           created_at: string | null
@@ -295,6 +325,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      free_flashcard_progress: {
+        Row: {
+          created_at: string | null
+          flashcard_id: string
+          id: string
+          reviewed_at: string | null
+          status: string
+          subject: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          flashcard_id: string
+          id?: string
+          reviewed_at?: string | null
+          status?: string
+          subject: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          flashcard_id?: string
+          id?: string
+          reviewed_at?: string | null
+          status?: string
+          subject?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       generated_content: {
         Row: {
@@ -655,6 +715,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      study_sessions: {
+        Row: {
+          activities: Json | null
+          created_at: string | null
+          id: string
+          session_date: string | null
+          user_id: string
+        }
+        Insert: {
+          activities?: Json | null
+          created_at?: string | null
+          id?: string
+          session_date?: string | null
+          user_id: string
+        }
+        Update: {
+          activities?: Json | null
+          created_at?: string | null
+          id?: string
+          session_date?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_badges: {
+        Row: {
+          badge_id: string
+          earned_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          earned_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          earned_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_entitlements: {
         Row: {
