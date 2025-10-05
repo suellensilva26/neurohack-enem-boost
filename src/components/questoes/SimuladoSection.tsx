@@ -21,9 +21,17 @@ const SimuladoSection = () => {
     label: `Bloco ${i + 1} (Q${i * 10 + 1}-Q${Math.min(i * 10 + 10, simuladoData.length)})`
   }));
 
-  const activeQuestions = selectedBlock === null || selectedBlock === 0
+  const rawActiveQuestions = selectedBlock === null || selectedBlock === 0
     ? simuladoData 
     : simuladoData.slice(blocks[selectedBlock - 1].start, blocks[selectedBlock - 1].end + 1);
+
+  const activeQuestions = rawActiveQuestions.filter((q) =>
+    Array.isArray(q.alternativas) &&
+    q.alternativas.length === 5 &&
+    q.alternativas.every((a) => typeof a === "string" && a.trim().length > 0)
+  );
+
+  const hiddenCount = rawActiveQuestions.length - activeQuestions.length;
 
   const question = activeQuestions[currentQuestion];
   const progress = ((currentQuestion + 1) / activeQuestions.length) * 100;
@@ -239,6 +247,36 @@ const SimuladoSection = () => {
   }
 
   // Tela de questão
+  if (activeQuestions.length === 0) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Nenhuma questão disponível</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground">
+              Este bloco não possui questões completas (alternativas ausentes). Selecione outro bloco ou volte ao menu.
+            </p>
+            <div className="flex gap-3">
+              <Button
+                onClick={() => {
+                  setSelectedBlock(null);
+                  setCurrentQuestion(0);
+                  setAnswers({});
+                  setShowResults(false);
+                }}
+                variant="outline"
+              >
+                Voltar ao Menu
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -254,6 +292,11 @@ const SimuladoSection = () => {
           </div>
         </div>
         <Progress value={progress} className="h-2" />
+        {hiddenCount > 0 && (
+          <p className="text-xs text-muted-foreground">
+            {hiddenCount} questão(ões) foram ocultadas por estarem incompletas neste bloco.
+          </p>
+        )}
       </div>
 
       <Card>
