@@ -7,6 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
+import { PremiumTopBanner } from "@/components/freemium/PremiumTopBanner";
 
 const TabsPage = () => {
   const [userAccess] = useState<string[]>(["full_access"]); // Modo teste: acesso completo
@@ -123,6 +124,9 @@ const TabsPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Premium Top Banner */}
+      <PremiumTopBanner />
+      
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
@@ -130,9 +134,12 @@ const TabsPage = () => {
             <ArrowLeft className="h-5 w-5" />
             <span className="font-semibold">Voltar</span>
           </Link>
-          <h1 className="text-xl font-bold">
-            <span className="text-gold">ENEM 30 Dias</span>
-          </h1>
+          <div className="text-center">
+            <h1 className="text-xl font-bold">
+              <span className="text-gold">NeuroHack Enem 2025</span>
+            </h1>
+            <p className="text-xs text-muted-foreground">O maior sistema de aprovação já criado</p>
+          </div>
           <Link to="/pricing">
             <Button className="btn-premium text-sm">
               Upgrade
