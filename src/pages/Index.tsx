@@ -2,9 +2,14 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BookOpen, Brain, Target, Zap, Lock, CheckCircle, TrendingUp, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { OnboardingModal } from "@/components/freemium/OnboardingModal";
+import { FloatingCTA } from "@/components/freemium/FloatingCTA";
+import { UrgencyBanner } from "@/components/freemium/UrgencyBanner";
+import { useOnboarding } from "@/hooks/useOnboarding";
 
 const Index = () => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const { needsOnboarding, loading, completeOnboarding } = useOnboarding();
 
   useEffect(() => {
     const targetDate = new Date("2025-11-03T00:00:00").getTime();
@@ -37,6 +42,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <UrgencyBanner />
+      <FloatingCTA />
+      <OnboardingModal open={needsOnboarding && !loading} onComplete={completeOnboarding} />
+      
       {/* Hero Section */}
       <section className="relative overflow-hidden px-4 py-20 md:py-32">
         <div className="absolute inset-0 bg-gradient-to-b from-[hsl(45,100%,51%,0.05)] to-transparent" />

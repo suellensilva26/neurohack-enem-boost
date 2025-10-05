@@ -81,6 +81,66 @@ export type Database = {
           },
         ]
       }
+      conversion_triggers: {
+        Row: {
+          clicked: boolean | null
+          created_at: string | null
+          id: string
+          shown_at: string | null
+          trigger_type: string
+          user_id: string
+        }
+        Insert: {
+          clicked?: boolean | null
+          created_at?: string | null
+          id?: string
+          shown_at?: string | null
+          trigger_type: string
+          user_id: string
+        }
+        Update: {
+          clicked?: boolean | null
+          created_at?: string | null
+          id?: string
+          shown_at?: string | null
+          trigger_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      daily_usage: {
+        Row: {
+          created_at: string | null
+          date: string
+          id: string
+          last_activity_at: string | null
+          questions_answered: number | null
+          streak_days: number | null
+          study_hours: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          last_activity_at?: string | null
+          questions_answered?: number | null
+          streak_days?: number | null
+          study_hours?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          last_activity_at?: string | null
+          questions_answered?: number | null
+          streak_days?: number | null
+          study_hours?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       dual_coding_content: {
         Row: {
           content: Json
@@ -401,25 +461,46 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string | null
+          desired_course: string | null
           entitlements: string[] | null
           full_name: string | null
           id: string
+          main_difficulty: string | null
+          onboarding_completed: boolean | null
+          phone: string | null
+          preparation_level: string | null
+          study_days_available: number | null
+          target_university: string | null
           updated_at: string | null
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string | null
+          desired_course?: string | null
           entitlements?: string[] | null
           full_name?: string | null
           id: string
+          main_difficulty?: string | null
+          onboarding_completed?: boolean | null
+          phone?: string | null
+          preparation_level?: string | null
+          study_days_available?: number | null
+          target_university?: string | null
           updated_at?: string | null
         }
         Update: {
           avatar_url?: string | null
           created_at?: string | null
+          desired_course?: string | null
           entitlements?: string[] | null
           full_name?: string | null
           id?: string
+          main_difficulty?: string | null
+          onboarding_completed?: boolean | null
+          phone?: string | null
+          preparation_level?: string | null
+          study_days_available?: number | null
+          target_university?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -690,6 +771,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_user_streak: {
+        Args: { p_user_id: string }
+        Returns: number
+      }
       has_entitlement: {
         Args: { _entitlement: string; _user_id: string }
         Returns: boolean
