@@ -12,11 +12,14 @@ import TabDetail from "./pages/TabDetail";
 import Quiz from "./pages/Quiz";
 import Simulado from "./pages/Simulado";
 import AprendizagemAcelerada from "./pages/AprendizagemAcelerada";
+import AprendizagemAceleradaFuncional from "./pages/AprendizagemAceleradaFuncional";
 import RedacaoCompleta from "./pages/RedacaoCompleta";
 import RevisaoExpress from "./pages/RevisaoExpress";
 import EstrategiasSecretas from "./pages/EstrategiasSecretas";
 import PadroesEnem from "./pages/PadroesEnem";
+import PadroesEnemFuncional from "./pages/PadroesEnemFuncional";
 import QuestoesRecorrentes from "./pages/QuestoesRecorrentes";
+import QuestoesRecorrentesFuncional from "./pages/QuestoesRecorrentesFuncional";
 import Flashcards from "./pages/Flashcards";
 import Checklist from "./pages/Checklist";
 import DailyQuestion from "./pages/DailyQuestion";
@@ -35,12 +38,12 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/tabs" element={<Tabs />} />
           <Route path="/tab/:tabId" element={<TabDetail />} />
-          <Route path="/aprendizagem-acelerada" element={<AprendizagemAcelerada />} />
+          <Route path="/aprendizagem-acelerada" element={<AprendizagemAceleradaFuncional />} />
           <Route path="/redacao-completa" element={<RedacaoCompleta />} />
           <Route path="/revisao-express" element={<RevisaoExpress />} />
           <Route path="/estrategias-secretas" element={<EstrategiasSecretas />} />
-          <Route path="/padroes-enem" element={<PadroesEnem />} />
-          <Route path="/questoes-recorrentes" element={<QuestoesRecorrentes />} />
+          <Route path="/padroes-enem" element={<PadroesEnemFuncional />} />
+          <Route path="/questoes-recorrentes" element={<QuestoesRecorrentesFuncional />} />
           <Route path="/flashcards" element={<Flashcards />} />
           <Route path="/checklist" element={<Checklist />} />
           <Route path="/daily-question" element={<DailyQuestion />} />

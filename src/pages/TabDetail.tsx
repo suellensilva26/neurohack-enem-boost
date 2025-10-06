@@ -59,6 +59,24 @@ const FREE_TABS = {
     description: "Configure lembretes diários de estudo",
     icon: Sparkles,
   },
+  gamificacao: {
+    id: "gamificacao",
+    title: "Gamificação",
+    description: "Sistema de badges, XP e conquistas",
+    icon: Target,
+  },
+  analytics: {
+    id: "analytics",
+    title: "Analytics Avançado",
+    description: "Análise detalhada do seu progresso",
+    icon: Target,
+  },
+  cronograma: {
+    id: "cronograma",
+    title: "Cronograma Personalizado",
+    description: "Plano de estudos adaptado ao seu perfil",
+    icon: Target,
+  },
 };
 
 // Modo de teste: desbloquear abas premium sem checagem de compra
