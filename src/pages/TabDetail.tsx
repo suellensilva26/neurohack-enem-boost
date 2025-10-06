@@ -9,6 +9,11 @@ import { FlashcardsGratuitos } from "@/components/freemium/FlashcardsGratuitos";
 import { ChecklistEssencial } from "@/components/freemium/ChecklistEssencial";
 import { QuestaoDia } from "@/components/freemium/QuestaoDia";
 import { NotificacoesBasicas } from "@/components/freemium/NotificacoesBasicas";
+import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
+import { GamificationSystem } from "@/components/gamification/GamificationSystem";
+import { AdvancedAnalytics } from "@/components/analytics/AdvancedAnalytics";
+import { IntelligentNotifications } from "@/components/notifications/IntelligentNotifications";
+import { PersonalizedSchedule } from "@/components/schedule/PersonalizedSchedule";
 
 interface Ebook {
   id: string;
@@ -64,12 +69,34 @@ const TabDetail = () => {
   const [ebook, setEbook] = useState<Ebook | null>(null);
   const [hasAccess, setHasAccess] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingCompleted, setOnboardingCompleted] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
     checkAccess();
+    checkOnboardingStatus();
   }, [tabId]);
+
+  const checkOnboardingStatus = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("onboarding_completed")
+        .eq("id", user.id)
+        .single();
+
+      if (profile && !profile.onboarding_completed) {
+        setShowOnboarding(true);
+      }
+    } catch (error) {
+      console.error("Erro ao verificar onboarding:", error);
+    }
+  };
 
   const checkAccess = async () => {
     try {
@@ -245,6 +272,9 @@ const TabDetail = () => {
               </div>
             )}
             {tabId === "notificacoes" && <NotificacoesBasicas />}
+            {tabId === "gamificacao" && <GamificationSystem />}
+            {tabId === "analytics" && <AdvancedAnalytics />}
+            {tabId === "cronograma" && <PersonalizedSchedule />}
           </div>
         ) : (
           <EbookReader 
@@ -255,6 +285,16 @@ const TabDetail = () => {
           />
         )}
       </div>
+
+      {/* Onboarding Wizard */}
+      {showOnboarding && (
+        <OnboardingWizard 
+          onComplete={() => {
+            setShowOnboarding(false);
+            setOnboardingCompleted(true);
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -57,6 +57,27 @@ const TabsPage = () => {
       description: "Configure lembretes diários de estudo",
       content: "notificacoes"
     },
+    {
+      id: "gamificacao",
+      title: "Gamificação",
+      icon: Trophy,
+      description: "Sistema de badges, XP e conquistas",
+      content: "gamificacao"
+    },
+    {
+      id: "analytics",
+      title: "Analytics Avançado",
+      icon: TrendingUp,
+      description: "Análise detalhada do seu progresso",
+      content: "analytics"
+    },
+    {
+      id: "cronograma",
+      title: "Cronograma Personalizado",
+      icon: Calendar,
+      description: "Plano de estudos adaptado ao seu perfil",
+      content: "cronograma"
+    },
   ];
 
   const premiumTabs = [
