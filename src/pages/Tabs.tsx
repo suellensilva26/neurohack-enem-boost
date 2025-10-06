@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { 
   Home, BookOpen, Brain, Target, Zap, TrendingUp, Award, 
   Lock, CheckCircle, ArrowLeft, Sparkles, Clock, Calendar, Trophy,
-  CheckSquare
+  CheckSquare, Bell
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
