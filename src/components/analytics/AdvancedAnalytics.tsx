@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   TrendingUp, Target, Brain, Clock, Calendar, BarChart3,
   PieChart, LineChart, Zap, CheckCircle, XCircle, AlertTriangle,
-  BookOpen, Award, Users, Star, Eye, Filter, Trophy, Flame, CrystalBall
+  BookOpen, Award, Users, Star, Eye, Filter, Trophy, Flame, Sparkles
 } from "lucide-react";
 
 interface StudyData {
@@ -481,10 +481,10 @@ export const AdvancedAnalytics = () => {
         <TabsContent value="predictions" className="space-y-6">
           <Card className="border-gold/20 bg-gradient-to-r from-gold/5 to-gold/10">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CrystalBall className="h-5 w-5 text-gold" />
-                Predição da Nota ENEM
-              </CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-gold" />
+              Predição da Nota ENEM
+            </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-center space-y-4">
