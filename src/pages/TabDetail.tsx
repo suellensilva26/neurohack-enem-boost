@@ -5,6 +5,10 @@ import { Button } from "@/components/ui/button";
 import { EbookReader } from "@/components/EbookReader";
 import { ArrowLeft, Lock, Play, Home, Target, Sparkles, Calendar, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { FlashcardsGratuitos } from "@/components/freemium/FlashcardsGratuitos";
+import { ChecklistEssencial } from "@/components/freemium/ChecklistEssencial";
+import { QuestaoDia } from "@/components/freemium/QuestaoDia";
+import { NotificacoesBasicas } from "@/components/freemium/NotificacoesBasicas";
 
 interface Ebook {
   id: string;
@@ -20,6 +24,18 @@ const FREE_TABS = {
     description: "Seu centro de comando para os próximos 30 dias",
     icon: Home,
   },
+  flashcards: {
+    id: "flashcards",
+    title: "Flashcards Gratuitos",
+    description: "Revise com flashcards inteligentes por matéria",
+    icon: Target,
+  },
+  checklist: {
+    id: "checklist",
+    title: "Checklist Essencial",
+    description: "Tópicos com 80%+ de recorrência no ENEM",
+    icon: Target,
+  },
   "daily-question": {
     id: "daily-question",
     title: "Questão do Dia",
@@ -30,6 +46,12 @@ const FREE_TABS = {
     id: "ai-tip",
     title: "Dica da IA",
     description: "Dica diária de estudo gerada por IA personalizada",
+    icon: Sparkles,
+  },
+  notificacoes: {
+    id: "notificacoes",
+    title: "Notificações Básicas",
+    description: "Configure lembretes diários de estudo",
     icon: Sparkles,
   },
 };
@@ -212,6 +234,8 @@ const TabDetail = () => {
                 </p>
               </div>
             )}
+            {tabId === "flashcards" && <FlashcardsGratuitos />}
+            {tabId === "checklist" && <ChecklistEssencial />}
             {tabId === "ai-tip" && (
               <div className="card-premium">
                 <h3 className="mb-4 text-xl font-semibold">✨ Dica da IA</h3>
@@ -220,6 +244,7 @@ const TabDetail = () => {
                 </p>
               </div>
             )}
+            {tabId === "notificacoes" && <NotificacoesBasicas />}
           </div>
         ) : (
           <EbookReader 

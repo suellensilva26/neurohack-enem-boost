@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { 
   Home, BookOpen, Brain, Target, Zap, TrendingUp, Award, 
-  Lock, CheckCircle, ArrowLeft, Sparkles, Clock, Calendar, Trophy
+  Lock, CheckCircle, ArrowLeft, Sparkles, Clock, Calendar, Trophy,
+  CheckSquare
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,10 +23,24 @@ const TabsPage = () => {
       content: "dashboard"
     },
     {
+      id: "flashcards",
+      title: "Flashcards Gratuitos",
+      icon: Brain,
+      description: "Revise com flashcards inteligentes por matéria (limite: 5/dia)",
+      content: "flashcards"
+    },
+    {
+      id: "checklist",
+      title: "Checklist Essencial",
+      icon: CheckSquare,
+      description: "Tópicos com 80%+ de recorrência no ENEM",
+      content: "checklist"
+    },
+    {
       id: "daily-question",
       title: "Questão do Dia",
       icon: Target,
-      description: "Uma questão recorrente do ENEM com explicação completa",
+      description: "Uma questão recorrente do ENEM com explicação completa (limite: 5/dia)",
       content: "question"
     },
     {
@@ -34,6 +49,13 @@ const TabsPage = () => {
       icon: Sparkles,
       description: "Dica diária de estudo gerada por IA personalizada",
       content: "ai-tip"
+    },
+    {
+      id: "notificacoes",
+      title: "Notificações Básicas",
+      icon: Bell,
+      description: "Configure lembretes diários de estudo",
+      content: "notificacoes"
     },
   ];
 
