@@ -7,9 +7,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Calendar, Clock, Target, BookOpen, Brain, TrendingUp, 
   CheckCircle, Award, Zap, Play, FileText, BarChart3,
-  AlertCircle, Flame, Trophy
+  AlertCircle, Flame, Trophy, Crown, Star
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { GamificationSystem } from "@/components/gamification/GamificationSystem";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -162,6 +163,10 @@ export default function Dashboard() {
             <TabsTrigger value="cronograma">Cronograma</TabsTrigger>
             <TabsTrigger value="simulados">Simulados</TabsTrigger>
             <TabsTrigger value="redacao">Redação</TabsTrigger>
+            <TabsTrigger value="gamificacao">
+              <Trophy className="h-4 w-4 mr-2" />
+              Conquistas
+            </TabsTrigger>
             <TabsTrigger value="desempenho">Desempenho</TabsTrigger>
           </TabsList>
 
@@ -263,11 +268,11 @@ export default function Dashboard() {
                   <Button 
                     variant="outline" 
                     className="h-20"
-                    onClick={() => navigate("/simulados")}
+                    onClick={() => navigate("/simulados-enem")}
                   >
                     <div className="text-center">
                       <BookOpen className="h-6 w-6 mx-auto mb-1" />
-                      <span className="text-sm">Fazer Simulado</span>
+                      <span className="text-sm">Simulados ENEM</span>
                     </div>
                   </Button>
                   
@@ -479,6 +484,11 @@ export default function Dashboard() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Tab: Gamificação */}
+          <TabsContent value="gamificacao">
+            <GamificationSystem />
           </TabsContent>
         </Tabs>
       </div>

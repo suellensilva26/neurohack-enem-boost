@@ -10,6 +10,7 @@ import {
   TrendingUp, Users, Gift
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { AchievementToast, useAchievementNotifications } from "@/components/notifications/AchievementToast";
 
 interface Badge {
   id: string;
@@ -146,6 +147,26 @@ const badges: Badge[] = [
     requirement: "100% em simulado",
     unlocked: false,
     xpReward: 750
+  },
+  {
+    id: "simulado_master",
+    name: "Mestre dos Simulados",
+    description: "Completou 10 simulados ENEM",
+    icon: <BookOpen className="h-5 w-5" />,
+    rarity: "epic",
+    requirement: "10 simulados completos",
+    unlocked: false,
+    xpReward: 600
+  },
+  {
+    id: "high_scorer",
+    name: "Nota Máxima",
+    description: "Conseguiu mais de 900 pontos em um simulado",
+    icon: <Star className="h-5 w-5" />,
+    rarity: "legendary",
+    requirement: "900+ pontos em simulado",
+    unlocked: false,
+    xpReward: 800
   }
 ];
 
@@ -212,6 +233,7 @@ export const GamificationSystem = () => {
   });
   const [showBadgeNotification, setShowBadgeNotification] = useState<Badge | null>(null);
   const { toast } = useToast();
+  const { showAchievement, showLevelUp, showStreakMilestone } = useAchievementNotifications();
 
   useEffect(() => {
     loadUserStats();
@@ -310,6 +332,12 @@ export const GamificationSystem = () => {
         case "question_solver":
           unlocked = stats.questionsAnswered >= 500;
           break;
+        case "simulado_master":
+          unlocked = stats.simuladosCompletos >= 10;
+          break;
+        case "high_scorer":
+          unlocked = stats.melhorNotaSimulado >= 900;
+          break;
         case "accuracy_king":
           unlocked = stats.accuracy >= 90;
           break;
@@ -322,6 +350,14 @@ export const GamificationSystem = () => {
         // Badge recém-desbloqueado
         setTimeout(() => {
           setShowBadgeNotification(badge);
+          showAchievement({
+            id: badge.id,
+            name: badge.name,
+            description: badge.description,
+            icon: badge.icon,
+            rarity: badge.rarity,
+            xpReward: badge.xpReward
+          });
           toast({
             title: "🏆 Badge Desbloqueado!",
             description: `Você conquistou: ${badge.name}`,
@@ -537,6 +573,20 @@ export const GamificationSystem = () => {
           </Card>
         </div>
       )}
+
+      {/* Achievement Toast Component */}
+      <AchievementToast
+        achievement={showBadgeNotification ? {
+          id: showBadgeNotification.id,
+          name: showBadgeNotification.name,
+          description: showBadgeNotification.description,
+          icon: showBadgeNotification.icon,
+          rarity: showBadgeNotification.rarity,
+          xpReward: showBadgeNotification.xpReward
+        } : null}
+        show={!!showBadgeNotification}
+        onClose={() => setShowBadgeNotification(null)}
+      />
     </div>
   );
 };

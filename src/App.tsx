@@ -11,6 +11,7 @@ import Auth from "./pages/Auth";
 import TabDetail from "./pages/TabDetail";
 import Quiz from "./pages/Quiz";
 import Simulado from "./pages/Simulado";
+import SimuladosEnem from "./pages/SimuladosEnem";
 import AprendizagemAcelerada from "./pages/AprendizagemAcelerada";
 import AprendizagemAceleradaFuncional from "./pages/AprendizagemAceleradaFuncional";
 import RedacaoCompleta from "./pages/RedacaoCompleta";
@@ -49,6 +50,7 @@ const App = () => (
           <Route path="/daily-question" element={<DailyQuestion />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/banco-questoes" element={<BancoQuestoes />} />
+          <Route path="/simulados-enem" element={<SimuladosEnem />} />
           <Route path="/quiz/:lessonId" element={<Quiz />} />
           <Route path="/simulado" element={<Simulado />} />
           <Route path="/pricing" element={<Pricing />} />
