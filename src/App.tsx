@@ -53,6 +53,7 @@ const AppRoutes = () => {
       <Route path="/checklist" element={<Checklist />} />
       <Route path="/daily-question" element={<DailyQuestion />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/tabs/dashboard" element={<Dashboard />} />
       <Route path="/banco-questoes" element={<BancoQuestoes />} />
       <Route path="/quiz/:lessonId" element={<Quiz />} />
       <Route path="/simulado" element={<Simulado />} />
