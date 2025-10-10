@@ -4,6 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter as BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import { requirePremium } from "./utils/routeGuards";
+import { UserProvider } from "./hooks/useUser";
+import { useUser } from "./hooks/useUser";
 const Index = lazy(() => import("./pages/Index"));
 const Tabs = lazy(() => import("./pages/Tabs"));
 const Pricing = lazy(() => import("./pages/Pricing"));
@@ -31,6 +34,36 @@ import { OfflineIndicator } from "@/components/pwa/OfflineIndicator";
 
 const queryClient = new QueryClient();
 
+const AppRoutes = () => {
+  const { isPremium } = useUser();
+  return (
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/tabs" element={<Tabs />} />
+      <Route path="/tab/:tabId" element={<TabDetail />} />
+      {/* Premium content routes guarded */}
+      <Route path="/aprendizagem-acelerada" element={requirePremium(isPremium, <AprendizagemAceleradaFuncional />)} />
+      <Route path="/redacao-completa" element={requirePremium(isPremium, <RedacaoCompleta />)} />
+      <Route path="/revisao-express" element={requirePremium(isPremium, <RevisaoExpress />)} />
+      <Route path="/estrategias-secretas" element={requirePremium(isPremium, <EstrategiasSecretas />)} />
+      <Route path="/padroes-enem" element={requirePremium(isPremium, <PadroesEnemFuncional />)} />
+      <Route path="/questoes-recorrentes" element={requirePremium(isPremium, <QuestoesRecorrentesFuncional />)} />
+      {/* Free routes remain accessible */}
+      <Route path="/flashcards" element={<Navigate to="/tab/flashcards" replace />} />
+      <Route path="/checklist" element={<Checklist />} />
+      <Route path="/daily-question" element={<DailyQuestion />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/banco-questoes" element={<BancoQuestoes />} />
+      <Route path="/quiz/:lessonId" element={<Quiz />} />
+      <Route path="/simulado" element={<Simulado />} />
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/auth" element={<Auth />} />
+      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -38,32 +71,13 @@ const App = () => (
       <Sonner />
       <InstallPrompt />
       <OfflineIndicator />
+      <UserProvider>
       <BrowserRouter>
         <Suspense fallback={<div className="p-4 text-center">Carregando...</div>}>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/tabs" element={<Tabs />} />
-          <Route path="/tab/:tabId" element={<TabDetail />} />
-          <Route path="/aprendizagem-acelerada" element={<AprendizagemAceleradaFuncional />} />
-          <Route path="/redacao-completa" element={<RedacaoCompleta />} />
-          <Route path="/revisao-express" element={<RevisaoExpress />} />
-          <Route path="/estrategias-secretas" element={<EstrategiasSecretas />} />
-          <Route path="/padroes-enem" element={<PadroesEnemFuncional />} />
-          <Route path="/questoes-recorrentes" element={<QuestoesRecorrentesFuncional />} />
-          <Route path="/flashcards" element={<Navigate to="/tab/flashcards" replace />} />
-          <Route path="/checklist" element={<Checklist />} />
-          <Route path="/daily-question" element={<DailyQuestion />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/banco-questoes" element={<BancoQuestoes />} />
-          <Route path="/quiz/:lessonId" element={<Quiz />} />
-          <Route path="/simulado" element={<Simulado />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/auth" element={<Auth />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+          <AppRoutes />
         </Suspense>
       </BrowserRouter>
+      </UserProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
