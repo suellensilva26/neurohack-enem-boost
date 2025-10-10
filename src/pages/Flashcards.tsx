@@ -9,10 +9,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { CardSwiper } from "@/components/flashcards/CardSwiper";
 import { CategorySelector } from "@/components/flashcards/CategorySelector";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { subjects, getFlashcardsBySubject, getRandomFlashcards, Subject } from "@/data/flashcardsData";
 import { useFreemiumLimits } from "@/hooks/useFreemiumLimits";
 
-type SessionMode = 'select' | 'study' | 'complete';
+type SessionMode = 'select' | 'tabs' | 'study' | 'complete';
 
 export default function Flashcards() {
   const navigate = useNavigate();
@@ -22,21 +23,26 @@ export default function Flashcards() {
   const [currentCards, setCurrentCards] = useState<any[]>([]);
   const [sessionStats, setSessionStats] = useState({ correct: 0, total: 0 });
   const [cardHistory, setCardHistory] = useState<{ cardId: string; correct: boolean }[]>([]);
+  const [activeTab, setActiveTab] = useState<string>('');
 
   const handleSelectSubject = (subject: Subject) => {
     setSelectedSubject(subject);
-    const cards = getFlashcardsBySubject(subject.id);
-    setCurrentCards(cards);
-    setMode('study');
+    setActiveTab(subject.id);
+    setMode('tabs');
     setCardHistory([]);
   };
 
   const handleStartRandom = () => {
-    const randomCards = getRandomFlashcards(20); // 20 flashcards aleatórios
     setSelectedSubject(null);
-    setCurrentCards(randomCards);
-    setMode('study');
+    setActiveTab('todas');
+    setMode('tabs');
     setCardHistory([]);
+  };
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    const subj = subjects.find(s => s.id === value) || null;
+    setSelectedSubject(subj || null);
   };
 
   const handleCardComplete = (cardId: string, correct: boolean) => {
@@ -117,13 +123,40 @@ export default function Flashcards() {
           />
         )}
 
-        {mode === 'study' && (
-          <CardSwiper
-            cards={currentCards}
-            onCardComplete={handleCardComplete}
-            onSessionComplete={handleSessionComplete}
-            subjectName={selectedSubject?.name || 'Todas as Matérias'}
-          />
+        {mode === 'tabs' && (
+          <div className="space-y-6">
+            <Tabs value={activeTab} onValueChange={handleTabChange}>
+              <TabsList className="flex flex-wrap">
+                <TabsTrigger value="todas">Todas</TabsTrigger>
+                {subjects.map((s) => (
+                  <TabsTrigger key={s.id} value={s.id}>
+                    <span className="mr-2">{s.icon}</span>
+                    {s.name}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+
+              <TabsContent value="todas" className="mt-4">
+                <CardSwiper
+                  cards={getRandomFlashcards(20)}
+                  onCardComplete={handleCardComplete}
+                  onSessionComplete={handleSessionComplete}
+                  subjectName={'Todas as Matérias'}
+                />
+              </TabsContent>
+
+              {subjects.map((s) => (
+                <TabsContent key={s.id} value={s.id} className="mt-4">
+                  <CardSwiper
+                    cards={getFlashcardsBySubject(s.id)}
+                    onCardComplete={handleCardComplete}
+                    onSessionComplete={handleSessionComplete}
+                    subjectName={s.name}
+                  />
+                </TabsContent>
+              ))}
+            </Tabs>
+          </div>
         )}
 
         {mode === 'complete' && (
@@ -280,7 +313,7 @@ export default function Flashcards() {
                     className="w-full bg-gradient-to-r from-primary to-accent"
                   >
                     <Zap className="mr-2 h-4 w-4" />
-                    Desbloquear Análise Completa - R$ 197
+                    Desbloquear Análise Completa - R$ 297
                   </Button>
                 </CardContent>
               </Card>

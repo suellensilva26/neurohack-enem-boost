@@ -1,10 +1,4 @@
 import { useState, useCallback } from 'react';
-import { 
-  obterQuestoesPorFiltro, 
-  gerarSimuladoCompleto, 
-  converterParaFormatoAPI,
-  QuestaoEnemCompleta 
-} from '@/data/enemQuestoesCompletas';
 
 export interface QuestaoEnem {
   id: string;
@@ -12,6 +6,7 @@ export interface QuestaoEnem {
   alternatives: string[];
   correctAnswer: number;
   year: number;
+  numero?: number;
   discipline: string;
   competence?: string;
   skill?: string;
@@ -56,6 +51,7 @@ interface GerarSimuladoParams {
 }
 
 const API_BASE_URL = 'https://api.enem.dev/v1';
+const ENABLE_MOCK_FALLBACK = (import.meta as any)?.env?.VITE_ENABLE_ENEM_MOCK === 'true';
 
 // Dados mock para fallback quando a API estiver indisponível
 const MOCK_QUESTOES: QuestaoEnem[] = [
@@ -127,23 +123,45 @@ const MOCK_QUESTOES: QuestaoEnem[] = [
 
 // Gerar mais questões mock para diferentes anos e disciplinas
 const gerarQuestoesMock = (ano: number, disciplina?: string, limite: number = 45): QuestaoEnem[] => {
-  const questoesFiltradas = disciplina 
+  // Seleciona questões base conforme disciplina; se não houver, usa todas
+  const base = disciplina
     ? MOCK_QUESTOES.filter(q => q.discipline === disciplina)
     : MOCK_QUESTOES;
-  
-  const questoesComAno = questoesFiltradas.map(q => ({ ...q, year: ano }));
-  
+
+  const questoesFiltradas = base.length > 0 ? base : MOCK_QUESTOES;
+
+  const questoesComAno = questoesFiltradas.map(q => ({
+    ...q,
+    year: ano,
+    discipline: disciplina || q.discipline || 'geral',
+  }));
+
+  // Garantir que sempre há pelo menos uma questão para evitar divisão por zero
+  const pool = questoesComAno.length > 0 ? questoesComAno : [
+    {
+      id: 'mock_default',
+      enunciado: 'Questão de treino gerada automaticamente.',
+      alternatives: ['A', 'B', 'C', 'D', 'E'],
+      correctAnswer: 0,
+      year: ano,
+      discipline: disciplina || 'geral',
+    } as QuestaoEnem,
+  ];
+
   // Duplicar questões para atingir o limite necessário
-  const questoesExpandidas = [];
+  const questoesExpandidas: QuestaoEnem[] = [];
   for (let i = 0; i < limite; i++) {
-    const questaoBase = questoesComAno[i % questoesComAno.length];
+    const questaoBase = pool[i % pool.length];
     questoesExpandidas.push({
       ...questaoBase,
       id: `${questaoBase.id}_${ano}_${i}`,
-      enunciado: `${questaoBase.enunciado} (Questão ${i + 1})`
+      enunciado: `${questaoBase.enunciado} (Questão ${i + 1})`,
+      year: ano,
+      numero: i + 1,
+      discipline: disciplina || questaoBase.discipline || 'geral',
     });
   }
-  
+
   return questoesExpandidas;
 };
 
@@ -188,61 +206,112 @@ export const useEnemAPI = (): UseEnemAPIReturn => {
     setError(null);
 
     try {
-      // Primeiro tentar a API oficial
+      // API enem.dev: /v1/exams/{year}/questions com filtros por disciplina e linguagem
+      const year = params.year || 2023;
       const queryParams = new URLSearchParams();
-      
-      if (params.year) queryParams.append('year', params.year.toString());
       if (params.discipline) queryParams.append('discipline', params.discipline);
       if (params.limit) queryParams.append('limit', params.limit.toString());
-      if (params.competence) queryParams.append('competence', params.competence);
-      if (params.skill) queryParams.append('skill', params.skill);
+      // competence/skill não são suportados diretamente; manter para futuro
 
-      const response = await fetch(`${API_BASE_URL}/questions?${queryParams}`);
-      
+      const response = await fetch(`${API_BASE_URL}/exams/${year}/questions?${queryParams.toString()}`);
+
       if (!response.ok) {
-        throw new Error(`Erro na API: ${response.status}`);
+        if (ENABLE_MOCK_FALLBACK) {
+          const fallback = gerarQuestoesMock(
+            params.year || 2023,
+            params.discipline,
+            params.limit || 20
+          );
+          setQuestoes(fallback);
+          setCache(cacheKey, fallback);
+          setError(null);
+          return fallback;
+        } else {
+          setQuestoes([]);
+          setCache(cacheKey, []);
+          setError(`Erro na API (${response.status}). Nenhuma questão oficial disponível.`);
+          return [];
+        }
       }
 
       const data = await response.json();
-      
-      // Normalizar dados para nossa interface
-      const questoesNormalizadas: QuestaoEnem[] = data.map((item: any, index: number) => ({
-        id: item.id || `q_${params.year}_${index}`,
-        enunciado: item.statement || item.enunciado || '',
-        alternatives: item.alternatives || item.alternativas || [],
-        correctAnswer: item.correctAnswer || item.gabarito || 0,
-        year: item.year || params.year || 2023,
-        discipline: item.discipline || params.discipline || 'geral',
-        competence: item.competence || item.competencia,
-        skill: item.skill || item.habilidade,
-        image: item.image || item.imagem,
-        context: item.context || item.contexto
-      }));
+
+      // Resposta enem.dev: { metadata, questions: [...] }
+      const items = Array.isArray(data) ? data : (data?.questions || []);
+
+      // Normalização para nosso modelo
+  const questoesNormalizadas: QuestaoEnem[] = items.map((item: any, index: number) => {
+        // enem.dev: campos comuns
+        // title, index, discipline, language, year, context, files, correctAlternative, alternativesIntroduction, alternatives[]
+        const alternativasArray: string[] = Array.isArray(item.alternatives)
+          ? item.alternatives.map((alt: any) => alt?.text ?? String(alt?.letter ?? ''))
+          : (item.alternatives || []);
+
+        // correctAlternative é letra; converter para índice 0-4
+        const letra = (item.correctAlternative || '').toString().trim().toUpperCase();
+        const mapa = { 'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4 } as Record<string, number>;
+        let correctIndex = letra in mapa ? mapa[letra] : 0;
+        if (Array.isArray(item.alternatives)) {
+          const idx = item.alternatives.findIndex((alt: any) => alt?.isCorrect === true);
+          if (idx >= 0) correctIndex = idx;
+        }
+
+    return {
+      id: item.id || `q_${year}_${index + 1}`,
+      enunciado: item.context || item.title || '',
+      alternatives: alternativasArray.length ? alternativasArray : ['A', 'B', 'C', 'D', 'E'],
+      correctAnswer: typeof item.correctAnswer === 'number' ? item.correctAnswer : correctIndex,
+      year: item.year || year,
+      numero: typeof item.index === 'number' ? item.index : (typeof item.number === 'number' ? item.number : (index + 1)),
+      discipline: item.discipline || params.discipline || 'geral',
+      competence: item.competence,
+      skill: item.skill,
+      image: Array.isArray(item.files) && item.files.length ? item.files[0] : undefined,
+      context: item.context,
+    } as QuestaoEnem;
+  });
+
+      // Se API retornou vazio, usar fallback
+      if (!questoesNormalizadas.length) {
+        if (ENABLE_MOCK_FALLBACK) {
+          const fallback = gerarQuestoesMock(
+            params.year || 2023,
+            params.discipline,
+            params.limit || 20
+          );
+          setQuestoes(fallback);
+          setCache(cacheKey, fallback);
+          setError(null);
+          return fallback;
+        } else {
+          setQuestoes([]);
+          setCache(cacheKey, []);
+          setError('Nenhuma questão oficial disponível para os filtros selecionados.');
+          return [];
+        }
+      }
 
       setQuestoes(questoesNormalizadas);
       setCache(cacheKey, questoesNormalizadas);
-      
       return questoesNormalizadas;
     } catch (err) {
-      console.warn('API indisponível, usando questões reais do ENEM:', err);
-      
-      // Usar questões reais compiladas de fontes oficiais
-      const questoesReais = obterQuestoesPorFiltro(
-        params.year,
-        params.discipline,
-        params.limit || 45
-      );
-      
-      // Converter para formato da API
-      const questoesConvertidas = questoesReais.map(questao => 
-        converterParaFormatoAPI(questao)
-      );
-      
-      setQuestoes(questoesConvertidas);
-      setCache(cacheKey, questoesConvertidas);
-      setError(null); // Não mostrar erro quando usar dados reais
-      
-      return questoesConvertidas;
+      console.error('Erro ao buscar questões:', err);
+      if (ENABLE_MOCK_FALLBACK) {
+        const fallback = gerarQuestoesMock(
+          params.year || 2023,
+          params.discipline,
+          params.limit || 20
+        );
+        setQuestoes(fallback);
+        setCache(cacheKey, fallback);
+        setError(null);
+        return fallback;
+      } else {
+        setQuestoes([]);
+        setCache(cacheKey, []);
+        setError('Erro na API e fallback desativado.');
+        return [];
+      }
     } finally {
       setLoading(false);
     }
@@ -257,63 +326,46 @@ export const useEnemAPI = (): UseEnemAPIReturn => {
 
     try {
       if (tipo === 'completo') {
-        // Simulado completo: usar questões reais compiladas
-        const questoesReais = gerarSimuladoCompleto(ano);
-        
-        if (questoesReais.length === 0) {
-          throw new Error('Nenhuma questão encontrada para simulado completo');
-        }
-        
-        questoesTotais = questoesReais.map(questao => 
-          converterParaFormatoAPI(questao)
-        );
+        // Simulado completo: 45 questões de cada disciplina
+        const disciplinas = ['matematica', 'ciencias-natureza', 'ciencias-humanas', 'linguagens'];
         tempoLimite = 330; // 5h30min
         totalQuestoes = 180;
-      } else if (tipo === 'por_disciplina' && disciplina) {
-        // Simulado por disciplina específica: usar questões reais
-        const questoesReais = obterQuestoesPorFiltro(ano, disciplina, 45);
-        
-        if (questoesReais.length === 0) {
-          throw new Error(`Nenhuma questão encontrada para disciplina ${disciplina}`);
+
+        for (const disc of disciplinas) {
+          const questoesDisciplina = await buscarQuestoes({
+            year: ano,
+            discipline: disc,
+            limit: 45
+          });
+          questoesTotais.push(...questoesDisciplina.slice(0, 45));
         }
-        
-        questoesTotais = questoesReais.map(questao => 
-          converterParaFormatoAPI(questao)
-        );
+      } else if (tipo === 'por_disciplina' && disciplina) {
+        // Simulado por disciplina específica
         tempoLimite = 90; // 1h30min
         totalQuestoes = 45;
+        
+        questoesTotais = await buscarQuestoes({
+          year: ano,
+          discipline: disciplina,
+          limit: 45
+        });
       } else if (tipo === 'personalizado') {
         // Simulado personalizado
         const limiteQuestoes = limite || 20;
-        const questoesReais = obterQuestoesPorFiltro(
-          ano, 
-          disciplina, 
-          limiteQuestoes
-        );
-        
-        if (questoesReais.length === 0) {
-          throw new Error('Nenhuma questão encontrada para simulado personalizado');
-        }
-        
-        questoesTotais = questoesReais.map(questao => 
-          converterParaFormatoAPI(questao)
-        );
         tempoLimite = Math.ceil(limiteQuestoes * 2.5); // ~2.5min por questão
         totalQuestoes = limiteQuestoes;
-      }
-
-      if (questoesTotais.length === 0) {
-        throw new Error('Erro interno: questões não foram convertidas corretamente');
+        
+        questoesTotais = await buscarQuestoes({
+          year: ano,
+          discipline: disciplina,
+          limit: limiteQuestoes
+        });
       }
 
       // Embaralhar questões
       const questoesEmbaralhadas = questoesTotais
         .sort(() => Math.random() - 0.5)
         .slice(0, totalQuestoes);
-
-      if (questoesEmbaralhadas.length === 0) {
-        throw new Error('Erro interno: falha no embaralhamento das questões');
-      }
 
       const simulado: SimuladoEnem = {
         id: `simulado_${ano}_${tipo}_${Date.now()}`,
@@ -327,18 +379,13 @@ export const useEnemAPI = (): UseEnemAPIReturn => {
         tipo,
         totalQuestoes: questoesEmbaralhadas.length
       };
-      
-      // Verificação final
-      if (!simulado.questoes || simulado.questoes.length === 0) {
-        throw new Error('Erro crítico: simulado criado sem questões');
-      }
-      
+
       return simulado;
     } catch (err) {
-      console.error('Erro detalhado ao gerar simulado:', err);
-      throw new Error(`Falha ao gerar simulado: ${err instanceof Error ? err.message : 'Erro desconhecido'}`);
+      console.error('Erro ao gerar simulado:', err);
+      throw new Error('Falha ao gerar simulado');
     }
-  }, []);
+  }, [buscarQuestoes]);
 
   const listarAnos = useCallback(async (): Promise<number[]> => {
     const cacheKey = 'anos_disponiveis';
@@ -351,16 +398,17 @@ export const useEnemAPI = (): UseEnemAPIReturn => {
       if (!response.ok) throw new Error('Erro ao buscar anos');
       
       const data = await response.json();
-      const anos = data.map((exam: any) => exam.year).sort((a: number, b: number) => b - a);
+      const anos = data
+        .map((exam: any) => exam.year)
+        .filter((y: number) => y >= 2013 && y <= 2023)
+        .sort((a: number, b: number) => b - a);
       
       setCache(cacheKey, anos);
       return anos;
     } catch (err) {
-      console.warn('API indisponível para anos, usando fallback:', err);
+      console.error('Erro ao listar anos:', err);
       // Fallback para anos conhecidos
-      const anosFallback = [2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009];
-      setCache(cacheKey, anosFallback);
-      return anosFallback;
+      return [2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013];
     }
   }, []);
 

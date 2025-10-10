@@ -4,6 +4,7 @@ import { ArrowLeft, Brain, Zap, Eye, Target, Lightbulb, Clock, FileText } from "
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import FreemiumBlocker from "@/components/freemium/FreemiumBlocker";
 import { FundacaoNeural } from "@/components/learning/sections/FundacaoNeural";
 import { TecnicaFeynman } from "@/components/learning/sections/TecnicaFeynman";
 import { DualCodingSystem } from "@/components/learning/sections/DualCodingSystem";
@@ -155,6 +156,7 @@ const AprendizagemAcelerada = () => {
 
           {/* Section Contents */}
           <TabsContent value="fundacao">
+            <FreemiumBlocker>
             {/* PDF Section */}
             <Card className="mb-6 border-primary/20">
               <CardHeader>
@@ -186,30 +188,43 @@ const AprendizagemAcelerada = () => {
             </Card>
             
             <FundacaoNeural />
+            </FreemiumBlocker>
           </TabsContent>
 
           <TabsContent value="feynman">
-            <TecnicaFeynman />
+            <FreemiumBlocker>
+              <TecnicaFeynman />
+            </FreemiumBlocker>
           </TabsContent>
 
           <TabsContent value="dual-coding">
-            <DualCodingSystem />
+            <FreemiumBlocker>
+              <DualCodingSystem />
+            </FreemiumBlocker>
           </TabsContent>
 
           <TabsContent value="testing">
-            <TestingEffect />
+            <FreemiumBlocker>
+              <TestingEffect />
+            </FreemiumBlocker>
           </TabsContent>
 
           <TabsContent value="generation">
-            <GenerationEffect />
+            <FreemiumBlocker>
+              <GenerationEffect />
+            </FreemiumBlocker>
           </TabsContent>
 
           <TabsContent value="protocolo">
-            <Protocolo6010 onSessionComplete={loadStats} />
+            <FreemiumBlocker>
+              <Protocolo6010 onSessionComplete={loadStats} />
+            </FreemiumBlocker>
           </TabsContent>
 
           <TabsContent value="progresso">
-            <MeuProgresso />
+            <FreemiumBlocker>
+              <MeuProgresso />
+            </FreemiumBlocker>
           </TabsContent>
         </Tabs>
       </div>

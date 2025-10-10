@@ -94,6 +94,11 @@ const Index = () => {
                   Começar Agora Grátis
                 </Button>
               </Link>
+              <Link to="/tab/flashcards">
+                <Button variant="outline" className="w-full rounded-2xl border-primary/30 text-foreground hover:border-primary sm:w-auto">
+                  Acessar Flashcards Grátis
+                </Button>
+              </Link>
               <Link to="/pricing">
                 <Button variant="outline" className="w-full rounded-2xl border-primary/30 text-foreground hover:border-primary sm:w-auto">
                   Ver Planos Premium

@@ -13,6 +13,9 @@ export interface FreemiumLimits {
   canAccessContent: (contentType: string) => boolean;
   incrementQuestions: () => Promise<void>;
   updateStudyTime: (hours: number) => Promise<void>;
+  simuladosRealizados: number;
+  simuladosLimite: number;
+  incrementarSimulados: () => Promise<void>;
 }
 
 export const useFreemiumLimits = (): FreemiumLimits => {
@@ -21,16 +24,19 @@ export const useFreemiumLimits = (): FreemiumLimits => {
   const [dailyQuestionsUsed, setDailyQuestionsUsed] = useState(0);
   const [studyHoursToday, setStudyHoursToday] = useState(0);
   const [currentStreak, setCurrentStreak] = useState(0);
+  const [simuladosRealizados, setSimuladosRealizados] = useState(0);
 
   const FREE_LIMITS = {
     dailyQuestions: 5,
     maxStreak: 7,
-    maxStudyHours: 3
+    maxStudyHours: 3,
+    simulados: 3
   };
 
   useEffect(() => {
     checkUserAccess();
     loadDailyUsage();
+    loadSimuladosUsage();
   }, []);
 
   const checkUserAccess = async () => {
@@ -90,6 +96,21 @@ export const useFreemiumLimits = (): FreemiumLimits => {
       }
     } catch (error) {
       console.error("Erro ao carregar uso diário:", error);
+    }
+  };
+
+  const getSimuladosKey = () => {
+    const today = new Date().toISOString().split('T')[0];
+    return `simulados_${today}`;
+  };
+
+  const loadSimuladosUsage = () => {
+    try {
+      const key = getSimuladosKey();
+      const raw = localStorage.getItem(key);
+      setSimuladosRealizados(raw ? parseInt(raw) || 0 : 0);
+    } catch {
+      setSimuladosRealizados(0);
     }
   };
 
@@ -163,6 +184,21 @@ export const useFreemiumLimits = (): FreemiumLimits => {
     return freeContent.includes(contentType);
   };
 
+  const incrementarSimulados = async () => {
+    try {
+      const key = getSimuladosKey();
+      const novoTotal = simuladosRealizados + 1;
+      localStorage.setItem(key, String(novoTotal));
+      setSimuladosRealizados(novoTotal);
+    } catch (error: any) {
+      toast({
+        title: "Erro ao registrar simulado",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   return {
     isPremium,
     dailyQuestionsLimit: isPremium ? Infinity : FREE_LIMITS.dailyQuestions,
@@ -173,6 +209,9 @@ export const useFreemiumLimits = (): FreemiumLimits => {
     studyHoursToday,
     canAccessContent,
     incrementQuestions,
-    updateStudyTime
+    updateStudyTime,
+    simuladosRealizados,
+    simuladosLimite: isPremium ? Infinity : FREE_LIMITS.simulados,
+    incrementarSimulados
   };
 };

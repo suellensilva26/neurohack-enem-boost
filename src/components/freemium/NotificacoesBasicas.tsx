@@ -5,6 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Bell, Clock, Target, Brain, CheckSquare, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { safeNotify, requestNotificationPermission } from "@/lib/notifications";
 
 interface Notificacao {
   id: string;
@@ -75,28 +76,20 @@ export const NotificacoesBasicas = () => {
   }, []);
 
   const solicitarPermissao = async () => {
-    if ("Notification" in window) {
-      const permission = await Notification.requestPermission();
-      setPermissaoNotificacao(permission);
-      
-      if (permission === "granted") {
-        toast({
-          title: "Permissão concedida! 🔔",
-          description: "Você receberá notificações de estudo.",
-        });
-        
-        // Enviar notificação de teste
-        new Notification("ENEM 30x Boost", {
-          body: "Notificações ativadas! Continue seus estudos.",
-          icon: "/favicon.ico"
-        });
-      } else {
-        toast({
-          title: "Permissão negada",
-          description: "Você pode ativar as notificações manualmente nas configurações do navegador.",
-          variant: "destructive",
-        });
+    const permission = await requestNotificationPermission();
+    setPermissaoNotificacao(permission);
+    if (permission === "granted") {
+      toast({ title: "Permissão concedida! 🔔", description: "Você receberá notificações de estudo." });
+      const res = safeNotify("ENEM 30x Boost", { body: "Notificações ativadas! Continue seus estudos.", icon: "/favicon.ico" });
+      if (!res.ok) {
+        const reason = res.reason === "insecure_context" ?
+          "Contexto não seguro (http). Use https ou localhost." :
+          res.reason === "unsupported" ? "Navegador não suporta Notifications." :
+          "Falha ao enviar notificação de teste.";
+        toast({ title: "Aviso", description: reason, variant: "destructive" });
       }
+    } else {
+      toast({ title: "Permissão negada", description: "Ative nas configurações do navegador.", variant: "destructive" });
     }
   };
 
@@ -113,22 +106,19 @@ export const NotificacoesBasicas = () => {
   };
 
   const testarNotificacao = (notif: Notificacao) => {
-    if ("Notification" in window && Notification.permission === "granted") {
-      new Notification(notif.titulo, {
-        body: notif.descricao,
-        icon: "/favicon.ico"
-      });
-      
-      toast({
-        title: "Notificação enviada!",
-        description: `"${notif.titulo}" foi enviada como teste.`,
-      });
+    const res = safeNotify(notif.titulo, { body: notif.descricao, icon: "/favicon.ico" });
+    if (res.ok) {
+      toast({ title: "Notificação enviada!", description: `"${notif.titulo}" foi enviada como teste.` });
     } else {
-      toast({
-        title: "Permissão necessária",
-        description: "Ative as notificações primeiro para testar.",
-        variant: "destructive",
-      });
+      if (res.reason === "default") {
+        toast({ title: "Permissão necessária", description: "Ative as notificações primeiro para testar.", variant: "destructive" });
+      } else if (res.reason === "insecure_context") {
+        toast({ title: "Contexto não seguro", description: "Use https ou localhost para testar notificações.", variant: "destructive" });
+      } else if (res.reason === "unsupported") {
+        toast({ title: "Não suportado", description: "Seu navegador não suporta Notifications.", variant: "destructive" });
+      } else {
+        toast({ title: "Falha ao enviar", description: "Não foi possível enviar a notificação.", variant: "destructive" });
+      }
     }
   };
 

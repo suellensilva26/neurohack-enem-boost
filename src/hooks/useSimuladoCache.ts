@@ -1,14 +1,10 @@
-import { useState, useCallback, useEffect } from 'react';
-import { SimuladoEnem, QuestaoEnem } from './useEnemAPI';
+import { useCallback } from 'react';
+import { SimuladoEnem } from '@/hooks/useEnemAPI';
 
-export interface SimuladoProgresso {
-  simuladoId: string;
+export interface ProgressoSimulado {
   questaoAtual: number;
-  respostas: (number | null)[];
-  tempoRestante: number;
-  iniciado: string;
-  pausado?: string;
-  finalizado?: string;
+  tempoRestante: number; // em minutos
+  finalizado: boolean;
 }
 
 export interface ResultadoSimulado {
@@ -17,211 +13,106 @@ export interface ResultadoSimulado {
   titulo: string;
   ano: number;
   disciplina?: string;
-  nota: number;
+  totalQuestoes: number;
   acertos: number;
-  total: number;
-  tempoGasto: number; // em segundos
-  tempoTotal: number; // em segundos
-  dataRealizacao: string;
-  respostas: (number | null)[];
-  questoes: QuestaoEnem[];
-  desempenhoPorDisciplina: {
-    [disciplina: string]: {
-      acertos: number;
-      total: number;
-      percentual: number;
-    };
-  };
+  erros: number;
+  porcentagem: number; // 0-100
+  tempoGastoMinutos: number;
+  data: string; // ISO string
 }
 
-interface UseSimuladoCacheReturn {
-  salvarProgresso: (progresso: SimuladoProgresso) => void;
-  carregarProgresso: (simuladoId: string) => SimuladoProgresso | null;
-  removerProgresso: (simuladoId: string) => void;
-  salvarResultado: (resultado: ResultadoSimulado) => void;
-  carregarHistorico: () => ResultadoSimulado[];
-  carregarResultado: (resultadoId: string) => ResultadoSimulado | null;
-  limparCache: () => void;
-  obterEstatisticas: () => {
-    totalSimulados: number;
-    mediaGeral: number;
-    melhorNota: number;
-    tempoMedioGasto: number;
-    disciplinaForte: string;
-    disciplinaFraca: string;
-  };
-}
+const HISTORICO_KEY = 'simulado_historico';
+const PROGRESSO_PREFIX = 'simulado_progresso_';
 
-const STORAGE_KEYS = {
-  PROGRESSO: 'simulado_progresso_',
-  RESULTADO: 'simulado_resultado_',
-  HISTORICO: 'simulados_historico',
-  CACHE_QUESTOES: 'simulado_cache_questoes_'
-};
-
-export const useSimuladoCache = (): UseSimuladoCacheReturn => {
-  const [historico, setHistorico] = useState<ResultadoSimulado[]>([]);
-
-  useEffect(() => {
-    // Carregar histórico ao inicializar
-    const historicoSalvo = carregarHistorico();
-    setHistorico(historicoSalvo);
-  }, []);
-
-  const salvarProgresso = useCallback((progresso: SimuladoProgresso) => {
+export const useSimuladoCache = () => {
+  const carregarHistorico = useCallback((): ResultadoSimulado[] => {
     try {
-      const key = STORAGE_KEYS.PROGRESSO + progresso.simuladoId;
-      localStorage.setItem(key, JSON.stringify(progresso));
-    } catch (error) {
-      console.error('Erro ao salvar progresso:', error);
-    }
-  }, []);
-
-  const carregarProgresso = useCallback((simuladoId: string): SimuladoProgresso | null => {
-    try {
-      const key = STORAGE_KEYS.PROGRESSO + simuladoId;
-      const progressoSalvo = localStorage.getItem(key);
-      return progressoSalvo ? JSON.parse(progressoSalvo) : null;
-    } catch (error) {
-      console.error('Erro ao carregar progresso:', error);
-      return null;
-    }
-  }, []);
-
-  const removerProgresso = useCallback((simuladoId: string) => {
-    try {
-      const key = STORAGE_KEYS.PROGRESSO + simuladoId;
-      localStorage.removeItem(key);
-    } catch (error) {
-      console.error('Erro ao remover progresso:', error);
+      const raw = localStorage.getItem(HISTORICO_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
     }
   }, []);
 
   const salvarResultado = useCallback((resultado: ResultadoSimulado) => {
     try {
-      // Salvar resultado individual
-      const keyResultado = STORAGE_KEYS.RESULTADO + resultado.id;
-      localStorage.setItem(keyResultado, JSON.stringify(resultado));
-
-      // Atualizar histórico
-      const historicoAtual = carregarHistorico();
-      const novoHistorico = [resultado, ...historicoAtual]
-        .sort((a, b) => new Date(b.dataRealizacao).getTime() - new Date(a.dataRealizacao).getTime())
-        .slice(0, 50); // Manter apenas os últimos 50 resultados
-
-      localStorage.setItem(STORAGE_KEYS.HISTORICO, JSON.stringify(novoHistorico));
-      setHistorico(novoHistorico);
-
-      // Remover progresso após finalizar
-      removerProgresso(resultado.simuladoId);
-    } catch (error) {
-      console.error('Erro ao salvar resultado:', error);
+      const historico = carregarHistorico();
+      const atualizado = [resultado, ...historico].slice(0, 100); // limitar
+      localStorage.setItem(HISTORICO_KEY, JSON.stringify(atualizado));
+      // Remover progresso do simulado finalizado
+      localStorage.removeItem(`${PROGRESSO_PREFIX}${resultado.simuladoId}`);
+    } catch {
+      // noop
     }
-  }, [removerProgresso]);
+  }, [carregarHistorico]);
 
-  const carregarHistorico = useCallback((): ResultadoSimulado[] => {
+  const carregarProgresso = useCallback((simuladoId: string): ProgressoSimulado | null => {
     try {
-      const historicoSalvo = localStorage.getItem(STORAGE_KEYS.HISTORICO);
-      return historicoSalvo ? JSON.parse(historicoSalvo) : [];
-    } catch (error) {
-      console.error('Erro ao carregar histórico:', error);
-      return [];
-    }
-  }, []);
-
-  const carregarResultado = useCallback((resultadoId: string): ResultadoSimulado | null => {
-    try {
-      const key = STORAGE_KEYS.RESULTADO + resultadoId;
-      const resultadoSalvo = localStorage.getItem(key);
-      return resultadoSalvo ? JSON.parse(resultadoSalvo) : null;
-    } catch (error) {
-      console.error('Erro ao carregar resultado:', error);
+      const raw = localStorage.getItem(`${PROGRESSO_PREFIX}${simuladoId}`);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
       return null;
     }
   }, []);
 
-  const limparCache = useCallback(() => {
+  const salvarProgresso = useCallback((simuladoId: string, progresso: ProgressoSimulado) => {
     try {
-      // Remover todos os dados relacionados a simulados
-      const keys = Object.keys(localStorage);
-      keys.forEach(key => {
-        if (key.startsWith('simulado_')) {
-          localStorage.removeItem(key);
-        }
-      });
-      setHistorico([]);
-    } catch (error) {
-      console.error('Erro ao limpar cache:', error);
+      localStorage.setItem(`${PROGRESSO_PREFIX}${simuladoId}`, JSON.stringify(progresso));
+    } catch {
+      // noop
     }
   }, []);
 
   const obterEstatisticas = useCallback(() => {
-    const historicoAtual = historico.length > 0 ? historico : carregarHistorico();
-    
-    if (historicoAtual.length === 0) {
-      return {
-        totalSimulados: 0,
-        mediaGeral: 0,
-        melhorNota: 0,
-        tempoMedioGasto: 0,
-        disciplinaForte: 'N/A',
-        disciplinaFraca: 'N/A'
-      };
-    }
+    const historico = carregarHistorico();
+    const totalSimulados = historico.length;
+    const mediaGeral = totalSimulados
+      ? Math.round(
+          historico.reduce((acc, h) => acc + h.porcentagem, 0) / totalSimulados
+        )
+      : 0;
+    const melhorNota = historico.reduce((max, h) => Math.max(max, h.porcentagem), 0);
+    const tempoMedioGasto = totalSimulados
+      ? Math.round(
+          historico.reduce((acc, h) => acc + h.tempoGastoMinutos, 0) / totalSimulados
+        )
+      : 0;
 
-    const totalSimulados = historicoAtual.length;
-    const mediaGeral = historicoAtual.reduce((acc, r) => acc + r.nota, 0) / totalSimulados;
-    const melhorNota = Math.max(...historicoAtual.map(r => r.nota));
-    const tempoMedioGasto = historicoAtual.reduce((acc, r) => acc + r.tempoGasto, 0) / totalSimulados;
-
-    // Calcular desempenho por disciplina
-    const desempenhoDisciplinas: { [key: string]: { acertos: number; total: number } } = {};
-    
-    historicoAtual.forEach(resultado => {
-      Object.entries(resultado.desempenhoPorDisciplina).forEach(([disciplina, dados]) => {
-        if (!desempenhoDisciplinas[disciplina]) {
-          desempenhoDisciplinas[disciplina] = { acertos: 0, total: 0 };
-        }
-        desempenhoDisciplinas[disciplina].acertos += dados.acertos;
-        desempenhoDisciplinas[disciplina].total += dados.total;
-      });
+    // Disciplinas forte/fraca (baseado em média)
+    const porDisciplina: Record<string, { soma: number; count: number }> = {};
+    historico.forEach((h) => {
+      const key = h.disciplina || 'geral';
+      porDisciplina[key] = porDisciplina[key] || { soma: 0, count: 0 };
+      porDisciplina[key].soma += h.porcentagem;
+      porDisciplina[key].count += 1;
     });
-
     let disciplinaForte = 'N/A';
     let disciplinaFraca = 'N/A';
-    let melhorPercentual = 0;
-    let piorPercentual = 100;
-
-    Object.entries(desempenhoDisciplinas).forEach(([disciplina, dados]) => {
-      const percentual = (dados.acertos / dados.total) * 100;
-      if (percentual > melhorPercentual) {
-        melhorPercentual = percentual;
-        disciplinaForte = disciplina;
-      }
-      if (percentual < piorPercentual) {
-        piorPercentual = percentual;
-        disciplinaFraca = disciplina;
-      }
-    });
+    const entries = Object.entries(porDisciplina);
+    if (entries.length) {
+      const medias = entries.map(([d, v]) => [d, v.soma / v.count] as const);
+      medias.sort((a, b) => b[1] - a[1]);
+      disciplinaForte = medias[0][0];
+      disciplinaFraca = medias[medias.length - 1][0];
+    }
 
     return {
       totalSimulados,
-      mediaGeral: Math.round(mediaGeral),
-      melhorNota: Math.round(melhorNota),
-      tempoMedioGasto: Math.round(tempoMedioGasto / 60), // em minutos
+      mediaGeral,
+      melhorNota,
+      tempoMedioGasto,
       disciplinaForte,
-      disciplinaFraca
+      disciplinaFraca,
     };
-  }, [historico]);
+  }, [carregarHistorico]);
 
   return {
-    salvarProgresso,
-    carregarProgresso,
-    removerProgresso,
-    salvarResultado,
     carregarHistorico,
-    carregarResultado,
-    limparCache,
-    obterEstatisticas
+    salvarResultado,
+    carregarProgresso,
+    salvarProgresso,
+    obterEstatisticas,
   };
 };

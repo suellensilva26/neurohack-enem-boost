@@ -7,6 +7,13 @@ export interface Flashcard {
   explanation?: string;
   imageUrl?: string;
   category: string;
+  // Campos adicionais para compatibilidade com especificação ENEM 30 Dias
+  discipline?: string; // disciplina
+  block?: string; // bloco
+  topic?: string; // topico
+  hint?: string; // dica
+  formula?: string; // formula/exemplo
+  tags?: string[]; // tags
 }
 
 export interface Subject {
@@ -35,7 +42,8 @@ export const subjects: Subject[] = [
   { id: 'tecnologia', name: 'Tecnologia', icon: '💻', color: 'bg-slate-500', totalCards: 20, completedCards: 0 }
 ];
 
-export const flashcardsData: Flashcard[] = [
+// Base mínima embutida (fallback) usada se não houver dataset externo
+export let flashcardsData: Flashcard[] = [
   // Matemática
   {
     id: 'math-1',
@@ -239,6 +247,50 @@ export const flashcardsData: Flashcard[] = [
 // Função para obter flashcards por matéria
 export const getFlashcardsBySubject = (subjectId: string): Flashcard[] => {
   return flashcardsData.filter(card => card.subject === subjectId);
+};
+
+// Loader de dataset JSON em `public/data/flashcards.json`
+// Estrutura esperada: Array de objetos compatíveis com `Flashcard`
+export const loadFlashcardsDataset = async (): Promise<void> => {
+  try {
+    const res = await fetch('/data/flashcards.json', { cache: 'no-store' });
+    if (!res.ok) return; // Mantém fallback se arquivo não existir
+    const data = await res.json();
+    if (Array.isArray(data)) {
+      // Normaliza campos possíveis vindos do documento
+      flashcardsData = data.map((raw: any, idx: number) => {
+        const subject = raw.subject || raw.discipline || raw.materia || raw.area || 'matematica';
+        return {
+          id: String(raw.id || raw.uid || `fc-${subject}-${idx}`),
+          question: String(raw.question || raw.pergunta || raw.q || ''),
+          answer: String(raw.answer || raw.resposta || raw.a || ''),
+          subject: String(subject).toLowerCase().replace(/\s+/g, '-'),
+          difficulty: (raw.difficulty || raw.dificuldade || 'medium') as 'easy' | 'medium' | 'hard',
+          explanation: raw.explanation || raw.explicacao || raw.details || undefined,
+          imageUrl: raw.imageUrl || raw.imagem || undefined,
+          category: raw.category || raw.categoria || 'Geral',
+          discipline: raw.discipline || undefined,
+          block: raw.block || raw.bloco || undefined,
+          topic: raw.topic || raw.topico || undefined,
+          hint: raw.hint || raw.dica || undefined,
+          formula: raw.formula || undefined,
+          tags: raw.tags || undefined,
+        } as Flashcard;
+      });
+
+      // Atualiza contagem por matéria
+      const counts: Record<string, number> = {};
+      flashcardsData.forEach(fc => {
+        counts[fc.subject] = (counts[fc.subject] || 0) + 1;
+      });
+      subjects.forEach(s => {
+        s.totalCards = counts[s.id] || 0;
+      });
+    }
+  } catch (e) {
+    // Silencia erros para não quebrar a UI
+    console.warn('Falha ao carregar dataset de flashcards:', e);
+  }
 };
 
 // Função para obter flashcards por dificuldade

@@ -13,7 +13,6 @@ import {
 import { useEnemAPI, SimuladoEnem } from '@/hooks/useEnemAPI';
 import { useSimuladoCache, ResultadoSimulado } from '@/hooks/useSimuladoCache';
 import { useFreemiumLimits } from '@/hooks/useFreemiumLimits';
-import { useToast } from '@/hooks/use-toast';
 import { SimuladoInterface } from './SimuladoInterface';
 import { HistoricoSimulados } from './HistoricoSimulados';
 import { PremiumModal } from './PremiumModal';
@@ -84,8 +83,6 @@ export const SimuladosEnem = () => {
     incrementarSimulados 
   } = useFreemiumLimits();
 
-  const { toast } = useToast();
-
   const [anos, setAnos] = useState<number[]>([]);
   const [historico, setHistorico] = useState<ResultadoSimulado[]>([]);
   const [estatisticas, setEstatisticas] = useState({
@@ -152,31 +149,15 @@ export const SimuladosEnem = () => {
         tipo: tipoSelecionado as 'completo' | 'por_disciplina' | 'personalizado'
       });
 
-      console.log('Simulado gerado:', simulado); // Debug
-
-      if (!simulado || !simulado.questoes || simulado.questoes.length === 0) {
+      if (simulado.questoes.length === 0) {
         throw new Error('Nenhuma questão encontrada para os parâmetros selecionados');
       }
 
       setSimuladoAtivo(simulado);
       incrementarSimulados();
-      
-      toast({
-        title: "Simulado iniciado!",
-        description: `${simulado.questoes.length} questões carregadas com sucesso.`,
-      });
     } catch (error) {
-      console.error('Erro completo ao iniciar simulado:', error);
-      console.error('Tipo do erro:', typeof error);
-      console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
-      
-      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-      
-      toast({
-        title: "Erro ao iniciar simulado",
-        description: `Detalhes: ${errorMessage}`,
-        variant: "destructive",
-      });
+      console.error('Erro ao iniciar simulado:', error);
+      // Mostrar toast de erro
     } finally {
       setLoading(false);
     }
@@ -356,18 +337,16 @@ export const SimuladosEnem = () => {
             </Button>
           </div>
 
-          {/* Informação sobre questões reais */}
-          <Card className="border-green/20 bg-green/5">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 text-green-600">
-                <CheckCircle className="h-5 w-5" />
-                <span className="text-sm">
-                  <strong>✅ QUESTÕES OFICIAIS ENEM:</strong> Sistema integrado com questões reais dos anos 
-                  2022, 2023 e 2024, compiladas de fontes oficiais com gabaritos corretos.
-                </span>
-              </div>
-            </CardContent>
-          </Card>
+          {apiError && (
+            <Card className="border-destructive/20 bg-destructive/5">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 text-destructive">
+                  <XCircle className="h-5 w-5" />
+                  <span>Erro: {apiError}</span>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         {/* Tab: Histórico */}

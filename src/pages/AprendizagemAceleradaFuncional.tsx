@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import FreemiumBlocker from "@/components/freemium/FreemiumBlocker";
 
 const TECNICAS_APRENDIZAGEM = [
   {
@@ -469,19 +470,27 @@ export default function AprendizagemAceleradaFuncional() {
             </TabsList>
 
             <TabsContent value="modulos" className="mt-6">
-              {renderModulos()}
+              <FreemiumBlocker>
+                {renderModulos()}
+              </FreemiumBlocker>
             </TabsContent>
 
             <TabsContent value="tecnicas" className="mt-6">
-              {renderTecnicas()}
+              <FreemiumBlocker>
+                {renderTecnicas()}
+              </FreemiumBlocker>
             </TabsContent>
 
             <TabsContent value="pratico" className="mt-6">
-              {renderPratico()}
+              <FreemiumBlocker>
+                {renderPratico()}
+              </FreemiumBlocker>
             </TabsContent>
 
             <TabsContent value="estatisticas" className="mt-6">
-              {renderEstatisticas()}
+              <FreemiumBlocker>
+                {renderEstatisticas()}
+              </FreemiumBlocker>
             </TabsContent>
           </Tabs>
         </div>

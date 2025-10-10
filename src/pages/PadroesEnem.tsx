@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Calculator, BookOpen, Atom, Globe, TrendingUp, FileText } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import FreemiumBlocker from "@/components/freemium/FreemiumBlocker";
 import { supabase } from "@/integrations/supabase/client";
 import { PadroesMatematica } from "@/components/padroes/PadroesMatematica";
 import { PadroesPortugues } from "@/components/padroes/PadroesPortugues";
@@ -141,6 +142,7 @@ const PadroesEnem = () => {
 
           {/* Section Contents */}
           <TabsContent value="matematica">
+            <FreemiumBlocker>
             {/* PDF Section */}
             <Card className="mb-6 border-primary/20">
               <CardHeader>
@@ -172,22 +174,31 @@ const PadroesEnem = () => {
             </Card>
             
             <PadroesMatematica onUpdate={loadStats} />
+            </FreemiumBlocker>
           </TabsContent>
 
           <TabsContent value="portugues">
-            <PadroesPortugues onUpdate={loadStats} />
+            <FreemiumBlocker>
+              <PadroesPortugues onUpdate={loadStats} />
+            </FreemiumBlocker>
           </TabsContent>
 
           <TabsContent value="ciencias">
-            <PadroesCiencias onUpdate={loadStats} />
+            <FreemiumBlocker>
+              <PadroesCiencias onUpdate={loadStats} />
+            </FreemiumBlocker>
           </TabsContent>
 
           <TabsContent value="humanas">
-            <PadroesHumanas onUpdate={loadStats} />
+            <FreemiumBlocker>
+              <PadroesHumanas onUpdate={loadStats} />
+            </FreemiumBlocker>
           </TabsContent>
 
           <TabsContent value="progresso">
-            <MeuProgressoPadroes />
+            <FreemiumBlocker>
+              <MeuProgressoPadroes />
+            </FreemiumBlocker>
           </TabsContent>
         </Tabs>
       </div>

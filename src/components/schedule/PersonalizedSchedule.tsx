@@ -6,9 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { 
   Calendar, Clock, Target, Brain, BookOpen, CheckCircle,
-  TrendingUp, Zap, Star, AlertTriangle, Trophy, Users
+  TrendingUp, Zap, Star, AlertTriangle, Trophy, Users, Settings
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { ScheduleQuestionnaire, QuestionnaireData } from "./ScheduleQuestionnaire";
+import { ScheduleGenerator, GeneratedSchedule } from "./ScheduleGenerator";
 
 interface StudyDay {
   day: number;
@@ -71,139 +73,114 @@ const topicsBySubject = {
 };
 
 export const PersonalizedSchedule = () => {
-  const [scheduleData, setScheduleData] = useState<ScheduleData | null>(null);
+  const [scheduleData, setScheduleData] = useState<GeneratedSchedule | null>(null);
   const [selectedWeek, setSelectedWeek] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [hasCompletedQuestionnaire, setHasCompletedQuestionnaire] = useState(false);
+  const [needsRenewal, setNeedsRenewal] = useState(false);
+  const [nextRenewalDate, setNextRenewalDate] = useState<Date | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    loadPersonalizedSchedule();
+    checkQuestionnaireStatus();
   }, []);
 
-  const loadPersonalizedSchedule = async () => {
+  const checkQuestionnaireStatus = async () => {
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Carregar dados do perfil do usuário
-      const { data: profile } = await supabase
-        .from("profiles")
+      // Verificar se já existe um cronograma personalizado
+      const { data: existingSchedule } = await supabase
+        .from("user_schedules")
         .select("*")
-        .eq("id", user.id)
+        .eq("user_id", user.id)
         .single();
 
-      if (profile) {
-        const schedule = generatePersonalizedSchedule(profile);
-        setScheduleData(schedule);
+      if (existingSchedule && existingSchedule.questionnaire_data) {
+        const questionnaireData = existingSchedule.questionnaire_data as QuestionnaireData;
+        const generatedSchedule = ScheduleGenerator.generateSchedule(questionnaireData);
+        setScheduleData(generatedSchedule);
+
+        // Renovação semanal: próxima renovação em 7 dias após última atualização/criação
+        const lastUpdateStr = (existingSchedule.updated_at || existingSchedule.created_at) as string | undefined;
+        const lastUpdate = lastUpdateStr ? new Date(lastUpdateStr) : new Date();
+        const nextRenew = new Date(lastUpdate.getTime() + 7 * 24 * 60 * 60 * 1000);
+        setNextRenewalDate(nextRenew);
+        const renewalDue = Date.now() >= nextRenew.getTime();
+        setNeedsRenewal(renewalDue);
+
+        if (renewalDue) {
+          setShowQuestionnaire(true);
+          setHasCompletedQuestionnaire(false);
+        } else {
+          setHasCompletedQuestionnaire(true);
+        }
+      } else {
+        setShowQuestionnaire(true);
       }
     } catch (error) {
-      console.error("Erro ao carregar cronograma:", error);
+      console.error("Erro ao verificar questionário:", error);
+      setShowQuestionnaire(true);
     } finally {
       setLoading(false);
     }
   };
 
-  const generatePersonalizedSchedule = (profile: any): ScheduleData => {
-    const totalDays = 30; // ENEM em 30 dias
-    const studyDaysPerWeek = profile.study_days_available || 5;
-    const studyHoursPerDay = 2; // Baseado no perfil
-    const weakSubjects = [profile.main_difficulty || "Matemática"];
-    const strongSubjects = ["Português", "História"]; // Simulado
+  const handleQuestionnaireComplete = async (data: QuestionnaireData) => {
+    setLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-    const studyDays: StudyDay[] = [];
-    
-    for (let day = 1; day <= totalDays; day++) {
-      const date = new Date();
-      date.setDate(date.getDate() + day - 1);
+      // Gerar cronograma personalizado
+      const generatedSchedule = ScheduleGenerator.generateSchedule(data);
       
-      // Pular fins de semana se necessário
-      const dayOfWeek = date.getDay();
-      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-      
-      if (isWeekend && studyDaysPerWeek < 7) {
-        continue;
-      }
+      // Salvar no banco de dados
+      await supabase
+        .from("user_schedules")
+        .upsert({
+          user_id: user.id,
+          questionnaire_data: data,
+          schedule_data: generatedSchedule,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
 
-      const daySubjects = generateDaySubjects(day, weakSubjects, strongSubjects, studyHoursPerDay);
+      setScheduleData(generatedSchedule);
+      setHasCompletedQuestionnaire(true);
+      setShowQuestionnaire(false);
+      setNeedsRenewal(false);
+      const nextRenew = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      setNextRenewalDate(nextRenew);
       
-      studyDays.push({
-        day,
-        date: date.toISOString().split('T')[0],
-        subjects: daySubjects,
-        totalHours: studyHoursPerDay,
-        completed: false,
-        progress: 0
+      toast({
+        title: "Cronograma Personalizado Criado!",
+        description: "Seu plano de estudos foi gerado com base nas suas respostas.",
       });
+    } catch (error) {
+      console.error("Erro ao salvar cronograma:", error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível salvar seu cronograma. Tente novamente.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
-
-    return {
-      totalDays,
-      currentDay: 1,
-      studyDays,
-      weakSubjects,
-      strongSubjects,
-      studyHoursPerDay,
-      studyDaysPerWeek
-    };
   };
 
-  const generateDaySubjects = (day: number, weakSubjects: string[], strongSubjects: string[], totalHours: number) => {
-    const subjectsForDay = [];
-    
-    // Priorizar matérias fracas nos primeiros dias
-    if (day <= 15) {
-      // 60% tempo em matérias fracas, 40% em outras
-      const weakSubject = weakSubjects[0];
-      subjectsForDay.push({
-        name: weakSubject,
-        topics: getRandomTopics(weakSubject, 3),
-        duration: Math.floor(totalHours * 60 * 0.6), // 60% do tempo
-        difficulty: 'hard' as const,
-        priority: 'high' as const
-      });
-      
-      // Adicionar outras matérias
-      const otherSubjects = subjects.filter(s => s.name !== weakSubject);
-      const selectedSubject = otherSubjects[Math.floor(Math.random() * otherSubjects.length)];
-      
-      subjectsForDay.push({
-        name: selectedSubject.name,
-        topics: getRandomTopics(selectedSubject.name, 2),
-        duration: Math.floor(totalHours * 60 * 0.4),
-        difficulty: 'medium' as const,
-        priority: 'medium' as const
-      });
-    } else {
-      // Últimos 15 dias: mais balanceado
-      const subject1 = subjects[Math.floor(Math.random() * subjects.length)];
-      const subject2 = subjects[Math.floor(Math.random() * subjects.length)];
-      
-      subjectsForDay.push(
-        {
-          name: subject1.name,
-          topics: getRandomTopics(subject1.name, 2),
-          duration: Math.floor(totalHours * 60 * 0.5),
-          difficulty: 'medium' as const,
-          priority: 'high' as const
-        },
-        {
-          name: subject2.name,
-          topics: getRandomTopics(subject2.name, 2),
-          duration: Math.floor(totalHours * 60 * 0.5),
-          difficulty: 'medium' as const,
-          priority: 'medium' as const
-        }
-      );
-    }
-
-    return subjectsForDay;
+  const resetQuestionnaire = () => {
+    setShowQuestionnaire(true);
+    setHasCompletedQuestionnaire(false);
+    setScheduleData(null);
   };
 
-  const getRandomTopics = (subjectName: string, count: number): string[] => {
-    const topics = topicsBySubject[subjectName as keyof typeof topicsBySubject] || [];
-    const shuffled = topics.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
+  const formatDateBR = (date?: Date | null) => {
+    if (!date) return "-";
+    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
   };
 
   const markDayCompleted = (dayIndex: number) => {
@@ -219,27 +196,9 @@ export const PersonalizedSchedule = () => {
     });
 
     toast({
-      title: "Dia concluído! 🎉",
-      description: "Parabéns por completar mais um dia de estudos!",
+      title: "Dia concluído!",
+      description: "Parabéns por completar seu cronograma de hoje.",
     });
-  };
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return 'text-green-600 bg-green-50 border-green-200';
-      case 'medium': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'hard': return 'text-red-600 bg-red-50 border-red-200';
-      default: return 'text-gray-600 bg-gray-50';
-    }
-  };
-
-  const getPriorityIcon = (priority: string) => {
-    switch (priority) {
-      case 'high': return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      case 'medium': return <Target className="h-4 w-4 text-yellow-500" />;
-      case 'low': return <CheckCircle className="h-4 w-4 text-green-500" />;
-      default: return <Target className="h-4 w-4" />;
-    }
   };
 
   const formatDuration = (minutes: number) => {
@@ -256,8 +215,31 @@ export const PersonalizedSchedule = () => {
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Gerando seu cronograma personalizado...</p>
+          <p className="text-muted-foreground">
+            {showQuestionnaire ? 'Carregando questionário...' : 'Gerando seu cronograma personalizado...'}
+          </p>
         </div>
+      </div>
+    );
+  }
+
+  // Mostrar questionário se necessário
+  if (showQuestionnaire) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5 text-primary" />
+              Cronograma Personalizado
+            </CardTitle>
+            <p className="text-muted-foreground">
+              Responda algumas perguntas para criarmos um cronograma de estudos personalizado para você.
+            </p>
+          </CardHeader>
+        </Card>
+        
+        <ScheduleQuestionnaire onComplete={handleQuestionnaireComplete} />
       </div>
     );
   }
@@ -265,9 +247,7 @@ export const PersonalizedSchedule = () => {
   if (!scheduleData) {
     return (
       <Card>
-        <CardContent className="p-8 text-center">
-          <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-yellow-500" />
-          <h3 className="text-lg font-semibold mb-2">Cronograma não disponível</h3>
+        <CardContent className="p-6 text-center">
           <p className="text-muted-foreground">
             Complete o onboarding primeiro para gerar seu cronograma personalizado.
           </p>
@@ -282,25 +262,50 @@ export const PersonalizedSchedule = () => {
   const overallProgress = (completedDays / scheduleData.studyDays.length) * 100;
 
   return (
-    <div className="space-y-6">
-      {/* Header com progresso geral */}
-      <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-accent/5">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-xl font-bold">Seu Cronograma de 30 Dias</h2>
-              <p className="text-muted-foreground">
+    <div className="space-y-4 px-4 sm:px-6">
+      {/* Header com progresso e botão de reconfiguração */}
+      <Card>
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div className="flex-1">
+              <h2 className="text-lg sm:text-xl font-bold leading-tight">Seu Cronograma de 30 Dias</h2>
+              <p className="text-sm text-muted-foreground">
                 Personalizado para {scheduleData.studyDaysPerWeek} dias por semana
               </p>
+              {nextRenewalDate && (
+                <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                  Próxima renovação: {formatDateBR(nextRenewalDate)}
+                </p>
+              )}
             </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-primary">{completedDays}/{scheduleData.studyDays.length}</div>
-              <div className="text-sm text-muted-foreground">dias concluídos</div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={resetQuestionnaire}
+                className="flex items-center gap-2 w-full sm:w-auto h-10 touch-manipulation"
+              >
+                <Settings className="h-4 w-4 flex-shrink-0" />
+                <span className="text-sm">Reconfigurar</span>
+              </Button>
+              <Button
+                variant={needsRenewal ? "default" : "outline"}
+                size="sm"
+                onClick={resetQuestionnaire}
+                className="flex items-center gap-2 w-full sm:w-auto h-10 touch-manipulation"
+              >
+                <Calendar className="h-4 w-4 flex-shrink-0" />
+                <span className="text-sm">Renovar Cronograma</span>
+              </Button>
+              <div className="text-center sm:text-right">
+                <div className="text-xl sm:text-2xl font-bold text-primary">{completedDays} / {scheduleData.studyDays.length}</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">dias concluídos</div>
+              </div>
             </div>
           </div>
           
-          <Progress value={overallProgress} className="h-3 mb-2" />
-          <div className="flex justify-between text-sm text-muted-foreground">
+          <Progress value={overallProgress} className="h-2 sm:h-3 mb-2" />
+          <div className="flex justify-between text-xs sm:text-sm text-muted-foreground">
             <span>Progresso geral</span>
             <span>{Math.round(overallProgress)}%</span>
           </div>
@@ -309,18 +314,19 @@ export const PersonalizedSchedule = () => {
 
       {/* Navegação por semanas */}
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
-              Semana {selectedWeek} de {totalWeeks}
+        <CardHeader className="pb-3 sm:pb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
+              <Calendar className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+              <span>Semana {selectedWeek} de {totalWeeks}</span>
             </CardTitle>
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-full sm:w-auto">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setSelectedWeek(Math.max(1, selectedWeek - 1))}
                 disabled={selectedWeek === 1}
+                className="flex-1 sm:flex-none h-9 text-xs sm:text-sm touch-manipulation"
               >
                 Anterior
               </Button>
@@ -329,6 +335,7 @@ export const PersonalizedSchedule = () => {
                 size="sm"
                 onClick={() => setSelectedWeek(Math.min(totalWeeks, selectedWeek + 1))}
                 disabled={selectedWeek === totalWeeks}
+                className="flex-1 sm:flex-none h-9 text-xs sm:text-sm touch-manipulation"
               >
                 Próxima
               </Button>
@@ -338,66 +345,57 @@ export const PersonalizedSchedule = () => {
       </Card>
 
       {/* Dias da semana */}
-      <div className="grid gap-4">
+      <div className="grid gap-3 sm:gap-4">
         {currentWeekDays.map((day, index) => (
           <Card key={day.day} className={`${day.completed ? 'border-green-200 bg-green-50' : 'border-border'}`}>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold ${
-                    day.completed ? 'bg-green-500' : 'bg-primary'
-                  }`}>
-                    {day.completed ? <CheckCircle className="h-4 w-4" /> : day.day}
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">
-                      Dia {day.day} - {new Date(day.date).toLocaleDateString('pt-BR')}
-                    </CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                      {day.totalHours}h de estudo • {day.subjects.length} matérias
-                    </p>
-                  </div>
+            <CardHeader className="pb-3 sm:pb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex-1">
+                  <CardTitle className="text-sm sm:text-base flex items-center gap-2 leading-tight">
+                    <Clock className="h-4 w-4 flex-shrink-0" />
+                    <span>Dia {day.day} - {new Date(day.date).toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'short' })}</span>
+                  </CardTitle>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                    {day.totalHours}h de estudo • {day.subjects.length} matérias
+                  </p>
                 </div>
-                {!day.completed && (
-                  <Button
-                    size="sm"
-                    onClick={() => markDayCompleted((selectedWeek - 1) * 7 + index)}
-                  >
-                    Marcar como Concluído
-                  </Button>
-                )}
-                {day.completed && (
-                  <Badge className="bg-green-500 text-white">
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    Concluído
-                  </Badge>
-                )}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                  {!day.completed && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => markDayCompleted((selectedWeek - 1) * 7 + index)}
+                      className="w-full sm:w-auto h-9 text-xs sm:text-sm touch-manipulation"
+                    >
+                      Marcar como Concluído
+                    </Button>
+                  )}
+                  {day.completed && (
+                    <Badge className="bg-green-500 text-white text-xs sm:text-sm">
+                      <CheckCircle className="h-3 w-3 mr-1 flex-shrink-0" />
+                      Concluído
+                    </Badge>
+                  )}
+                </div>
               </div>
             </CardHeader>
-            
-            <CardContent>
+            <CardContent className="pt-0">
               <div className="space-y-3">
                 {day.subjects.map((subject, subjectIndex) => (
-                  <div key={subjectIndex} className="p-3 border rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">
-                          {subjects.find(s => s.name === subject.name)?.icon || '📚'}
-                        </span>
-                        <h4 className="font-medium">{subject.name}</h4>
-                        {getPriorityIcon(subject.priority)}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge className={`text-xs ${getDifficultyColor(subject.difficulty)}`}>
-                          {subject.difficulty}
+                  <div key={subjectIndex} className="p-3 sm:p-4 rounded-lg border bg-card">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                      <h4 className="font-medium text-sm sm:text-base">{subject.name}</h4>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge variant={subject.difficulty === 'easy' ? 'default' : subject.difficulty === 'medium' ? 'secondary' : 'destructive'} className="text-xs">
+                          {subject.difficulty === 'easy' ? 'Fácil' : subject.difficulty === 'medium' ? 'Médio' : 'Difícil'}
                         </Badge>
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-xs sm:text-sm text-muted-foreground">
                           {formatDuration(subject.duration)}
                         </span>
                       </div>
                     </div>
                     
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                       <strong>Tópicos:</strong> {subject.topics.join(', ')}
                     </div>
                   </div>
@@ -408,13 +406,81 @@ export const PersonalizedSchedule = () => {
         ))}
       </div>
 
-      {/* Dicas e estatísticas */}
+      {/* Recomendações personalizadas */}
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
+        {/* E-books recomendados */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BookOpen className="h-5 w-5 text-primary" />
+              E-books Recomendados
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {scheduleData.recommendedEbooks.map((ebook, index) => (
+                <div key={index} className="flex items-center gap-3 p-3 rounded-lg border">
+                  <Star className="h-4 w-4 text-amber-500" />
+                  <div>
+                    <p className="font-medium">{ebook}</p>
+                    <p className="text-sm text-muted-foreground">Baseado no seu perfil</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Funcionalidades recomendadas */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Zap className="h-5 w-5 text-primary" />
+              Funcionalidades Recomendadas
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {scheduleData.recommendedFeatures.map((feature, index) => (
+                <div key={index} className="flex items-center gap-3 p-3 rounded-lg border">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <div>
+                    <p className="font-medium">{feature}</p>
+                    <p className="text-sm text-muted-foreground">Ideal para seu estilo</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Dicas personalizadas */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Brain className="h-5 w-5 text-primary" />
+            Dicas Personalizadas
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3">
+            {scheduleData.personalizedTips.map((tip, index) => (
+              <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-accent/50">
+                <Target className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
+                <p className="text-sm">{tip}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="grid md:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-blue-500" />
-              Foco Principal
+              <AlertTriangle className="h-5 w-5 text-red-500" />
+              Áreas de Melhoria
             </CardTitle>
           </CardHeader>
           <CardContent>

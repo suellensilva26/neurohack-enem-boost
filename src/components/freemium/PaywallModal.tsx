@@ -135,17 +135,13 @@ export const PaywallModal = ({
           {/* Preço */}
           <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg p-6 text-center border border-primary/20">
             <div className="space-y-2">
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-2xl text-muted-foreground line-through">R$ 397</span>
-                <Badge variant="destructive">-50%</Badge>
-              </div>
               <div className="text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                R$ 197
+                R$ 297
               </div>
               <p className="text-sm text-muted-foreground">Pagamento único • Acesso vitalício</p>
               <Badge className="mt-2">
                 <Zap className="h-3 w-3 mr-1" />
-                Apenas 127 vagas restantes
+                Acesso imediato após confirmação
               </Badge>
             </div>
           </div>

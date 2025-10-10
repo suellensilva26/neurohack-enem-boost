@@ -286,7 +286,7 @@ export const EnhancedDashboard = () => {
                   className="bg-gradient-to-r from-primary to-accent"
                 >
                   <Zap className="mr-2 h-4 w-4" />
-                  Acelerar Aprovação - R$ 197
+                  Acelerar Aprovação - R$ 297
                 </Button>
                 <Button
                   variant="outline"

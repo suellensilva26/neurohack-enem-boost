@@ -9,10 +9,16 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { PremiumTopBanner } from "@/components/freemium/PremiumTopBanner";
+import PremiumOverlay from "@/components/freemium/PremiumOverlay";
 
 const TabsPage = () => {
   const [userAccess] = useState<string[]>(["full_access"]); // Modo teste: acesso completo
   const [ebooksFromDB, setEbooksFromDB] = useState<any[]>([]);
+  const [showPremiumOverlay, setShowPremiumOverlay] = useState(false);
+  
+  const handlePremiumInteraction = () => {
+    setShowPremiumOverlay(true);
+  };
 
   const freeTabs = [
     {
@@ -21,6 +27,13 @@ const TabsPage = () => {
       icon: Home,
       description: "Seu centro de comando para os próximos 30 dias",
       content: "dashboard"
+    },
+    {
+      id: "simulados",
+      title: "Simulados ENEM",
+      icon: BookOpen,
+      description: "Monte e resolva simulados completos e por disciplina",
+      content: "simulados"
     },
     {
       id: "flashcards",
@@ -52,9 +65,9 @@ const TabsPage = () => {
     },
     {
       id: "notificacoes",
-      title: "Notificações Básicas",
+      title: "Central de Notificações",
       icon: Bell,
-      description: "Configure lembretes diários de estudo",
+      description: "Gerencie suas notificações e lembretes de estudo",
       content: "notificacoes"
     },
     {
@@ -197,7 +210,12 @@ const TabsPage = () => {
             <TabsTrigger value="free" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               Abas Gratuitas
             </TabsTrigger>
-            <TabsTrigger value="premium" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger 
+              value="premium" 
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              onClick={handlePremiumInteraction}
+              onTouchStart={handlePremiumInteraction}
+            >
               Abas Premium
             </TabsTrigger>
           </TabsList>
@@ -290,7 +308,12 @@ const TabsPage = () => {
           </TabsContent>
 
           {/* Premium Tabs Content */}
-          <TabsContent value="premium" className="space-y-6">
+          <TabsContent 
+            value="premium" 
+            className="space-y-6"
+            onClick={handlePremiumInteraction}
+            onTouchStart={handlePremiumInteraction}
+          >
             <div className="mb-8 card-premium border-primary/50 text-center">
               <h2 className="mb-2">🔓 Desbloqueie Todo o Potencial</h2>
               <p className="mb-4 text-muted-foreground">
@@ -357,6 +380,8 @@ const TabsPage = () => {
             </div>
           </TabsContent>
         </Tabs>
+        {/* Overlay inicial restaurado */}
+        <PremiumOverlay open={showPremiumOverlay} onClose={() => setShowPremiumOverlay(false)} />
       </div>
     </div>
   );

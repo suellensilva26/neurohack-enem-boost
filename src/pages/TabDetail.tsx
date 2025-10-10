@@ -6,14 +6,18 @@ import { EbookReader } from "@/components/EbookReader";
 import { ArrowLeft, Lock, Play, Home, Target, Sparkles, Calendar, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { FlashcardsGratuitos } from "@/components/freemium/FlashcardsGratuitos";
+import { FlashcardsSystem } from "@/components/flashcards/FlashcardsSystem";
 import { ChecklistEssencial } from "@/components/freemium/ChecklistEssencial";
 import { QuestaoDia } from "@/components/freemium/QuestaoDia";
-import { NotificacoesBasicas } from "@/components/freemium/NotificacoesBasicas";
+import { CentralNotificacoes } from "@/components/freemium/CentralNotificacoes";
 import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
 import { GamificationSystem } from "@/components/gamification/GamificationSystem";
 import { AdvancedAnalytics } from "@/components/analytics/AdvancedAnalytics";
 import { IntelligentNotifications } from "@/components/notifications/IntelligentNotifications";
 import { PersonalizedSchedule } from "@/components/schedule/PersonalizedSchedule";
+import { SimuladosEnem } from "@/components/simulados/SimuladosEnem";
+import DailyQuestion from "@/pages/DailyQuestion";
+import AITip from "@/pages/AITip";
 
 interface Ebook {
   id: string;
@@ -55,8 +59,8 @@ const FREE_TABS = {
   },
   notificacoes: {
     id: "notificacoes",
-    title: "Notificações Básicas",
-    description: "Configure lembretes diários de estudo",
+    title: "Central de Notificações",
+    description: "Gerencie suas notificações e lembretes de estudo",
     icon: Sparkles,
   },
   gamificacao: {
@@ -75,6 +79,12 @@ const FREE_TABS = {
     id: "cronograma",
     title: "Cronograma Personalizado",
     description: "Plano de estudos adaptado ao seu perfil",
+    icon: Target,
+  },
+  simulados: {
+    id: "simulados",
+    title: "Simulados ENEM",
+    description: "Monte e resolva simulados completos e por disciplina",
     icon: Target,
   },
 };
@@ -118,14 +128,7 @@ const TabDetail = () => {
 
   const checkAccess = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (!user) {
-        navigate("/auth");
-        return;
-      }
-
-      // Check if it's a free tab
+      // Check if it's a free tab FIRST: free content não exige login
       if (tabId && tabId in FREE_TABS) {
         const freeTab = FREE_TABS[tabId as keyof typeof FREE_TABS];
         setEbook({
@@ -136,6 +139,14 @@ const TabDetail = () => {
         });
         setHasAccess(true);
         setLoading(false);
+        return;
+      }
+
+      // Para conteúdos premium, verificar usuário
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        navigate("/auth");
         return;
       }
 
@@ -271,25 +282,12 @@ const TabDetail = () => {
                 </div>
               </>
             )}
-            {tabId === "daily-question" && (
-              <div className="card-premium">
-                <h3 className="mb-4 text-xl font-semibold">🎯 Questão Recorrente do Dia</h3>
-                <p className="text-muted-foreground">
-                  Conteúdo em desenvolvimento. Em breve você terá acesso a questões diárias do ENEM.
-                </p>
-              </div>
-            )}
-            {tabId === "flashcards" && <FlashcardsGratuitos />}
+            {tabId === "daily-question" && <DailyQuestion />}
+            {tabId === "flashcards" && <FlashcardsSystem />}
             {tabId === "checklist" && <ChecklistEssencial />}
-            {tabId === "ai-tip" && (
-              <div className="card-premium">
-                <h3 className="mb-4 text-xl font-semibold">✨ Dica da IA</h3>
-                <p className="text-muted-foreground">
-                  Conteúdo em desenvolvimento. Em breve você receberá dicas personalizadas de estudo.
-                </p>
-              </div>
-            )}
-            {tabId === "notificacoes" && <NotificacoesBasicas />}
+            {tabId === "simulados" && <SimuladosEnem />}
+            {tabId === "ai-tip" && <AITip />}
+            {tabId === "notificacoes" && <CentralNotificacoes />}
             {tabId === "gamificacao" && <GamificationSystem />}
             {tabId === "analytics" && <AdvancedAnalytics />}
             {tabId === "cronograma" && <PersonalizedSchedule />}

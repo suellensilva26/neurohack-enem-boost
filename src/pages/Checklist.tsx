@@ -448,7 +448,7 @@ export default function Checklist() {
                 className="w-full bg-gradient-to-r from-primary to-accent"
               >
                 <Zap className="mr-2 h-4 w-4" />
-                Desbloquear Checklist Completo - R$ 197
+                Desbloquear Checklist Completo - R$ 297
               </Button>
             </CardContent>
           </Card>

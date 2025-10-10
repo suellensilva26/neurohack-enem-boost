@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import FreemiumBlocker from "@/components/freemium/FreemiumBlocker";
 import { ArrowLeft, BookOpen, Brain, GraduationCap, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import QuestoesResolvidasSection from "@/components/questoes/QuestoesResolvidasSection";
@@ -46,55 +47,59 @@ const QuestoesRecorrentes = () => {
           </TabsList>
 
           <TabsContent value="resolvidas" className="space-y-6">
-            <Card className="border-primary/20 bg-gradient-to-br from-card/50 to-primary/5">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <GraduationCap className="h-5 w-5 text-primary" />
-                  50 Questões Resolvidas com Explicações Completas
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground">
-                  Questões com <strong>dupla explicação</strong>: técnica (para quem estudou) 
-                  e lógica (para quem não estudou). Selecione sua resposta e veja a resolução completa!
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <div className="flex items-center gap-2 text-sm">
-                    <GraduationCap className="h-4 w-4 text-primary" />
-                    <span>Explicação Técnica</span>
+            <FreemiumBlocker>
+              <Card className="border-primary/20 bg-gradient-to-br from-card/50 to-primary/5">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <GraduationCap className="h-5 w-5 text-primary" />
+                    50 Questões Resolvidas com Explicações Completas
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-muted-foreground">
+                    Questões com <strong>dupla explicação</strong>: técnica (para quem estudou) 
+                    e lógica (para quem não estudou). Selecione sua resposta e veja a resolução completa!
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <GraduationCap className="h-4 w-4 text-primary" />
+                      <span>Explicação Técnica</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Brain className="h-4 w-4 text-accent" />
+                      <span>Explicação Lógica</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Brain className="h-4 w-4 text-accent" />
-                    <span>Explicação Lógica</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <QuestoesResolvidasSection />
+              <QuestoesResolvidasSection />
+            </FreemiumBlocker>
           </TabsContent>
 
           <TabsContent value="simulado" className="space-y-6">
-            <Card className="border-accent/20 bg-gradient-to-br from-card/50 to-accent/5">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-accent" />
-                  Simulado: 100 Questões Recorrentes
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground">
-                  Pratique com as 100 questões que mais caem no ENEM! Teste seus conhecimentos 
-                  e veja seu desempenho ao final.
-                </p>
-                <div className="flex items-center gap-2 text-sm text-primary">
-                  <BookOpen className="h-4 w-4" />
-                  <span>Gabarito disponível ao finalizar</span>
-                </div>
-              </CardContent>
-            </Card>
+            <FreemiumBlocker>
+              <Card className="border-accent/20 bg-gradient-to-br from-card/50 to-accent/5">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5 text-accent" />
+                    Simulado: 100 Questões Recorrentes
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-muted-foreground">
+                    Pratique com as 100 questões que mais caem no ENEM! Teste seus conhecimentos 
+                    e veja seu desempenho ao final.
+                  </p>
+                  <div className="flex items-center gap-2 text-sm text-primary">
+                    <BookOpen className="h-4 w-4" />
+                    <span>Gabarito disponível ao finalizar</span>
+                  </div>
+                </CardContent>
+              </Card>
 
-            <SimuladoSection />
+              <SimuladoSection />
+            </FreemiumBlocker>
           </TabsContent>
         </Tabs>
       </div>

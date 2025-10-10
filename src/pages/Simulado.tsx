@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, Clock, Target, Award, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PaywallModal from "@/components/PaywallModal";
+import MarkdownContent from "@/components/MarkdownContent";
 
 interface Question {
   id: string;
@@ -233,9 +234,7 @@ const Simulado = () => {
                   </span>
                 ))}
               </div>
-              <p className="text-lg text-foreground whitespace-pre-wrap">
-                {questions[currentQuestion].prompt}
-              </p>
+              <MarkdownContent content={questions[currentQuestion].prompt} />
             </div>
 
             <div className="space-y-3">
@@ -252,7 +251,7 @@ const Simulado = () => {
                   <span className="font-semibold text-primary mr-3">
                     {String.fromCharCode(65 + idx)})
                   </span>
-                  {alt}
+                  <MarkdownContent content={String(alt)} inline />
                 </button>
               ))}
             </div>

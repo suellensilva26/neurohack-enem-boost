@@ -3,6 +3,7 @@ import { ArrowLeft, CheckCircle, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import FreemiumBlocker from "@/components/freemium/FreemiumBlocker";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CienciaRevisaoExpress } from "@/components/revisao/CienciaRevisaoExpress";
 import { TopicosEssenciais } from "@/components/revisao/TopicosEssenciais";
@@ -90,68 +91,70 @@ export default function RevisaoExpress() {
 
           {/* Main Content */}
           <main className="lg:col-span-3">
-            {/* PDFs Section - Only on first module */}
-            {moduloAtual === 1 && (
-              <Card className="mb-6 border-primary/20">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <FileText className="h-5 w-5" />
-                    Material de Apoio
-                  </CardTitle>
-                  <CardDescription>
-                    Baixe o PDF completo do Kit Revisão Express
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <a
-                    href="/pdfs/kit-revisao-express-enem-2025.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3">
-                      <FileText className="h-8 w-8 text-primary" />
-                      <div>
-                        <p className="font-semibold">Kit Revisão Express ENEM 2025</p>
-                        <p className="text-sm text-muted-foreground">Clique para visualizar o PDF completo</p>
+            <FreemiumBlocker>
+              {/* PDFs Section - Only on first module */}
+              {moduloAtual === 1 && (
+                <Card className="mb-6 border-primary/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <FileText className="h-5 w-5" />
+                      Material de Apoio
+                    </CardTitle>
+                    <CardDescription>
+                      Baixe o PDF completo do Kit Revisão Express
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <a
+                      href="/pdfs/kit-revisao-express-enem-2025.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3">
+                        <FileText className="h-8 w-8 text-primary" />
+                        <div>
+                          <p className="font-semibold">Kit Revisão Express ENEM 2025</p>
+                          <p className="text-sm text-muted-foreground">Clique para visualizar o PDF completo</p>
+                        </div>
                       </div>
-                    </div>
-                    <FileText className="h-5 w-5 text-primary" />
-                  </a>
-                </CardContent>
-              </Card>
-            )}
+                      <FileText className="h-5 w-5 text-primary" />
+                    </a>
+                  </CardContent>
+                </Card>
+              )}
 
-            <div className="rounded-xl border border-border bg-card p-6 mb-6">
-              <h2 className="text-2xl font-bold mb-4 text-foreground">
-                {MODULOS[moduloAtual - 1].title}
-              </h2>
-              
-              <ModuloAtualComponent />
+              <div className="rounded-xl border border-border bg-card p-6 mb-6">
+                <h2 className="text-2xl font-bold mb-4 text-foreground">
+                  {MODULOS[moduloAtual - 1].title}
+                </h2>
+                
+                <ModuloAtualComponent />
 
-              {/* Navigation Buttons */}
-              <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
-                <Button
-                  variant="outline"
-                  onClick={() => setModuloAtual(Math.max(1, moduloAtual - 1))}
-                  disabled={moduloAtual === 1}
-                >
-                  ← Módulo Anterior
-                </Button>
+                {/* Navigation Buttons */}
+                <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
+                  <Button
+                    variant="outline"
+                    onClick={() => setModuloAtual(Math.max(1, moduloAtual - 1))}
+                    disabled={moduloAtual === 1}
+                  >
+                    ← Módulo Anterior
+                  </Button>
 
-                <Button
-                  onClick={() => {
-                    marcarComoCompleto(moduloAtual);
-                    if (moduloAtual < MODULOS.length) {
-                      setModuloAtual(moduloAtual + 1);
-                    }
-                  }}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                >
-                  {moduloAtual === MODULOS.length ? "Concluir Curso" : "Próximo Módulo →"}
-                </Button>
+                  <Button
+                    onClick={() => {
+                      marcarComoCompleto(moduloAtual);
+                      if (moduloAtual < MODULOS.length) {
+                        setModuloAtual(moduloAtual + 1);
+                      }
+                    }}
+                    className="bg-primary text-primary-foreground hover:bg-primary/90"
+                  >
+                    {moduloAtual === MODULOS.length ? "Concluir Curso" : "Próximo Módulo →"}
+                  </Button>
+                </div>
               </div>
-            </div>
+            </FreemiumBlocker>
           </main>
         </div>
       </div>
