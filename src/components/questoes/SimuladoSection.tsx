@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle2, XCircle, Trophy, Clock, Target, BookOpen, Grid3x3 } from "lucide-react";
 import { simuladoData } from "@/data/simuladoData";
-import MarkdownContent from "@/components/MarkdownContent";
 
 const SimuladoSection = () => {
   const [selectedBlock, setSelectedBlock] = useState<number | null>(null);
@@ -308,7 +307,11 @@ const SimuladoSection = () => {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          <MarkdownContent content={question.enunciado} />
+          <div className="prose prose-sm max-w-none">
+            <p className="whitespace-pre-line text-foreground font-medium">
+              {question.enunciado}
+            </p>
+          </div>
 
           <div className="space-y-3">
             {["A", "B", "C", "D", "E"].map((option, index) => (
@@ -323,9 +326,7 @@ const SimuladoSection = () => {
               >
                 <div className="flex items-start gap-3">
                   <span className="font-bold text-lg">{option})</span>
-                  <span className="flex-1">
-                    <MarkdownContent content={String(question.alternativas[index])} inline />
-                  </span>
+                  <span className="flex-1">{question.alternativas[index]}</span>
                   {answers[currentQuestion] === option && (
                     <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
                   )}

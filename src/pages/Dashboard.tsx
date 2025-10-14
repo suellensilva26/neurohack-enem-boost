@@ -198,7 +198,7 @@ export default function Dashboard() {
 
                   <Button 
                     className="w-full"
-                    onClick={() => navigate("/daily-question")}
+                    onClick={() => navigate("/questoes")}
                   >
                     <Play className="mr-2 h-4 w-4" />
                     Começar Estudo
@@ -259,22 +259,11 @@ export default function Dashboard() {
                       <span className="text-sm">Resolver Questões</span>
                     </div>
                   </Button>
-
-                  <Button 
-                    variant="outline" 
-                    className="h-20"
-                    onClick={() => navigate("/tab/flashcards")}
-                  >
-                    <div className="text-center">
-                      <Zap className="h-6 w-6 mx-auto mb-1" />
-                      <span className="text-sm">Estudar Flashcards</span>
-                    </div>
-                  </Button>
                   
                   <Button 
                     variant="outline" 
                     className="h-20"
-                    onClick={() => navigate("/tab/simulados")}
+                    onClick={() => navigate("/simulados")}
                   >
                     <div className="text-center">
                       <BookOpen className="h-6 w-6 mx-auto mb-1" />
@@ -285,7 +274,7 @@ export default function Dashboard() {
                   <Button 
                     variant="outline" 
                     className="h-20"
-                    onClick={() => navigate("/redacao-completa")}
+                    onClick={() => navigate("/redacao")}
                   >
                     <div className="text-center">
                       <FileText className="h-6 w-6 mx-auto mb-1" />
@@ -296,7 +285,7 @@ export default function Dashboard() {
                   <Button 
                     variant="outline" 
                     className="h-20"
-                    onClick={() => navigate("/revisao-express")}
+                    onClick={() => navigate("/revisao")}
                   >
                     <div className="text-center">
                       <Brain className="h-6 w-6 mx-auto mb-1" />
@@ -357,7 +346,7 @@ export default function Dashboard() {
                       <p className="text-sm text-muted-foreground mb-4">
                         180 questões • 5h30min • Todas as áreas
                       </p>
-                      <Button className="w-full" onClick={() => navigate("/tab/simulados")}>
+                      <Button className="w-full" onClick={() => navigate("/simulados/completo")}>
                         Iniciar Simulado
                       </Button>
                     </CardContent>
@@ -370,7 +359,7 @@ export default function Dashboard() {
                       <p className="text-sm text-muted-foreground mb-4">
                         45 questões • 1h30min • Por área
                       </p>
-                      <Button className="w-full" variant="outline" onClick={() => navigate("/tab/simulados")}>
+                      <Button className="w-full" variant="outline" onClick={() => navigate("/simulados/relampago")}>
                         Iniciar Simulado
                       </Button>
                     </CardContent>
@@ -391,7 +380,7 @@ export default function Dashboard() {
                   <div className="p-4 bg-primary/5 rounded-lg">
                     <h3 className="font-semibold mb-2">📝 Tema da Semana</h3>
                     <p className="text-lg">"Desafios para a preservação do meio ambiente no Brasil"</p>
-                    <Button className="mt-4" onClick={() => navigate("/redacao-completa")}>
+                    <Button className="mt-4" onClick={() => navigate("/redacao/nova")}>
                       <Play className="mr-2 h-4 w-4" />
                       Escrever Redação
                     </Button>

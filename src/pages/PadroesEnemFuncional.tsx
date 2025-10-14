@@ -6,7 +6,6 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import FreemiumBlocker from "@/components/freemium/FreemiumBlocker";
 
 const MODULOS = [
   { id: 1, title: "Identificação de Padrões Matemáticos", completed: false },
@@ -231,63 +230,55 @@ export default function PadroesEnemFuncional() {
                   </TabsList>
                   
                   <TabsContent value="ciencias" className="space-y-4">
-                    <FreemiumBlocker>
-                      <div className="grid gap-4">
-                        <div className="p-4 border rounded-lg">
-                          <h4 className="font-semibold mb-2">Biologia - Ciclo 2024-2025</h4>
-                          <ul className="text-sm space-y-1">
-                            <li>• Ecologia e sustentabilidade (30% das questões)</li>
-                            <li>• Genética e evolução (25% das questões)</li>
-                            <li>• Fisiologia humana (20% das questões)</li>
-                            <li>• Botânica e zoologia (15% das questões)</li>
-                            <li>• Biologia molecular (10% das questões)</li>
-                          </ul>
-                        </div>
+                    <div className="grid gap-4">
+                      <div className="p-4 border rounded-lg">
+                        <h4 className="font-semibold mb-2">Biologia - Ciclo 2024-2025</h4>
+                        <ul className="text-sm space-y-1">
+                          <li>• Ecologia e sustentabilidade (30% das questões)</li>
+                          <li>• Genética e evolução (25% das questões)</li>
+                          <li>• Fisiologia humana (20% das questões)</li>
+                          <li>• Botânica e zoologia (15% das questões)</li>
+                          <li>• Biologia molecular (10% das questões)</li>
+                        </ul>
                       </div>
-                    </FreemiumBlocker>
+                    </div>
                   </TabsContent>
 
                   <TabsContent value="humanas" className="space-y-4">
-                    <FreemiumBlocker>
-                      <div className="p-4 border rounded-lg">
-                        <h4 className="font-semibold mb-2">História - Tendências 2025</h4>
-                        <ul className="text-sm space-y-1">
-                          <li>• Brasil República (35% das questões)</li>
-                          <li>• História do Brasil Colônia (25% das questões)</li>
-                          <li>• História Geral - Idade Moderna (20% das questões)</li>
-                          <li>• História Contemporânea (20% das questões)</li>
-                        </ul>
-                      </div>
-                    </FreemiumBlocker>
+                    <div className="p-4 border rounded-lg">
+                      <h4 className="font-semibold mb-2">História - Tendências 2025</h4>
+                      <ul className="text-sm space-y-1">
+                        <li>• Brasil República (35% das questões)</li>
+                        <li>• História do Brasil Colônia (25% das questões)</li>
+                        <li>• História Geral - Idade Moderna (20% das questões)</li>
+                        <li>• História Contemporânea (20% das questões)</li>
+                      </ul>
+                    </div>
                   </TabsContent>
 
                   <TabsContent value="linguagens" className="space-y-4">
-                    <FreemiumBlocker>
-                      <div className="p-4 border rounded-lg">
-                        <h4 className="font-semibold mb-2">Português - Padrões Recorrentes</h4>
-                        <ul className="text-sm space-y-1">
-                          <li>• Interpretação de texto (40% das questões)</li>
-                          <li>• Gramática aplicada (30% das questões)</li>
-                          <li>• Literatura e artes (20% das questões)</li>
-                          <li>• Variação linguística (10% das questões)</li>
-                        </ul>
-                      </div>
-                    </FreemiumBlocker>
+                    <div className="p-4 border rounded-lg">
+                      <h4 className="font-semibold mb-2">Português - Padrões Recorrentes</h4>
+                      <ul className="text-sm space-y-1">
+                        <li>• Interpretação de texto (40% das questões)</li>
+                        <li>• Gramática aplicada (30% das questões)</li>
+                        <li>• Literatura e artes (20% das questões)</li>
+                        <li>• Variação linguística (10% das questões)</li>
+                      </ul>
+                    </div>
                   </TabsContent>
 
                   <TabsContent value="matematica" className="space-y-4">
-                    <FreemiumBlocker>
-                      <div className="p-4 border rounded-lg">
-                        <h4 className="font-semibold mb-2">Matemática - Distribuição 2025</h4>
-                        <ul className="text-sm space-y-1">
-                          <li>• Funções e gráficos (25% das questões)</li>
-                          <li>• Geometria plana e espacial (20% das questões)</li>
-                          <li>• Estatística e probabilidade (20% das questões)</li>
-                          <li>• Álgebra e aritmética (20% das questões)</li>
-                          <li>• Trigonometria (15% das questões)</li>
-                        </ul>
-                      </div>
-                    </FreemiumBlocker>
+                    <div className="p-4 border rounded-lg">
+                      <h4 className="font-semibold mb-2">Matemática - Distribuição 2025</h4>
+                      <ul className="text-sm space-y-1">
+                        <li>• Funções e gráficos (25% das questões)</li>
+                        <li>• Geometria plana e espacial (20% das questões)</li>
+                        <li>• Estatística e probabilidade (20% das questões)</li>
+                        <li>• Álgebra e aritmética (20% das questões)</li>
+                        <li>• Trigonometria (15% das questões)</li>
+                      </ul>
+                    </div>
                   </TabsContent>
                 </Tabs>
               </CardContent>

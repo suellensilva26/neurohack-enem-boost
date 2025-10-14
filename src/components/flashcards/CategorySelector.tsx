@@ -276,7 +276,7 @@ export const CategorySelector = ({ subjects, onSelectSubject, onStartRandom }: C
               className="w-full bg-gradient-to-r from-primary to-accent"
             >
               <Zap className="mr-2 h-4 w-4" />
-              Desbloquear Todas as Matérias - R$ 297
+              Desbloquear Todas as Matérias - R$ 197
             </Button>
           </CardContent>
         </Card>

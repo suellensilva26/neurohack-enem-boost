@@ -13,7 +13,8 @@ export const PremiumTopBanner = () => {
                 🔥 ÚLTIMA CHANCE: Acesso Completo + 7 E-books Interativos + IA Personalizada
               </p>
               <p className="text-[hsl(var(--primary-foreground))]/90 text-sm md:text-base">
-                Acesso Completo por <span className="font-black text-xl">R$ 297</span>
+                <span className="line-through opacity-70">De R$ 297</span> por apenas{" "}
+                <span className="font-black text-xl">R$ 197</span> • Economize R$ 100 AGORA
               </p>
             </div>
           </div>

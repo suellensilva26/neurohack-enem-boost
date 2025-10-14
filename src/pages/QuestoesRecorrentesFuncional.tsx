@@ -6,7 +6,6 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import FreemiumBlocker from "@/components/freemium/FreemiumBlocker";
 
 const QUESTAO_EXEMPLO = {
   id: 1,
@@ -406,21 +405,15 @@ export default function QuestoesRecorrentesFuncional() {
             </TabsList>
 
             <TabsContent value="questoes" className="mt-6">
-              <FreemiumBlocker>
-                {renderQuestoes()}
-              </FreemiumBlocker>
+              {renderQuestoes()}
             </TabsContent>
 
             <TabsContent value="estatisticas" className="mt-6">
-              <FreemiumBlocker>
-                {renderEstatisticas()}
-              </FreemiumBlocker>
+              {renderEstatisticas()}
             </TabsContent>
 
             <TabsContent value="topicos" className="mt-6">
-              <FreemiumBlocker>
-                {renderTopicos()}
-              </FreemiumBlocker>
+              {renderTopicos()}
             </TabsContent>
           </Tabs>
         </div>

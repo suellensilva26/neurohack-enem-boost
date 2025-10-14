@@ -9,7 +9,6 @@ import {
   Users, Star, AlertTriangle, CheckCircle, Settings
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { safeNotify, requestNotificationPermission } from "@/lib/notifications";
 
 interface SmartNotification {
   id: string;
@@ -153,17 +152,21 @@ export const IntelligentNotifications = () => {
   };
 
   const requestPermission = async () => {
-    const result = await requestNotificationPermission();
-    setPermission(result);
-    if (result === 'granted') {
-      toast({ title: "Permissão concedida! 🔔", description: "Você receberá notificações inteligentes." });
-      const r = safeNotify("ENEM 30x Boost", { body: "Notificações inteligentes ativadas com sucesso!", icon: "/favicon.ico" });
-      if (!r.ok) {
-        const reason = r.reason === "insecure_context" ?
-          "Contexto não seguro (http). Use https ou localhost." :
-          r.reason === "unsupported" ? "Navegador não suporta Notifications." :
-          "Falha ao enviar notificação de teste.";
-        toast({ title: "Aviso", description: reason, variant: "destructive" });
+    if ('Notification' in window) {
+      const result = await Notification.requestPermission();
+      setPermission(result);
+      
+      if (result === 'granted') {
+        toast({
+          title: "Permissão concedida! 🔔",
+          description: "Você receberá notificações inteligentes.",
+        });
+        
+        // Enviar notificação de teste
+        new Notification("ENEM 30x Boost", {
+          body: "Notificações inteligentes ativadas com sucesso!",
+          icon: "/favicon.ico"
+        });
       }
     }
   };
@@ -175,19 +178,22 @@ export const IntelligentNotifications = () => {
   };
 
   const testNotification = (notification: SmartNotification) => {
-    const res = safeNotify(notification.title, { body: notification.message, icon: "/favicon.ico" });
-    if (res.ok) {
-      toast({ title: "Notificação enviada!", description: `"${notification.title}" foi enviada como teste.` });
+    if (permission === 'granted') {
+      new Notification(notification.title, {
+        body: notification.message,
+        icon: "/favicon.ico"
+      });
+      
+      toast({
+        title: "Notificação enviada!",
+        description: `"${notification.title}" foi enviada como teste.`,
+      });
     } else {
-      if (res.reason === "default") {
-        toast({ title: "Permissão necessária", description: "Ative as notificações primeiro para testar.", variant: "destructive" });
-      } else if (res.reason === "insecure_context") {
-        toast({ title: "Contexto não seguro", description: "Use https ou localhost para testar notificações.", variant: "destructive" });
-      } else if (res.reason === "unsupported") {
-        toast({ title: "Não suportado", description: "Seu navegador não suporta Notifications.", variant: "destructive" });
-      } else {
-        toast({ title: "Falha ao enviar", description: "Não foi possível enviar a notificação.", variant: "destructive" });
-      }
+      toast({
+        title: "Permissão necessária",
+        description: "Ative as notificações primeiro para testar.",
+        variant: "destructive",
+      });
     }
   };
 
