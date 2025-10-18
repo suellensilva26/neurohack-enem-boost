@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { EbookReader } from "@/components/EbookReader";
 import { ArrowLeft, Lock, Play, Home, Target, Sparkles, Calendar, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -81,6 +82,7 @@ const FREE_TABS = {
 
 // Modo de teste: desbloquear abas premium sem checagem de compra
 const TEST_UNLOCK = true;
+const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'true') === 'true';
 
 const TabDetail = () => {
   const { tabId } = useParams();
@@ -120,6 +122,35 @@ const TabDetail = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
 
+      // Em build premium, não exigir login
+      if (!user && PREMIUM_BUILD) {
+        // Se aba for free, carregar direto
+        if (tabId && tabId in FREE_TABS) {
+          const freeTab = FREE_TABS[tabId as keyof typeof FREE_TABS];
+          setEbook({
+            id: freeTab.id,
+            title: freeTab.title,
+            description: freeTab.description,
+            price: 0,
+          });
+          setHasAccess(true);
+          setLoading(false);
+          return;
+        }
+        // Para premium, tentar buscar metadados mas liberar acesso mesmo sem dados
+        if (tabId) {
+          const { data: ebookData } = await supabase
+            .from("ebooks")
+            .select("*")
+            .eq("id", tabId)
+            .maybeSingle();
+          if (ebookData) setEbook(ebookData);
+          setHasAccess(true);
+          setLoading(false);
+          return;
+        }
+      }
+
       if (!user) {
         navigate("/auth");
         return;
@@ -156,7 +187,7 @@ const TabDetail = () => {
       setEbook(ebookData);
 
       // Test unlock: bypass entitlement checks for premium tabs
-      if (TEST_UNLOCK) {
+      if (TEST_UNLOCK || PREMIUM_BUILD) {
         setHasAccess(true);
         setLoading(false);
         return;
@@ -282,12 +313,7 @@ const TabDetail = () => {
             {tabId === "flashcards" && <FlashcardsGratuitos />}
             {tabId === "checklist" && <ChecklistEssencial />}
             {tabId === "ai-tip" && (
-              <div className="card-premium">
-                <h3 className="mb-4 text-xl font-semibold">✨ Dica da IA</h3>
-                <p className="text-muted-foreground">
-                  Conteúdo em desenvolvimento. Em breve você receberá dicas personalizadas de estudo.
-                </p>
-              </div>
+              <AiTipWaitlist />
             )}
             {tabId === "notificacoes" && <NotificacoesBasicas />}
             {tabId === "gamificacao" && <GamificationSystem />}
@@ -295,7 +321,7 @@ const TabDetail = () => {
             {tabId === "cronograma" && <PersonalizedSchedule />}
           </div>
         ) : (
-          <EbookReader 
+          <EbookReader
             ebookId={tabId || ""} 
             hasAccess={hasAccess}
             ebookPrice={ebook.price}
@@ -312,6 +338,135 @@ const TabDetail = () => {
             setOnboardingCompleted(true);
           }}
         />
+      )}
+    </div>
+  );
+};
+
+// Componente: Dica da IA com lista de espera e desconto de 70%
+const AiTipWaitlist = () => {
+  const [phone, setPhone] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasJoined, setHasJoined] = useState(false);
+  const { toast } = useToast();
+
+  const sanitizePhone = (value: string) => value.replace(/\D/g, "");
+  const isValidPhone = (digits: string) => digits.length >= 10 && digits.length <= 13; // BR: 10-13 dígitos
+
+  const handleJoin = async () => {
+    const digits = sanitizePhone(phone);
+    if (!isValidPhone(digits)) {
+      toast({
+        title: "Número inválido",
+        description: "Informe um telefone válido com DDD (WhatsApp).",
+        duration: 3500,
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        phone: digits,
+        source: "ai_tip_tab",
+        discount_percent: 70,
+        created_at: new Date().toISOString(),
+      };
+
+      // Tenta salvar no Supabase: primeiro na tabela ai_waitlist
+      let insertError: any = null;
+      try {
+        const { error } = await (supabase as any).from("ai_waitlist").insert([payload]);
+        insertError = error || null;
+      } catch (e) {
+        insertError = e;
+      }
+
+      // Se falhar, tenta na tabela com colunas em português: lista_de_espera_ai
+      if (insertError) {
+        console.warn("Falha ao inserir em ai_waitlist, tentando lista_de_espera_ai:", insertError?.message || insertError);
+        const payloadPt = {
+          telefone: digits,
+          fonte: "ai_tip_tab",
+          desconto_percentagem: 70,
+          criado_em: new Date().toISOString(),
+        };
+        try {
+          const { error: errorPt } = await (supabase as any).from("lista_de_espera_ai").insert([payloadPt]);
+          if (errorPt) {
+            throw errorPt;
+          }
+        } catch (e2) {
+          console.warn("Supabase erro ao inserir lista_de_espera_ai:", (e2 as any)?.message || e2);
+          // Fallback final: localStorage
+          const list = JSON.parse(localStorage.getItem("ai_waitlist") || "[]");
+          list.push(payload);
+          localStorage.setItem("ai_waitlist", JSON.stringify(list));
+        }
+      }
+
+      setHasJoined(true);
+      toast({
+        title: "Entrada confirmada",
+        description: "Você está na lista de espera e receberá 70% de desconto.",
+        duration: 4000,
+      });
+    } catch (err) {
+      console.error("Falha ao registrar na lista de espera:", err);
+      toast({
+        title: "Erro ao registrar",
+        description: "Tente novamente em instantes.",
+        duration: 3500,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="card-premium">
+      <h3 className="mb-2 text-xl font-semibold flex items-center gap-2">
+        <Sparkles className="h-5 w-5 text-primary" />
+        Dica da IA
+      </h3>
+      <p className="mb-6 text-sm text-muted-foreground">
+        A IA personalizada está em desenvolvimento. Entre na lista de espera e
+        receba automaticamente <span className="font-semibold text-gold">70% de desconto</span>
+        por ser assinante do NeuroHack quando liberarmos o acesso.
+      </p>
+
+      {!hasJoined ? (
+        <div className="space-y-4">
+          <div>
+            <label className="mb-2 block text-sm font-medium text-muted-foreground">
+              Número de telefone (WhatsApp)
+            </label>
+            <Input
+              type="tel"
+              inputMode="tel"
+              placeholder="+55 (DDD) 9XXXX-XXXX"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            <p className="mt-2 text-xs text-muted-foreground">
+              Usaremos apenas para avisar quando a IA for liberada e enviar seu desconto.
+            </p>
+          </div>
+          <Button
+            className="btn-premium"
+            onClick={handleJoin}
+            disabled={isSubmitting || !phone.trim()}
+          >
+            {isSubmitting ? "Registrando..." : "Entrar na lista de espera"}
+          </Button>
+        </div>
+      ) : (
+        <div className="rounded-xl border border-primary/30 bg-primary/10 p-4">
+          <p className="text-sm">
+            ✅ Pronto! Você está na lista de espera. Assim que a IA for liberada,
+            enviaremos seu acesso com <span className="font-semibold text-gold">70% de desconto</span>.
+          </p>
+        </div>
       )}
     </div>
   );

@@ -6,6 +6,117 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 
+interface FreemiumPaywallProps {
+  open: boolean;
+  onClose: () => void;
+  triggerType: string;
+  description: string;
+  benefits: string[];
+}
+
+export default function FreemiumPaywallModal({ open, onClose, triggerType, description, benefits }: FreemiumPaywallProps) {
+  const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'true') === 'true';
+  if (PREMIUM_BUILD) return null;
+
+  const navigate = useNavigate();
+  const [showTimer, setShowTimer] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowTimer(true), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleUpgrade = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase
+          .from("conversion_triggers")
+          .update({ clicked: true })
+          .eq("user_id", user.id)
+          .eq("trigger_type", triggerType)
+          .order("shown_at", { ascending: false })
+          .limit(1);
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar click:", error);
+    }
+    navigate("/pricing");
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Versão gratuita limitada</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-6 mt-4">
+          {/* Prova Social */}
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Users className="h-5 w-5 text-primary" />
+              <span className="font-bold text-primary">2.847 estudantes</span>
+              <span className="text-sm text-muted-foreground">já garantiram vaga este mês</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-accent" />
+              <span className="text-sm">Usuários premium acertam <strong>67% mais questões</strong></span>
+            </div>
+          </div>
+
+          {/* Benefícios */}
+          <div className="space-y-3">
+            {benefits.map((benefit, index) => (
+              <div key={index} className="flex items-start gap-3">
+                <div className="mt-0.5 flex-shrink-0">
+                  <Check className="h-5 w-5 text-primary" />
+                </div>
+                <span className="text-sm">{benefit}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Preço */}
+          <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg p-6 text-center border border-primary/20">
+            <div className="space-y-2">
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-2xl text-muted-foreground line-through">R$ 397</span>
+                <Badge variant="destructive">-50%</Badge>
+              </div>
+              <div className="text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                R$ 197
+              </div>
+              <p className="text-sm text-muted-foreground">Pagamento único • Acesso vitalício</p>
+              <Badge className="mt-2">
+                <Zap className="h-3 w-3 mr-1" />
+                Apenas 127 vagas restantes
+              </Badge>
+            </div>
+          </div>
+
+          {/* CTAs */}
+          <div className="space-y-3">
+            <Button className="btn-premium w-full" onClick={handleUpgrade}>
+              Fazer upgrade
+            </Button>
+            <Button variant="outline" className="w-full" onClick={onClose}>
+              Continuar no gratuito
+            </Button>
+          </div>
+
+          {showTimer && (
+            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+              <Timer className="h-3 w-3" />
+              Oferta por tempo limitado
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 interface PaywallModalProps {
   open: boolean;
   onClose: () => void;

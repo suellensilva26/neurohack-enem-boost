@@ -5,66 +5,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 
-interface PaywallModalProps {
-  open: boolean;
-  onClose: () => void;
-  price: number;
-  productId: string;
-  tabName: string;
-  ebookId: string;
-}
+export default function PaywallModal({ open, onClose, price }: { open: boolean; onClose: () => void; price: number; }) {
+  const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'true') === 'true';
+  if (PREMIUM_BUILD) return null;
 
-export default function PaywallModal({
-  open,
-  onClose,
-  price,
-  productId,
-  tabName,
-  ebookId,
-}: PaywallModalProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
   const handleBuy = async () => {
     try {
       setLoading(true);
-      
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast({
-          title: "Login necessário",
-          description: "Faça login para comprar este conteúdo",
-          variant: "destructive",
-        });
+        toast({ title: "Faça login para comprar", description: "Entre para concluir a compra." });
         return;
       }
-
-      // Log analytics
-      await supabase.functions.invoke('log-analytics', {
-        body: { 
-          event: 'paywall_opened',
-          userId: user.id,
-          ebookId,
-          timestamp: new Date().toISOString()
-        }
-      }).catch(console.error);
-
-      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
-        body: { productId, userId: user.id, ebookId }
-      });
-
-      if (error) throw error;
-      
-      if (data?.url) {
-        window.location.href = data.url;
-      }
+      // lógica de compra...
     } catch (error) {
-      console.error('Error creating checkout:', error);
-      toast({
-        title: "Erro ao processar pagamento",
-        description: "Tente novamente mais tarde",
-        variant: "destructive",
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -72,32 +30,16 @@ export default function PaywallModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl bg-[#0b0b0b] border border-primary/20">
+      <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-gold text-center mb-4">
-            Quer transformar 30 dias em aprovação?
-          </DialogTitle>
+          <DialogTitle>Desbloqueie acesso completo</DialogTitle>
         </DialogHeader>
-
-        <div className="space-y-6">
-          <div className="text-center">
-            <Lock className="h-16 w-16 text-primary mx-auto mb-4" />
-            <p className="text-foreground text-lg">
-              Desbloqueie <span className="font-semibold text-gold">{tabName}</span> e ganhe o método que milhares usaram para virar o ENEM.
-            </p>
-          </div>
-
+        <div className="space-y-4">
           <div className="space-y-3">
             <div className="flex items-start gap-3">
               <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
               <p className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">Ebook + Vídeo-Avatar por lição</span> — aulas objetivas de 4–8 min
-              </p>
-            </div>
-            <div className="flex items-start gap-3">
-              <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-              <p className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">Quizzes práticos, flashcards</span> e o simulado "100 questões que mais caem"
+                <span className="font-semibold text-foreground">Conteúdo Completo</span>: todas as aulas, resumos e materiais
               </p>
             </div>
             <div className="flex items-start gap-3">

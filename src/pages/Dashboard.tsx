@@ -10,10 +10,18 @@ import {
   AlertCircle, Flame, Trophy
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { InstallBanner } from "@/components/InstallBanner";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  
+  const [visits, setVisits] = useState(0);
+
+  useEffect(() => {
+    const c = parseInt(localStorage.getItem("visit_count_dashboard") || "0", 10) + 1;
+    localStorage.setItem("visit_count_dashboard", String(c));
+    setVisits(c);
+  }, []);
+
   // Estado do app - dados reais salvos no localStorage
   const [userData, setUserData] = useState({
     nome: "Estudante",
@@ -83,6 +91,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background p-6">
+      {visits >= 3 && <InstallBanner />}
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">

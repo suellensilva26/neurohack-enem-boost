@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Clock, Target, Award, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import PaywallModal from "@/components/PaywallModal";
+// import PaywallModal from "@/components/PaywallModal";
 
 interface Question {
   id: string;
@@ -18,6 +18,7 @@ interface Question {
 }
 
 const Simulado = () => {
+  const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'true') === 'true';
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
@@ -26,7 +27,7 @@ const Simulado = () => {
   const [startTime] = useState(Date.now());
   const [hasAccess, setHasAccess] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [showPaywall, setShowPaywall] = useState(false);
+  // const [showPaywall, setShowPaywall] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -38,7 +39,12 @@ const Simulado = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
+      // Em build premium, não exigir login
+      if (!user && PREMIUM_BUILD) {
+        setHasAccess(true);
+      }
+
+      if (!user && !PREMIUM_BUILD) {
         navigate("/auth");
         return;
       }
@@ -47,10 +53,10 @@ const Simulado = () => {
       const { data: profile } = await supabase
         .from("profiles")
         .select("entitlements")
-        .eq("id", user.id)
+        .eq("id", user?.id)
         .single();
 
-      const hasFullAccess = profile?.entitlements?.includes("full_access");
+      const hasFullAccess = PREMIUM_BUILD || profile?.entitlements?.includes("full_access");
       setHasAccess(hasFullAccess);
 
       // Load priority questions
@@ -83,10 +89,7 @@ const Simulado = () => {
 
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
-    } else if (!hasAccess && currentQuestion >= 9) {
-      // Show paywall after 10 questions for free users
-      setShowPaywall(true);
-    }
+    } // Removido paywall após 10 questões
   };
 
   const handleFinish = async () => {
@@ -210,11 +213,12 @@ const Simulado = () => {
               <span className="text-sm text-muted-foreground">
                 Questão {currentQuestion + 1} de {questions.length}
               </span>
-              {!hasAccess && currentQuestion >= 9 && (
+              {/* Remover badge de demo em build premium */}
+              {/* {!hasAccess && currentQuestion >= 9 && (
                 <span className="text-xs bg-gold/20 text-gold px-2 py-1 rounded-full">
                   Demo (10 questões)
                 </span>
-              )}
+              )} */}
             </div>
           </div>
         </div>
@@ -283,14 +287,15 @@ const Simulado = () => {
         )}
       </div>
 
-      <PaywallModal
+      {/* Remover PaywallModal em build premium */}
+      {/* <PaywallModal
         open={showPaywall}
         onClose={() => setShowPaywall(false)}
         price={29700}
         productId="prod_full_access"
         tabName="Pacote Completo"
         ebookId="full_access"
-      />
+      /> */}
     </div>
   );
 };

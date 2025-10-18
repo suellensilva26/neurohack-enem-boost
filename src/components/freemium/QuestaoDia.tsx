@@ -125,7 +125,9 @@ export const QuestaoDia = () => {
   const [modalUpgrade, setModalUpgrade] = useState(false);
   const { toast } = useToast();
 
-  const LIMITE_GRATUITO = 5;
+  // Premium Build flag e limite dinâmico
+  const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'false') === 'true';
+  const LIMITE_GRATUITO = PREMIUM_BUILD ? Infinity : 5;
 
   useEffect(() => {
     localStorage.setItem('questoesDiaRespondidas', questoesRespondidas.toString());
@@ -142,6 +144,7 @@ export const QuestaoDia = () => {
   }, []);
 
   const verificarLimite = () => {
+    if (PREMIUM_BUILD) return false;
     if (questoesRespondidas >= LIMITE_GRATUITO) {
       setModalUpgrade(true);
       return true;
@@ -207,7 +210,7 @@ export const QuestaoDia = () => {
     setMostrarResposta(false);
   };
 
-  const progresso = (questoesRespondidas / LIMITE_GRATUITO) * 100;
+  const progresso = PREMIUM_BUILD ? 0 : (questoesRespondidas / LIMITE_GRATUITO) * 100;
 
   return (
     <div className="space-y-6">
@@ -219,7 +222,11 @@ export const QuestaoDia = () => {
               <Target className="h-6 w-6 text-primary" />
               <div>
                 <h3 className="font-semibold">Questão do Dia</h3>
-                <p className="text-sm text-muted-foreground">{questoesRespondidas}/{LIMITE_GRATUITO} respondidas hoje</p>
+                {PREMIUM_BUILD ? (
+                  <p className="text-sm text-muted-foreground">Uso ilimitado hoje</p>
+                ) : (
+                  <p className="text-sm text-muted-foreground">{questoesRespondidas}/{LIMITE_GRATUITO} respondidas hoje</p>
+                )}
               </div>
             </div>
             <div className="flex gap-2">
@@ -231,8 +238,8 @@ export const QuestaoDia = () => {
               </Badge>
             </div>
           </div>
-          <Progress value={progresso} className="h-2" />
-          {questoesRespondidas >= LIMITE_GRATUITO && (
+          {!PREMIUM_BUILD && <Progress value={progresso} className="h-2" />}
+          {!PREMIUM_BUILD && questoesRespondidas >= LIMITE_GRATUITO && (
             <div className="mt-3 p-3 bg-gold/10 border border-gold/20 rounded-lg">
               <div className="flex items-center gap-2">
                 <Lock className="h-4 w-4 text-gold" />
@@ -419,7 +426,7 @@ export const QuestaoDia = () => {
 
       {/* Modal de Upgrade */}
       <ModalUpgrade 
-        isOpen={modalUpgrade}
+        isOpen={PREMIUM_BUILD ? false : modalUpgrade}
         onClose={() => setModalUpgrade(false)}
         tipo="questoes"
         limiteUsado={questoesRespondidas}

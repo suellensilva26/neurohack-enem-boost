@@ -16,6 +16,7 @@ export interface FreemiumLimits {
 }
 
 export const useFreemiumLimits = (): FreemiumLimits => {
+  const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'true') === 'true';
   const { toast } = useToast();
   const [isPremium, setIsPremium] = useState(false);
   const [dailyQuestionsUsed, setDailyQuestionsUsed] = useState(0);
@@ -27,6 +28,26 @@ export const useFreemiumLimits = (): FreemiumLimits => {
     maxStreak: 7,
     maxStudyHours: 3
   };
+
+  // Desbloqueio total para build premium
+  if (PREMIUM_BUILD) {
+    return {
+      isPremium: true,
+      dailyQuestionsLimit: Infinity,
+      dailyQuestionsUsed,
+      maxStreak: Infinity,
+      currentStreak,
+      maxStudyHours: Infinity,
+      studyHoursToday,
+      canAccessContent: () => true,
+      incrementQuestions: async () => {
+        setDailyQuestionsUsed((prev) => prev + 1);
+      },
+      updateStudyTime: async (hours: number) => {
+        setStudyHoursToday((prev) => prev + hours);
+      }
+    };
+  }
 
   useEffect(() => {
     checkUserAccess();
@@ -62,96 +83,48 @@ export const useFreemiumLimits = (): FreemiumLimits => {
 
   const loadDailyUsage = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const today = new Date().toISOString().split('T')[0];
-
-      const { data: usage } = await supabase
-        .from("daily_usage")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("date", today)
-        .single();
-
-      if (usage) {
-        setDailyQuestionsUsed(usage.questions_answered || 0);
-        setStudyHoursToday(Number(usage.study_hours) || 0);
-        setCurrentStreak(usage.streak_days || 0);
-      }
-
-      // Calcular streak usando função do banco
-      const { data: streakData } = await supabase.rpc("calculate_user_streak", {
-        p_user_id: user.id
-      });
-
-      if (streakData !== null) {
-        setCurrentStreak(streakData);
-      }
+      const usage = JSON.parse(localStorage.getItem("freemium_usage") || "{}");
+      setDailyQuestionsUsed(usage.dailyQuestionsUsed || 0);
+      setStudyHoursToday(usage.studyHoursToday || 0);
+      setCurrentStreak(usage.currentStreak || 0);
     } catch (error) {
       console.error("Erro ao carregar uso diário:", error);
     }
   };
 
+  const saveUsage = (usage: any) => {
+    localStorage.setItem("freemium_usage", JSON.stringify(usage));
+  };
+
   const incrementQuestions = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+    if (isPremium) return;
 
-      const today = new Date().toISOString().split('T')[0];
+    const newUsed = dailyQuestionsUsed + 1;
+    setDailyQuestionsUsed(newUsed);
+    saveUsage({
+      dailyQuestionsUsed: newUsed,
+      studyHoursToday,
+      currentStreak
+    });
 
-      const { error } = await supabase
-        .from("daily_usage")
-        .upsert({
-          user_id: user.id,
-          date: today,
-          questions_answered: dailyQuestionsUsed + 1,
-          last_activity_at: new Date().toISOString()
-        }, {
-          onConflict: "user_id,date"
-        });
-
-      if (error) throw error;
-
-      setDailyQuestionsUsed(prev => prev + 1);
-    } catch (error: any) {
+    if (newUsed === FREE_LIMITS.dailyQuestions) {
       toast({
-        title: "Erro ao registrar questão",
-        description: error.message,
-        variant: "destructive",
+        title: "Limite diário atingido",
+        description: "Desbloqueie o premium para acesso ilimitado.",
       });
     }
   };
 
   const updateStudyTime = async (hours: number) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+    if (isPremium) return;
 
-      const today = new Date().toISOString().split('T')[0];
-      const newTotal = studyHoursToday + hours;
-
-      const { error } = await supabase
-        .from("daily_usage")
-        .upsert({
-          user_id: user.id,
-          date: today,
-          study_hours: newTotal,
-          last_activity_at: new Date().toISOString()
-        }, {
-          onConflict: "user_id,date"
-        });
-
-      if (error) throw error;
-
-      setStudyHoursToday(newTotal);
-    } catch (error: any) {
-      toast({
-        title: "Erro ao registrar tempo de estudo",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
+    const newHours = studyHoursToday + hours;
+    setStudyHoursToday(newHours);
+    saveUsage({
+      dailyQuestionsUsed,
+      studyHoursToday: newHours,
+      currentStreak
+    });
   };
 
   const canAccessContent = (contentType: string): boolean => {

@@ -6,10 +6,12 @@ import { OnboardingModal } from "@/components/freemium/OnboardingModal";
 import { FloatingCTA } from "@/components/freemium/FloatingCTA";
 import { UrgencyBanner } from "@/components/freemium/UrgencyBanner";
 import { useOnboarding } from "@/hooks/useOnboarding";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 
 const Index = () => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const { needsOnboarding, loading, completeOnboarding } = useOnboarding();
+  const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'true') === 'true';
 
   useEffect(() => {
     const targetDate = new Date("2025-11-03T00:00:00").getTime();
@@ -42,9 +44,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <UrgencyBanner />
-      <FloatingCTA />
-      <OnboardingModal open={needsOnboarding && !loading} onComplete={completeOnboarding} />
+      {!PREMIUM_BUILD && <UrgencyBanner />}
+      {!PREMIUM_BUILD && <FloatingCTA />}
+      {!PREMIUM_BUILD && <OnboardingModal open={needsOnboarding && !loading} onComplete={completeOnboarding} />}
+      <InstallPrompt />
       
       {/* Hero Section */}
       <section className="relative overflow-hidden px-4 py-20 md:py-32">
@@ -188,33 +191,39 @@ const Index = () => {
               { title: "150 Questões Recorrentes", price: "R$ 99", icon: CheckCircle },
             ].map((tab, index) => (
               <div key={index} className="card-premium relative">
-                <div className="absolute right-4 top-4">
-                  <Lock className="h-5 w-5 text-primary" />
-                </div>
+                {/* Remover lock e preço em build premium */}
+                {(!PREMIUM_BUILD) && (
+                  <div className="absolute right-4 top-4">
+                    <Lock className="h-5 w-5 text-primary" />
+                  </div>
+                )}
                 <tab.icon className="mb-3 h-8 w-8 text-primary" />
                 <h3 className="mb-2">{tab.title}</h3>
                 <p className="mb-4 text-sm text-muted-foreground">
                   E-book completo + Videoaulas com IA + Exercícios interativos
                 </p>
-                <div className="mb-3 text-2xl font-bold text-gold">{tab.price}</div>
-                <Link to="/pricing">
-                  <Button className="btn-premium w-full text-sm">
-                    Desbloquear Aba
+                {!PREMIUM_BUILD && <div className="mb-3 text-2xl font-bold text-gold">{tab.price}</div>}
+                <Link to="/tabs">
+                  <Button className="w-full text-sm">
+                    {PREMIUM_BUILD ? 'Acessar Agora' : 'Desbloquear Aba'}
                   </Button>
                 </Link>
               </div>
             ))}
           </div>
 
-          <div className="mt-12 text-center">
-            <div className="mb-4 text-sm text-muted-foreground">Ou desbloqueie tudo por:</div>
-            <div className="mb-6 text-4xl font-bold text-gold">R$ 297,00</div>
-            <Link to="/pricing">
-              <Button className="btn-premium">
-                Ver Pacote Completo
-              </Button>
-            </Link>
-          </div>
+          {/* Remover bloco de pacote completo no build premium */}
+          {!PREMIUM_BUILD && (
+            <div className="mt-12 text-center">
+              <div className="mb-4 text-sm text-muted-foreground">Ou desbloqueie tudo por:</div>
+              <div className="mb-6 text-4xl font-bold text-gold">R$ 297,00</div>
+              <Link to="/pricing">
+                <Button className="btn-premium">
+                  Ver Pacote Completo
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 

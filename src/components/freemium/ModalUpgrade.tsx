@@ -14,6 +14,8 @@ interface ModalUpgradeProps {
 }
 
 export const ModalUpgrade = ({ isOpen, onClose, tipo, limiteUsado, limiteMaximo }: ModalUpgradeProps) => {
+  const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'false') === 'true';
+  if (PREMIUM_BUILD) return null;
   const getTitulo = () => {
     switch (tipo) {
       case "flashcards": return "Limite de Flashcards Atingido!";

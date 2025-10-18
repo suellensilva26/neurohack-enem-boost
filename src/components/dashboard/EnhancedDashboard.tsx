@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Sparkles, Target, BookOpen, Brain, Clock, Flame, 
   TrendingUp, Zap, Award, AlertTriangle, CheckCircle,
-  Play, BarChart3, Calendar, Trophy
+  Play, BarChart3, Calendar, Trophy, Lock
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useFreemiumLimits } from "@/hooks/useFreemiumLimits";
@@ -245,7 +245,7 @@ export const EnhancedDashboard = () => {
                     <div className="flex-1 text-left">
                       <div className="flex items-center gap-2">
                         <h4 className="font-medium">{action.title}</h4>
-                        {action.premium && (
+                        {action.premium && !isPremium && (
                           <Badge variant="secondary" className="text-xs">
                             PREMIUM
                           </Badge>
@@ -301,7 +301,7 @@ export const EnhancedDashboard = () => {
       )}
 
       {/* Modal de Upgrade */}
-      {showUpgradeModal && (
+      {!isPremium && showUpgradeModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <Card className="max-w-md w-full">
             <CardHeader>

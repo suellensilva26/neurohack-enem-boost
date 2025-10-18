@@ -15,7 +15,6 @@ import { useSimuladoCache, ResultadoSimulado } from '@/hooks/useSimuladoCache';
 import { useFreemiumLimits } from '@/hooks/useFreemiumLimits';
 import { SimuladoInterface } from './SimuladoInterface';
 import { HistoricoSimulados } from './HistoricoSimulados';
-import { PremiumModal } from './PremiumModal';
 
 const DISCIPLINAS_OPCOES = [
   { value: 'matematica', label: 'Matemática', icon: '📐', color: 'bg-blue-100 text-blue-800' },
@@ -61,6 +60,7 @@ export const SimuladosEnem = () => {
   const [simuladoAtivo, setSimuladoAtivo] = useState<SimuladoEnem | null>(null);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'true') === 'true';
 
   const { 
     loading: apiLoading, 
@@ -77,10 +77,10 @@ export const SimuladosEnem = () => {
   } = useSimuladoCache();
   
   const { 
-    simuladosRealizados, 
-    simuladosLimite, 
+    // simuladosRealizados, 
+    // simuladosLimite, 
     isPremium, 
-    incrementarSimulados 
+    // incrementarSimulados 
   } = useFreemiumLimits();
 
   const [anos, setAnos] = useState<number[]>([]);
@@ -127,19 +127,7 @@ export const SimuladosEnem = () => {
   };
 
   const iniciarSimulado = async () => {
-    // Verificar limites freemium
-    if (!isPremium && simuladosRealizados >= simuladosLimite) {
-      setShowPremiumModal(true);
-      return;
-    }
-
-    // Verificar se tipo é premium
-    const tipo = TIPOS_SIMULADO.find(t => t.id === tipoSelecionado);
-    if (tipo?.premium && !isPremium) {
-      setShowPremiumModal(true);
-      return;
-    }
-
+    // Removido: verificações de limite e premium para build premium
     setLoading(true);
     
     try {
@@ -154,7 +142,7 @@ export const SimuladosEnem = () => {
       }
 
       setSimuladoAtivo(simulado);
-      incrementarSimulados();
+      // Removido: incrementarSimulados();
     } catch (error) {
       console.error('Erro ao iniciar simulado:', error);
       // Mostrar toast de erro
@@ -203,7 +191,7 @@ export const SimuladosEnem = () => {
         </div>
         <Badge variant="secondary" className="text-lg px-4 py-2">
           <Trophy className="mr-2 h-5 w-5" />
-          {isPremium ? 'Premium' : `${simuladosRealizados}/${simuladosLimite} simulados`}
+          {PREMIUM_BUILD || isPremium ? 'Simulados ilimitados' : 'Simulados disponíveis'}
         </Badge>
       </div>
 
@@ -407,13 +395,6 @@ export const SimuladosEnem = () => {
           </div>
         </TabsContent>
       </Tabs>
-
-      {/* Premium Modal */}
-      <PremiumModal 
-        open={showPremiumModal}
-        onClose={() => setShowPremiumModal(false)}
-        feature="simulados"
-      />
     </div>
   );
 };

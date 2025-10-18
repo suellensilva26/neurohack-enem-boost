@@ -8,9 +8,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { PremiumTopBanner } from "@/components/freemium/PremiumTopBanner";
+// import removido provisoriamente: PremiumTopBanner
 
 const TabsPage = () => {
+  const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'false') === 'true';
   const [userAccess] = useState<string[]>(["full_access"]); // Modo teste: acesso completo
   const [ebooksFromDB, setEbooksFromDB] = useState<any[]>([]);
 
@@ -26,7 +27,7 @@ const TabsPage = () => {
       id: "flashcards",
       title: "Flashcards Gratuitos",
       icon: Brain,
-      description: "Revise com flashcards inteligentes por matéria (limite: 5/dia)",
+      description: PREMIUM_BUILD ? "Revise com flashcards ilimitados por matéria" : "Revise com flashcards inteligentes por matéria (limite: 5/dia)",
       content: "flashcards"
     },
     {
@@ -40,7 +41,7 @@ const TabsPage = () => {
       id: "daily-question",
       title: "Questão do Dia",
       icon: Target,
-      description: "Uma questão recorrente do ENEM com explicação completa (limite: 5/dia)",
+      description: PREMIUM_BUILD ? "Uma questão recorrente do ENEM com explicação completa (ilimitado)" : "Uma questão recorrente do ENEM com explicação completa (limite: 5/dia)",
       content: "question"
     },
     {
@@ -147,7 +148,7 @@ const TabsPage = () => {
   ];
 
   const hasAccess = (tabId: string) => {
-    return userAccess.includes("full_access") || userAccess.includes(tabId);
+    return PREMIUM_BUILD || userAccess.includes("full_access") || userAccess.includes(tabId);
   };
 
   useEffect(() => {
@@ -167,8 +168,7 @@ const TabsPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Premium Top Banner */}
-      <PremiumTopBanner />
+      {/* Premium Top Banner removido provisoriamente */}
       
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm">
@@ -184,9 +184,11 @@ const TabsPage = () => {
             <p className="text-xs text-muted-foreground">O maior sistema de aprovação já criado</p>
           </div>
           <Link to="/pricing">
-            <Button className="btn-premium text-sm">
-              Upgrade
-            </Button>
+            {!PREMIUM_BUILD && (
+              <Button className="btn-premium text-sm">
+                Upgrade
+              </Button>
+            )}
           </Link>
         </div>
       </header>
@@ -291,47 +293,31 @@ const TabsPage = () => {
 
           {/* Premium Tabs Content */}
           <TabsContent value="premium" className="space-y-6">
-            <div className="mb-8 card-premium border-primary/50 text-center">
-              <h2 className="mb-2">🔓 Desbloqueie Todo o Potencial</h2>
-              <p className="mb-4 text-muted-foreground">
-                Acesso completo a 6 abas premium com conteúdo exclusivo
-              </p>
-              <div className="mb-4">
-                <span className="text-sm text-muted-foreground">Pacote Completo:</span>
-                <div className="text-4xl font-bold text-gold">R$ 297,00</div>
-                <span className="text-sm text-muted-foreground">ou compre abas individuais</span>
-              </div>
-              <Link to="/pricing">
-                <Button className="btn-premium">
-                  Ver Planos e Preços
-                </Button>
-              </Link>
-            </div>
+            {/* Bloco de promoção removido provisoriamente */}
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {ebooksFromDB.filter(e => e.premium).map((ebook) => {
                 const tabData = premiumTabs.find(t => t.id === ebook.id);
                 const Icon = tabData?.icon || BookOpen;
-                
                 const linkTo = tabData?.directLink || `/tab/${ebook.id}`;
-                
                 return (
                   <Link
                     key={ebook.id}
                     to={linkTo}
-                    className={`card-premium group hover:scale-105 transition-all ${!hasAccess(ebook.id) ? 'tab-locked' : ''}`}
+                    className={`card-premium group hover:scale-105 transition-all ${(!hasAccess(ebook.id) && !PREMIUM_BUILD) ? 'tab-locked' : ''}`}
                   >
                     <div className="mb-4 flex items-center gap-3">
                       <div className="rounded-lg bg-gold/20 p-3 group-hover:bg-gold/30 transition-colors">
                         <Icon className="h-6 w-6 text-gold" />
                       </div>
-                      {!hasAccess(ebook.id) && <Lock className="ml-auto h-5 w-5 text-gold" />}
-                      {hasAccess(ebook.id) && <CheckCircle className="ml-auto h-5 w-5 text-primary" />}
+                      {(PREMIUM_BUILD || hasAccess(ebook.id)) ? (
+                        <CheckCircle className="ml-auto h-5 w-5 text-primary" />
+                      ) : (
+                        <Lock className="ml-auto h-5 w-5 text-gold" />
+                      )}
                     </div>
-                    
                     <h3 className="mb-2 group-hover:text-gold transition-colors">{ebook.title}</h3>
                     <p className="mb-4 text-sm text-muted-foreground line-clamp-3">{ebook.description}</p>
-                    
                     <div className="mb-4 flex gap-4 text-xs text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <BookOpen className="h-4 w-4" />
@@ -342,14 +328,15 @@ const TabsPage = () => {
                         Questões
                       </div>
                     </div>
-
-                    <div className="mb-3 flex items-center justify-between">
-                      <span className="text-2xl font-bold text-gold">R$ {ebook.price?.toFixed(2)}</span>
-                      <span className="text-xs px-3 py-1.5 rounded-full bg-gold/20 text-gold font-semibold">Premium</span>
-                    </div>
-                    
-                    <Button className={`w-full rounded-xl ${hasAccess(ebook.id) ? 'bg-primary' : 'btn-premium'}`}>
-                      {hasAccess(ebook.id) ? 'Acessar Conteúdo' : 'Ver Mais →'}
+                    {/* Esconder preço e badge Premium no build premium */}
+                    {!PREMIUM_BUILD && (
+                      <div className="mb-3 flex items-center justify-between">
+                        <span className="text-2xl font-bold text-gold">R$ {ebook.price?.toFixed(2)}</span>
+                        <span className="text-xs px-3 py-1.5 rounded-full bg-gold/20 text-gold font-semibold">Premium</span>
+                      </div>
+                    )}
+                    <Button className={`w-full rounded-xl bg-primary`}>
+                      Acessar Conteúdo
                     </Button>
                   </Link>
                 );

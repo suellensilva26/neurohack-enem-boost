@@ -2,130 +2,115 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import { Progress } from "@/components/ui/progress"; // removido: não utilizado
 import { 
-  Target, BookOpen, Brain, TrendingUp, CheckCircle, XCircle, 
-  Clock, Filter, Search, Play, Award, BarChart3
+  CheckCircle, XCircle, Clock, BarChart3
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom"; // removido: não utilizado
+import { useEnemAPI } from "@/hooks/useEnemAPI";
+import { InstallBanner } from "@/components/InstallBanner";
 
-// Banco de questões real e funcional
-const questoes = [
-  {
-    id: 1,
-    enunciado: "Uma empresa de delivery cobra R$ 5,00 pela taxa de entrega e R$ 2,00 por quilômetro rodado. Se um cliente mora a 8 km do restaurante, quanto ele pagará pelo delivery?",
-    alternativas: ["R$ 16,00", "R$ 21,00", "R$ 26,00", "R$ 32,00"],
-    resposta: 1,
-    explicacao: "A função que representa o custo é C(x) = 5 + 2x, onde x é a distância em km. Para 8 km: C(8) = 5 + 2×8 = 5 + 16 = R$ 21,00.",
-    materia: "Matemática",
-    assunto: "Funções do 1º Grau",
-    dificuldade: "Fácil",
-    ano: 2023,
-    tempo: 2
-  },
-  {
-    id: 2,
-    enunciado: "No trecho 'A pandemia trouxe mudanças que pareciam impossíveis antes', a palavra 'impossíveis' tem função:",
-    alternativas: ["Adjetivo predicativo", "Adjetivo atributivo", "Substantivo", "Advérbio"],
-    resposta: 0,
-    explicacao: "'Impossíveis' é um adjetivo predicativo porque se refere ao substantivo 'mudanças' através de uma ligação verbal ('pareciam').",
-    materia: "Português",
-    assunto: "Sintaxe",
-    dificuldade: "Médio",
-    ano: 2022,
-    tempo: 3
-  },
-  {
-    id: 3,
-    enunciado: "O processo de fotossíntese é fundamental para a vida na Terra. Qual das alternativas melhor explica sua importância?",
-    alternativas: [
-      "Produz apenas oxigênio para a respiração dos animais",
-      "Converte energia solar em energia química, produzindo oxigênio e glicose",
-      "Remove apenas o gás carbônico da atmosfera",
-      "Serve apenas para o crescimento das plantas"
-    ],
-    resposta: 1,
-    explicacao: "A fotossíntese converte energia luminosa em energia química, produzindo glicose (alimento) e liberando oxigênio como subproduto.",
-    materia: "Biologia",
-    assunto: "Fisiologia Vegetal",
-    dificuldade: "Fácil",
-    ano: 2021,
-    tempo: 2
-  }
-];
+const DISCIPLINAS_LABELS: Record<string, string> = {
+  "matematica": "Matemática",
+  "ciencias-natureza": "Ciências da Natureza",
+  "ciencias-humanas": "Ciências Humanas",
+  "linguagens": "Linguagens",
+};
 
 export default function BancoQuestoes() {
-  const navigate = useNavigate();
-  
+  // const navigate = useNavigate(); // removido: não utilizado
+  const { loading, error, questoes, buscarQuestoes, listarAnos, listarDisciplinas } = useEnemAPI();
+
   const [questaoAtual, setQuestaoAtual] = useState(0);
   const [respostaSelecionada, setRespostaSelecionada] = useState<number | null>(null);
   const [mostrarResposta, setMostrarResposta] = useState(false);
   const [acertos, setAcertos] = useState(0);
   const [erros, setErros] = useState(0);
-  const [tempoRestante, setTempoRestante] = useState(questoes[0]?.tempo || 0);
+
+  // Filtros API
+  const [anosDisponiveis, setAnosDisponiveis] = useState<number[]>([]);
+  const [disciplinasDisponiveis, setDisciplinasDisponiveis] = useState<string[]>([]);
   const [filtros, setFiltros] = useState({
-    materia: "Todas",
-    dificuldade: "Todas",
-    assunto: "Todos"
+    ano: undefined as number | undefined,
+    disciplina: undefined as string | undefined,
+    limite: 20 as number
   });
-  const [questoesFiltradas, setQuestoesFiltradas] = useState(questoes);
+
+  // Timer
+  const TEMPO_PADRAO_SEGUNDOS = 120; // 2 minutos por questão
+  const [tempoRestante, setTempoRestante] = useState<number>(TEMPO_PADRAO_SEGUNDOS);
+
+  // Carregar metadados e questões iniciais
+  useEffect(() => {
+    const init = async () => {
+      const anos = await listarAnos();
+      const disciplinas = await listarDisciplinas();
+      setAnosDisponiveis(anos);
+      setDisciplinasDisponiveis(disciplinas);
+
+      const anoDefault = anos?.[0];
+      const disciplinaDefault = disciplinas?.[0];
+      setFiltros(prev => ({ ...prev, ano: anoDefault, disciplina: disciplinaDefault }));
+
+      await buscarQuestoes({ year: anoDefault, discipline: disciplinaDefault, limit: filtros.limite });
+      setQuestaoAtual(0);
+      setTempoRestante(TEMPO_PADRAO_SEGUNDOS);
+      setRespostaSelecionada(null);
+      setMostrarResposta(false);
+      setAcertos(0);
+      setErros(0);
+    };
+    init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Timer para questão
   useEffect(() => {
     if (tempoRestante > 0 && !mostrarResposta) {
-      const timer = setTimeout(() => {
-        setTempoRestante(tempoRestante - 1);
-      }, 1000);
+      const timer = setTimeout(() => setTempoRestante((t) => t - 1), 1000);
       return () => clearTimeout(timer);
     } else if (tempoRestante === 0 && !mostrarResposta) {
-      // Tempo esgotado - marcar como errada
-      setErros(erros + 1);
+      setErros((e) => e + 1);
       setMostrarResposta(true);
     }
   }, [tempoRestante, mostrarResposta]);
 
-  // Filtrar questões
-  useEffect(() => {
-    let filtradas = questoes;
-    
-    if (filtros.materia !== "Todas") {
-      filtradas = filtradas.filter(q => q.materia === filtros.materia);
-    }
-    
-    if (filtros.dificuldade !== "Todas") {
-      filtradas = filtradas.filter(q => q.dificuldade === filtros.dificuldade);
-    }
-    
-    if (filtros.assunto !== "Todos") {
-      filtradas = filtradas.filter(q => q.assunto === filtros.assunto);
-    }
-    
-    setQuestoesFiltradas(filtradas);
-  }, [filtros]);
+  const carregarQuestoes = async () => {
+    await buscarQuestoes({
+      year: filtros.ano,
+      discipline: filtros.disciplina,
+      limit: filtros.limite
+    });
+    setQuestaoAtual(0);
+    setTempoRestante(TEMPO_PADRAO_SEGUNDOS);
+    setRespostaSelecionada(null);
+    setMostrarResposta(false);
+    setAcertos(0);
+    setErros(0);
+  };
 
   const responderQuestao = () => {
     if (respostaSelecionada === null) return;
-    
-    const questao = questoesFiltradas[questaoAtual];
-    if (respostaSelecionada === questao.resposta) {
-      setAcertos(acertos + 1);
+    const questao = questoes[questaoAtual];
+    if (!questao) return;
+
+    if (respostaSelecionada === questao.correctAnswer) {
+      setAcertos((a) => a + 1);
     } else {
-      setErros(erros + 1);
+      setErros((e) => e + 1);
     }
-    
     setMostrarResposta(true);
   };
 
   const proximaQuestao = () => {
-    if (questaoAtual < questoesFiltradas.length - 1) {
-      setQuestaoAtual(questaoAtual + 1);
+    if (questaoAtual < questoes.length - 1) {
+      const novoIndex = questaoAtual + 1;
+      setQuestaoAtual(novoIndex);
       setRespostaSelecionada(null);
       setMostrarResposta(false);
-      setTempoRestante(questoesFiltradas[questaoAtual + 1].tempo);
+      setTempoRestante(TEMPO_PADRAO_SEGUNDOS);
     } else {
-      // Fim das questões
-      alert(`Sessão finalizada! Acertos: ${acertos + (respostaSelecionada === questoesFiltradas[questaoAtual]?.resposta ? 1 : 0)}, Erros: ${erros}`);
+      alert(`Sessão finalizada! Acertos: ${acertos + (respostaSelecionada === questoes[questaoAtual]?.correctAnswer ? 1 : 0)}, Erros: ${erros}`);
     }
   };
 
@@ -135,20 +120,23 @@ export default function BancoQuestoes() {
     setMostrarResposta(false);
     setAcertos(0);
     setErros(0);
-    setTempoRestante(questoesFiltradas[0]?.tempo || 0);
+    setTempoRestante(TEMPO_PADRAO_SEGUNDOS);
   };
 
-  const questao = questoesFiltradas[questaoAtual];
+  const questao = questoes[questaoAtual];
 
   return (
     <div className="min-h-screen bg-background p-6">
+      {(acertos + erros) >= 10 && <InstallBanner />}
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">Banco de Questões ENEM</h1>
             <p className="text-muted-foreground">
-              Questão {questaoAtual + 1} de {questoesFiltradas.length}
+              {questoes.length > 0
+                ? `Questão ${questaoAtual + 1} de ${questoes.length}`
+                : "Carregue as questões pelos filtros abaixo"}
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -169,51 +157,55 @@ export default function BancoQuestoes() {
             <CardTitle>Filtros</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-4">
               <div>
-                <label className="text-sm font-medium">Matéria</label>
-                <select 
+                <label className="text-sm font-medium">Ano</label>
+                <select
                   className="w-full p-2 border rounded-md"
-                  value={filtros.materia}
-                  onChange={(e) => setFiltros({...filtros, materia: e.target.value})}
+                  value={filtros.ano ?? ""}
+                  onChange={(e) => setFiltros({ ...filtros, ano: Number(e.target.value) })}
                 >
-                  <option value="Todas">Todas</option>
-                  <option value="Matemática">Matemática</option>
-                  <option value="Português">Português</option>
-                  <option value="Biologia">Biologia</option>
-                  <option value="Química">Química</option>
-                  <option value="Física">Física</option>
+                  {anosDisponiveis.map((ano) => (
+                    <option key={ano} value={ano}>{ano}</option>
+                  ))}
                 </select>
               </div>
-              
+
               <div>
-                <label className="text-sm font-medium">Dificuldade</label>
-                <select 
+                <label className="text-sm font-medium">Disciplina</label>
+                <select
                   className="w-full p-2 border rounded-md"
-                  value={filtros.dificuldade}
-                  onChange={(e) => setFiltros({...filtros, dificuldade: e.target.value})}
+                  value={filtros.disciplina ?? ""}
+                  onChange={(e) => setFiltros({ ...filtros, disciplina: e.target.value })}
                 >
-                  <option value="Todas">Todas</option>
-                  <option value="Fácil">Fácil</option>
-                  <option value="Médio">Médio</option>
-                  <option value="Difícil">Difícil</option>
+                  {disciplinasDisponiveis.map((disc) => (
+                    <option key={disc} value={disc}>{DISCIPLINAS_LABELS[disc] ?? disc}</option>
+                  ))}
                 </select>
               </div>
-              
+
               <div>
-                <label className="text-sm font-medium">Assunto</label>
-                <select 
+                <label className="text-sm font-medium">Limite</label>
+                <input
+                  type="number"
+                  min={5}
+                  max={100}
+                  value={filtros.limite}
                   className="w-full p-2 border rounded-md"
-                  value={filtros.assunto}
-                  onChange={(e) => setFiltros({...filtros, assunto: e.target.value})}
-                >
-                  <option value="Todos">Todos</option>
-                  <option value="Funções do 1º Grau">Funções do 1º Grau</option>
-                  <option value="Sintaxe">Sintaxe</option>
-                  <option value="Fisiologia Vegetal">Fisiologia Vegetal</option>
-                </select>
+                  onChange={(e) => setFiltros({ ...filtros, limite: Number(e.target.value) })}
+                />
+              </div>
+
+              <div className="flex items-end">
+                <Button className="w-full" onClick={carregarQuestoes} disabled={loading}>
+                  {loading ? "Carregando..." : "Carregar Questões"}
+                </Button>
               </div>
             </div>
+
+            {error && (
+              <p className="text-sm text-destructive mt-2">Erro ao carregar: {error}</p>
+            )}
           </CardContent>
         </Card>
 
@@ -223,14 +215,8 @@ export default function BancoQuestoes() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <Badge variant="outline">{questao.materia}</Badge>
-                  <Badge variant={
-                    questao.dificuldade === "Fácil" ? "default" :
-                    questao.dificuldade === "Médio" ? "secondary" : "destructive"
-                  }>
-                    {questao.dificuldade}
-                  </Badge>
-                  <Badge variant="outline">{questao.assunto}</Badge>
+                  <Badge variant="outline">{DISCIPLINAS_LABELS[questao.discipline] || "Geral"}</Badge>
+                  <Badge variant="secondary">ENEM {questao.year}</Badge>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
@@ -247,24 +233,32 @@ export default function BancoQuestoes() {
                 <h3 className="text-lg font-medium leading-relaxed">
                   {questao.enunciado}
                 </h3>
+                {questao.context && (
+                  <p className="mt-2 text-sm text-muted-foreground">{questao.context}</p>
+                )}
               </div>
+
+              {/* Imagem opcional */}
+              {questao.image && (
+                <img src={questao.image} alt="Imagem da questão" className="rounded-lg border" />
+              )}
 
               {/* Alternativas */}
               <div className="space-y-3">
-                {questao.alternativas.map((alternativa, index) => (
+                {(questao.alternatives || []).map((alternativa, index) => (
                   <Button
                     key={index}
                     variant="outline"
                     className={`w-full justify-start h-auto p-4 text-left ${
                       mostrarResposta 
-                        ? index === questao.resposta 
+                        ? index === questao.correctAnswer 
                           ? 'border-green-500 bg-green-50 text-green-800' 
                           : respostaSelecionada === index
                             ? 'border-red-500 bg-red-50 text-red-800'
                             : ''
                         : respostaSelecionada === index 
                           ? 'border-primary bg-primary/10' 
-                          : 'hover:border-primary/50'
+                          : 'hover;border-primary/50'
                     }`}
                     onClick={() => !mostrarResposta && setRespostaSelecionada(index)}
                     disabled={mostrarResposta}
@@ -272,7 +266,7 @@ export default function BancoQuestoes() {
                     <div className="flex items-center gap-3">
                       <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
                         mostrarResposta
-                          ? index === questao.resposta
+                          ? index === questao.correctAnswer
                             ? 'border-green-500 bg-green-500 text-white'
                             : respostaSelecionada === index
                               ? 'border-red-500 bg-red-500 text-white'
@@ -284,10 +278,10 @@ export default function BancoQuestoes() {
                         {String.fromCharCode(65 + index)}
                       </div>
                       <span className="flex-1">{alternativa}</span>
-                      {mostrarResposta && index === questao.resposta && (
+                      {mostrarResposta && index === questao.correctAnswer && (
                         <CheckCircle className="h-5 w-5 text-green-600" />
                       )}
-                      {mostrarResposta && respostaSelecionada === index && index !== questao.resposta && (
+                      {mostrarResposta && respostaSelecionada === index && index !== questao.correctAnswer && (
                         <XCircle className="h-5 w-5 text-red-600" />
                       )}
                     </div>
@@ -295,12 +289,16 @@ export default function BancoQuestoes() {
                 ))}
               </div>
 
-              {/* Explicação */}
+              {/* Gabarito / Explicação */}
               {mostrarResposta && (
                 <Card className="border-primary/20 bg-primary/5">
                   <CardContent className="p-4">
-                    <h4 className="font-semibold text-primary mb-2">Explicação:</h4>
-                    <p className="text-foreground">{questao.explicacao}</p>
+                    <h4 className="font-semibold text-primary mb-2">Gabarito:</h4>
+                    <p className="text-foreground">
+                      Letra {String.fromCharCode(65 + (questao.correctAnswer ?? 0))} — {
+                        (questao.alternatives || [])[questao.correctAnswer ?? 0] || 'Alternativa'
+                      }
+                    </p>
                   </CardContent>
                 </Card>
               )}
@@ -320,7 +318,7 @@ export default function BancoQuestoes() {
                     onClick={proximaQuestao}
                     className="flex-1"
                   >
-                    {questaoAtual < questoesFiltradas.length - 1 ? 'Próxima Questão' : 'Finalizar Sessão'}
+                    {questaoAtual < questoes.length - 1 ? 'Próxima Questão' : 'Finalizar Sessão'}
                   </Button>
                 )}
                 

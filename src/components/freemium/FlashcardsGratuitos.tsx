@@ -103,7 +103,9 @@ export const FlashcardsGratuitos = () => {
   const [modalUpgrade, setModalUpgrade] = useState(false);
   const { toast } = useToast();
 
-  const LIMITE_GRATUITO = 5;
+  // Premium Build flag e limite dinâmico
+  const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'false') === 'true';
+  const LIMITE_GRATUITO = PREMIUM_BUILD ? Infinity : 5;
   const materias = ["Matemática", "Português", "Biologia"];
   
   const flashcardsFiltrados = flashcardsData.filter(card => card.materia === materiaAtual);
@@ -115,6 +117,7 @@ export const FlashcardsGratuitos = () => {
   }, [flashcardsUsados, acertos, erros]);
 
   const verificarLimite = () => {
+    if (PREMIUM_BUILD) return false;
     if (flashcardsUsados >= LIMITE_GRATUITO) {
       setModalUpgrade(true);
       return true;
@@ -152,7 +155,7 @@ export const FlashcardsGratuitos = () => {
     setErros(prev => prev + 1);
   };
 
-  const progresso = (flashcardsUsados / LIMITE_GRATUITO) * 100;
+  const progresso = PREMIUM_BUILD ? 0 : (flashcardsUsados / LIMITE_GRATUITO) * 100;
 
   return (
     <div className="space-y-6">
@@ -164,15 +167,19 @@ export const FlashcardsGratuitos = () => {
               <Brain className="h-6 w-6 text-primary" />
               <div>
                 <h3 className="font-semibold">Flashcards Gratuitos</h3>
-                <p className="text-sm text-muted-foreground">{flashcardsUsados}/{LIMITE_GRATUITO} usados hoje</p>
+                {PREMIUM_BUILD ? (
+                  <p className="text-sm text-muted-foreground">Uso ilimitado hoje</p>
+                ) : (
+                  <p className="text-sm text-muted-foreground">{flashcardsUsados}/{LIMITE_GRATUITO} usados hoje</p>
+                )}
               </div>
             </div>
             <Badge variant="outline" className="text-green-600">
               {acertos} acertos
             </Badge>
           </div>
-          <Progress value={progresso} className="h-2" />
-          {flashcardsUsados >= LIMITE_GRATUITO && (
+          {!PREMIUM_BUILD && <Progress value={progresso} className="h-2" />}
+          {!PREMIUM_BUILD && flashcardsUsados >= LIMITE_GRATUITO && (
             <div className="mt-3 p-3 bg-gold/10 border border-gold/20 rounded-lg">
               <div className="flex items-center gap-2">
                 <Lock className="h-4 w-4 text-gold" />
@@ -302,7 +309,7 @@ export const FlashcardsGratuitos = () => {
 
       {/* Modal de Upgrade */}
       <ModalUpgrade 
-        isOpen={modalUpgrade}
+        isOpen={PREMIUM_BUILD ? false : modalUpgrade}
         onClose={() => setModalUpgrade(false)}
         tipo="flashcards"
         limiteUsado={flashcardsUsados}
