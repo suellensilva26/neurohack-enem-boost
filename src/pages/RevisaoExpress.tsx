@@ -6,14 +6,14 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CienciaRevisaoExpress } from "@/components/revisao/CienciaRevisaoExpress";
 import { TopicosEssenciais } from "@/components/revisao/TopicosEssenciais";
-import { CronogramaTrintaDias } from "@/components/revisao/CronogramaTrintaDias";
+import { CronogramaQuinzeDias } from "@/components/revisao/CronogramaQuinzeDias";
 import { ChecklistVespera } from "@/components/revisao/ChecklistVespera";
 import { CasosSucessoRevisao } from "@/components/revisao/CasosSucessoRevisao";
 
 const MODULOS = [
   { id: 1, title: "A Ciência por Trás da Revisão Express", component: CienciaRevisaoExpress },
   { id: 2, title: "Os 240 Tópicos Que Salvam Sua Vida", component: TopicosEssenciais },
-  { id: 3, title: "Cronograma Militar dos 30 Dias", component: CronogramaTrintaDias },
+  { id: 3, title: "Cronograma Intensivo de 15 Dias", component: CronogramaQuinzeDias },
   { id: 4, title: "Checklist de Véspera Infalível", component: ChecklistVespera },
   { id: 5, title: "Casos de Sucesso Documentados", component: CasosSucessoRevisao },
 ];

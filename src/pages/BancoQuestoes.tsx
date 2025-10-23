@@ -9,6 +9,7 @@ import {
 // import { useNavigate } from "react-router-dom"; // removido: não utilizado
 import { useEnemAPI } from "@/hooks/useEnemAPI";
 import { InstallBanner } from "@/components/InstallBanner";
+import { toast } from "sonner";
 
 const DISCIPLINAS_LABELS: Record<string, string> = {
   "matematica": "Matemática",
@@ -110,7 +111,10 @@ export default function BancoQuestoes() {
       setMostrarResposta(false);
       setTempoRestante(TEMPO_PADRAO_SEGUNDOS);
     } else {
-      alert(`Sessão finalizada! Acertos: ${acertos + (respostaSelecionada === questoes[questaoAtual]?.correctAnswer ? 1 : 0)}, Erros: ${erros}`);
+      const totalAcertos = acertos + (respostaSelecionada === questoes[questaoAtual]?.correctAnswer ? 1 : 0);
+      toast.success("Sessão finalizada!", {
+        description: `Acertos: ${totalAcertos}, Erros: ${erros}`,
+      });
     }
   };
 

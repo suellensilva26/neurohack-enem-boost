@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useRef } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +10,9 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import DailyQuestion from "./pages/DailyQuestion";
 import Checklist from "./pages/Checklist";
+import { OfflineMessage } from "@/components/OfflineMessage";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { toast } from "sonner";
 
 // Lazy loaded pages (code splitting)
 const Tabs = React.lazy(() => import("./pages/Tabs"));
@@ -32,143 +35,156 @@ const Fallback = () => (
   <div className="p-6 text-center">Carregando...</div>
 );
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
+const App = () => {
+  const isOnline = useOnlineStatus();
+  const prevOnline = useRef<boolean>(isOnline);
 
-          <Route
-            path="/tabs"
-            element={
-              <Suspense fallback={<Fallback />}>
-                <Tabs />
-              </Suspense>
-            }
-          />
-          
-          <Route
-            path="/tab/:tabId"
-            element={
-              <Suspense fallback={<Fallback />}>
-                <TabDetail />
-              </Suspense>
-            }
-          />
-          
-          <Route
-            path="/aprendizagem-acelerada"
-            element={
-              <Suspense fallback={<Fallback />}>
-                <AprendizagemAceleradaFuncional />
-              </Suspense>
-            }
-          />
-          
-          <Route
-            path="/redacao-completa"
-            element={
-              <Suspense fallback={<Fallback />}>
-                <RedacaoCompleta />
-              </Suspense>
-            }
-          />
-          
-          <Route
-            path="/revisao-express"
-            element={
-              <Suspense fallback={<Fallback />}>
-                <RevisaoExpress />
-              </Suspense>
-            }
-          />
-          
-          <Route
-            path="/estrategias-secretas"
-            element={
-              <Suspense fallback={<Fallback />}>
-                <EstrategiasSecretas />
-              </Suspense>
-            }
-          />
-          
-          <Route
-            path="/padroes-enem"
-            element={
-              <Suspense fallback={<Fallback />}>
-                <PadroesEnemFuncional />
-              </Suspense>
-            }
-          />
-          
-          <Route
-            path="/questoes-recorrentes"
-            element={
-              <Suspense fallback={<Fallback />}>
-                <QuestoesRecorrentesFuncional />
-              </Suspense>
-            }
-          />
+  useEffect(() => {
+    if (!prevOnline.current && isOnline) {
+      toast.success("Conexão restaurada");
+    }
+    prevOnline.current = isOnline;
+  }, [isOnline]);
 
-          <Route
-            path="/flashcards"
-            element={
-              <Suspense fallback={<Fallback />}>
-                <Flashcards />
-              </Suspense>
-            }
-          />
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <OfflineMessage />
+          <Routes>
+            <Route path="/" element={<Index />} />
 
-          <Route path="/checklist" element={<Checklist />} />
-          <Route path="/daily-question" element={<DailyQuestion />} />
+            <Route
+              path="/tabs"
+              element={
+                <Suspense fallback={<Fallback />}>
+                  <Tabs />
+                </Suspense>
+              }
+            />
+            
+            <Route
+              path="/tab/:tabId"
+              element={
+                <Suspense fallback={<Fallback />}>
+                  <TabDetail />
+                </Suspense>
+              }
+            />
+            
+            <Route
+              path="/aprendizagem-acelerada"
+              element={
+                <Suspense fallback={<Fallback />}>
+                  <AprendizagemAceleradaFuncional />
+                </Suspense>
+              }
+            />
+            
+            <Route
+              path="/redacao-completa"
+              element={
+                <Suspense fallback={<Fallback />}>
+                  <RedacaoCompleta />
+                </Suspense>
+              }
+            />
+            
+            <Route
+              path="/revisao-express"
+              element={
+                <Suspense fallback={<Fallback />}>
+                  <RevisaoExpress />
+                </Suspense>
+              }
+            />
+            
+            <Route
+              path="/estrategias-secretas"
+              element={
+                <Suspense fallback={<Fallback />}>
+                  <EstrategiasSecretas />
+                </Suspense>
+              }
+            />
+            
+            <Route
+              path="/padroes-enem"
+              element={
+                <Suspense fallback={<Fallback />}>
+                  <PadroesEnemFuncional />
+                </Suspense>
+              }
+            />
+            
+            <Route
+              path="/questoes-recorrentes"
+              element={
+                <Suspense fallback={<Fallback />}>
+                  <QuestoesRecorrentesFuncional />
+                </Suspense>
+              }
+            />
 
-          <Route
-            path="/dashboard"
-            element={
-              <Suspense fallback={<Fallback />}>
-                <Dashboard />
-              </Suspense>
-            }
-          />
+            <Route
+              path="/flashcards"
+              element={
+                <Suspense fallback={<Fallback />}>
+                  <Flashcards />
+                </Suspense>
+              }
+            />
 
-          <Route
-            path="/banco-questoes"
-            element={
-              <Suspense fallback={<Fallback />}>
-                <BancoQuestoes />
-              </Suspense>
-            }
-          />
+            <Route path="/checklist" element={<Checklist />} />
+            <Route path="/daily-question" element={<DailyQuestion />} />
 
-          <Route
-            path="/quiz/:lessonId"
-            element={
-              <Suspense fallback={<Fallback />}>
-                <Quiz />
-              </Suspense>
-            }
-          />
+            <Route
+              path="/dashboard"
+              element={
+                <Suspense fallback={<Fallback />}>
+                  <Dashboard />
+                </Suspense>
+              }
+            />
 
-          <Route
-            path="/simulado"
-            element={
-              <Suspense fallback={<Fallback />}>
-                <Simulado />
-              </Suspense>
-            }
-          />
+            <Route
+              path="/banco-questoes"
+              element={
+                <Suspense fallback={<Fallback />}>
+                  <BancoQuestoes />
+                </Suspense>
+              }
+            />
 
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/auth" element={<Auth />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+            <Route
+              path="/quiz/:lessonId"
+              element={
+                <Suspense fallback={<Fallback />}>
+                  <Quiz />
+                </Suspense>
+              }
+            />
 
-export default App;
+            <Route
+              path="/simulado"
+              element={
+                <Suspense fallback={<Fallback />}>
+                  <Simulado />
+                </Suspense>
+              }
+            />
+
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/auth" element={<Auth />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
+
+ export default App;

@@ -87,6 +87,11 @@ export const PadroesPortugues = ({ onUpdate }: Props) => {
       });
     } catch (error) {
       console.error("Error:", error);
++     toast({
++       title: "Erro ao salvar",
++       description: "Tente novamente em instantes.",
++       variant: "destructive",
++     });
     }
   };
 
@@ -110,6 +115,11 @@ export const PadroesPortugues = ({ onUpdate }: Props) => {
       toast({ title: "Anotações salvas! 📝" });
     } catch (error) {
       console.error("Error:", error);
++     toast({
++       title: "Erro ao salvar anotações",
++       description: "Verifique sua conexão e tente novamente.",
++       variant: "destructive",
++     });
     }
   };
 

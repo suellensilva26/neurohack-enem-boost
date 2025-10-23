@@ -64,7 +64,7 @@ export const AdvancedAnalytics = () => {
     predictedScore: 0,
     improvementRate: 0
   });
-  const [selectedPeriod, setSelectedPeriod] = useState<'7d' | '30d' | '90d'>('30d');
+  const [selectedPeriod, setSelectedPeriod] = useState<'7d' | '15d' | '90d'>('15d');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -104,12 +104,12 @@ export const AdvancedAnalytics = () => {
     switch (period) {
       case '7d':
         return new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
-      case '30d':
-        return new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      case '15d':
+        return new Date(today.getTime() - 15 * 24 * 60 * 60 * 1000).toISOString();
       case '90d':
         return new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000).toISOString();
       default:
-        return new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+        return new Date(today.getTime() - 15 * 24 * 60 * 60 * 1000).toISOString();
     }
   };
 
@@ -253,14 +253,14 @@ export const AdvancedAnalytics = () => {
               Analytics Avançado
             </CardTitle>
             <div className="flex gap-2">
-              {['7d', '30d', '90d'].map((period) => (
+              {['7d', '15d', '90d'].map((period) => (
                 <Button
                   key={period}
                   variant={selectedPeriod === period ? "default" : "outline"}
                   size="sm"
                   onClick={() => setSelectedPeriod(period as any)}
                 >
-                  {period === '7d' ? '7 dias' : period === '30d' ? '30 dias' : '90 dias'}
+                  {period === '7d' ? '7 dias' : period === '15d' ? '15 dias' : '90 dias'}
                 </Button>
               ))}
             </div>

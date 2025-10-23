@@ -45,7 +45,7 @@ export default function PaywallModal({ open, onClose, price }: { open: boolean; 
             <div className="flex items-start gap-3">
               <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
               <p className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">Garantia</span>: suporte e plano de revisão 30 dias — resultado orientado por dados
+                <span className="font-semibold text-foreground">Garantia</span>: suporte e plano de revisão 15 dias — resultado orientado por dados
               </p>
             </div>
           </div>

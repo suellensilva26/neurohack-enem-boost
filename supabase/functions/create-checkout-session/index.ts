@@ -19,7 +19,7 @@ serve(async (req) => {
     const { productId, userId, ebookId } = await req.json();
 
     const products = {
-      'prod_full_access': { name: 'Pacote Completo ENEM 30 Dias', price: 29700 },
+      'prod_full_access': { name: 'NeuroHack ENEM 15 Dias Intensivo', price: 29700 },
       'prod_tab_redacao': { name: 'Redação Nota 1000', price: 14900 },
       'prod_tab_revisao': { name: 'Kit Revisão Express', price: 11900 },
       'prod_tab_estrategias': { name: 'Estratégias Secretas', price: 8900 },

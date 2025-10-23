@@ -9,6 +9,7 @@ import {
   Users, Star, AlertTriangle, CheckCircle, Settings
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { safeNotify, requestNotificationPermission } from "@/lib/notifications";
 
 interface SmartNotification {
   id: string;
@@ -80,7 +81,7 @@ const smartNotifications: SmartNotification[] = [
     message: 'Faltam apenas X dias para o ENEM. Cada minuto conta!',
     icon: <Clock className="h-4 w-4" />,
     priority: 'high',
-    conditions: ['Últimos 30 dias', 'Frequência: Diária'],
+    conditions: ['Últimos 15 dias', 'Frequência: Diária'],
     enabled: true
   },
   {
@@ -152,20 +153,23 @@ export const IntelligentNotifications = () => {
   };
 
   const requestPermission = async () => {
-    if ('Notification' in window) {
-      const result = await Notification.requestPermission();
-      setPermission(result);
-      
-      if (result === 'granted') {
+    const result = await requestNotificationPermission();
+    setPermission(result);
+    
+    if (result === 'granted') {
+      toast({
+        title: "Permissão concedida! 🔔",
+        description: "Você receberá notificações inteligentes.",
+      });
+      const res = safeNotify("ENEM 15 Dias - Intensivo", {
+        body: "Notificações inteligentes ativadas com sucesso!",
+        icon: "/favicon.ico",
+      });
+      if (!res.ok) {
         toast({
-          title: "Permissão concedida! 🔔",
-          description: "Você receberá notificações inteligentes.",
-        });
-        
-        // Enviar notificação de teste
-        new Notification("ENEM 30x Boost", {
-          body: "Notificações inteligentes ativadas com sucesso!",
-          icon: "/favicon.ico"
+          title: "Aviso",
+          description: "Falha ao enviar notificação de teste.",
+          variant: "destructive",
         });
       }
     }
@@ -179,15 +183,22 @@ export const IntelligentNotifications = () => {
 
   const testNotification = (notification: SmartNotification) => {
     if (permission === 'granted') {
-      new Notification(notification.title, {
+      const res = safeNotify(notification.title, {
         body: notification.message,
-        icon: "/favicon.ico"
+        icon: "/favicon.ico",
       });
-      
-      toast({
-        title: "Notificação enviada!",
-        description: `"${notification.title}" foi enviada como teste.`,
-      });
+      if (res.ok) {
+        toast({
+          title: "Notificação enviada!",
+          description: `"${notification.title}" foi enviada como teste.`,
+        });
+      } else {
+        toast({
+          title: "Falha ao enviar",
+          description: "Verifique permissões e contexto seguro.",
+          variant: "destructive",
+        });
+      }
     } else {
       toast({
         title: "Permissão necessária",

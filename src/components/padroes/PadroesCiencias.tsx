@@ -153,6 +153,11 @@ export const PadroesCiencias = ({ onUpdate }: Props) => {
       });
     } catch (error) {
       console.error("Error:", error);
++     toast({
++       title: "Erro ao salvar",
++       description: "Tente novamente em instantes.",
++       variant: "destructive",
++     });
     }
   };
 
@@ -167,7 +172,7 @@ export const PadroesCiencias = ({ onUpdate }: Props) => {
           user_id: user.id,
           pattern_id: patternId,
           module: 'ciencias',
-          notes: notes[patternId],
+          notes: notes[patternId] || null,
           last_studied_at: new Date().toISOString()
         }, {
           onConflict: 'user_id,pattern_id'
@@ -176,6 +181,11 @@ export const PadroesCiencias = ({ onUpdate }: Props) => {
       toast({ title: "Anotações salvas! 📝" });
     } catch (error) {
       console.error("Error:", error);
++     toast({
++       title: "Erro ao salvar anotações",
++       description: "Verifique sua conexão e tente novamente.",
++       variant: "destructive",
++     });
     }
   };
 

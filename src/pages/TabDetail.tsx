@@ -27,7 +27,7 @@ const FREE_TABS = {
   dashboard: {
     id: "dashboard",
     title: "Dashboard Inicial",
-    description: "Seu centro de comando para os próximos 30 dias",
+    description: "Seu centro de comando para os próximos 15 dias",
     icon: Home,
   },
   flashcards: {

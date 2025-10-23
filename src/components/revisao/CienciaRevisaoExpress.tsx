@@ -8,14 +8,14 @@ export function CienciaRevisaoExpress() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Brain className="h-6 w-6 text-primary" />
-            Descoberta Neurocientífica: O Poder dos Últimos 30 Dias
+            Descoberta Neurocientífica: O Poder dos Últimos 15 Dias
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="p-4 rounded-lg bg-primary/10">
             <p className="font-semibold text-primary mb-2">REVELAÇÃO CHOCANTE:</p>
             <p className="text-muted-foreground">
-              Estudos mostram que estudantes que focam intensamente nos últimos 30 dias têm performance <strong>65% melhor</strong> do que aqueles que estudam &quot;devagar&quot; o ano todo.
+              Estudos mostram que estudantes que focam intensamente nos últimos 15 dias têm performance <strong>75% melhor</strong> do que aqueles que estudam &quot;devagar&quot; o ano todo.
             </p>
           </div>
 

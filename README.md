@@ -1,6 +1,6 @@
-# 🚀 ENEM 30x Boost
+# 🚀 NeuroHack ENEM 15 Dias Intensivo
 
-**App completo de preparação para o ENEM em 30 dias**
+**App completo de preparação para o ENEM em 15 dias**
 
 ## 🎯 Funcionalidades
 

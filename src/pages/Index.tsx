@@ -37,7 +37,7 @@ const Index = () => {
     "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
     "Você está mais perto do que imagina. Continue!",
     "Cada questão resolvida é um passo em direção à aprovação.",
-    "30 dias podem mudar sua vida inteira.",
+    "15 dias são suficientes para aprovação.",
   ];
 
   const [quote] = useState(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
@@ -56,19 +56,19 @@ const Index = () => {
         <div className="container relative mx-auto max-w-6xl">
           <div className="text-center">
             <div className="mb-6 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
-              Sistema Acelerado de Aprovação
+              Preparação Intensiva 15 Dias
             </div>
-            
+            <img src="/icons/nh-icon-192x192.png" alt="NeuroHack ENEM" className="mx-auto mb-6 h-20 w-20 md:h-24 md:w-24" />
             <h1 className="mb-6 animate-slide-up">
-              <span className="text-gold">ENEM 30 Dias</span>
+              <span className="text-gold">ENEM 15 Dias</span>
               <br />
-              <span className="text-foreground">Acelerador de Aprovação</span>
+              <span className="text-foreground">Preparação Intensiva com Garantia</span>
             </h1>
 
             <p className="mb-8 text-xl text-muted-foreground md:text-2xl">
-              Método científico para quem procrastinou o ano todo
+              Aprovação garantida para quem tem apenas 15 dias até o ENEM 2025
               <br />
-              <span className="text-primary">e ainda quer passar no ENEM 2025</span>
+              <span className="text-primary">com foco TOTAL nos próximos 15 dias</span>
             </p>
 
             {/* Countdown */}
@@ -94,7 +94,7 @@ const Index = () => {
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
               <Link to="/auth">
                 <Button className="btn-premium w-full sm:w-auto">
-                  Começar Agora Grátis
+                  Começar Intensivo Agora
                 </Button>
               </Link>
               <Link to="/pricing">
@@ -116,7 +116,7 @@ const Index = () => {
       <section className="px-4 py-20">
         <div className="container mx-auto max-w-6xl">
           <h2 className="mb-12 text-center">
-            Por que o <span className="text-gold">ENEM 30 Dias</span> funciona?
+            Por que o <span className="text-gold">ENEM 15 Dias</span> funciona?
           </h2>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -248,7 +248,7 @@ const Index = () => {
                 <div className="text-sm text-muted-foreground">Taxa de aprovação</div>
               </div>
               <div className="rounded-xl bg-primary/10 p-4">
-                <div className="mb-1 text-3xl font-bold text-primary">30</div>
+                <div className="mb-1 text-3xl font-bold text-primary">15</div>
                 <div className="text-sm text-muted-foreground">Dias de estudo</div>
               </div>
             </div>
@@ -267,7 +267,7 @@ const Index = () => {
           </p>
           <Link to="/tabs">
             <Button className="btn-premium">
-              Começar Minha Jornada de 30 Dias
+              Iniciar Jornada Intensiva
             </Button>
           </Link>
         </div>

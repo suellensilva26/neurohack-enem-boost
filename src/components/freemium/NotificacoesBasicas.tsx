@@ -80,7 +80,7 @@ export const NotificacoesBasicas = () => {
     setPermissaoNotificacao(permission);
     if (permission === "granted") {
       toast({ title: "Permissão concedida! 🔔", description: "Você receberá notificações de estudo." });
-      const res = safeNotify("ENEM 30x Boost", { body: "Notificações ativadas! Continue seus estudos.", icon: "/favicon.ico" });
+      const res = safeNotify("ENEM 15 Dias - Intensivo", { body: "Notificações ativadas! Continue seus estudos.", icon: "/favicon.ico" });
       if (!res.ok) {
         const reason = res.reason === "insecure_context" ?
           "Contexto não seguro (http). Use https ou localhost." :

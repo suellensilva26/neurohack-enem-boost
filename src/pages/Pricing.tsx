@@ -23,7 +23,7 @@ const Pricing = () => {
         "240 tópicos essenciais",
         "Cobre 85% das questões",
         "12 módulos organizados",
-        "Sistema trifásico 30 dias",
+        "Sistema trifásico 15 dias",
         "Cronogramas personalizados",
         "Checklists de revisão",
       ],
@@ -101,7 +101,7 @@ const Pricing = () => {
         {/* Hero Section */}
         <div className="mb-16 text-center">
           <div className="mb-4 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
-            Oferta Limitada - 30 Dias para o ENEM
+            Oferta Limitada - 15 Dias para o ENEM
           </div>
           <h1 className="mb-4">
             Escolha seu <span className="text-gold">caminho</span> para a aprovação

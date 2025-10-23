@@ -20,7 +20,7 @@ const TabsPage = () => {
       id: "dashboard",
       title: "Dashboard Inicial",
       icon: Home,
-      description: "Seu centro de comando para os próximos 30 dias",
+      description: "Seu centro de comando para os próximos 15 dias",
       content: "dashboard"
     },
     {
@@ -178,7 +178,8 @@ const TabsPage = () => {
             <span className="font-semibold">Voltar</span>
           </Link>
           <div className="text-center">
-            <h1 className="text-xl font-bold">
+            <h1 className="text-xl font-bold flex items-center justify-center gap-2">
+              <img src="/icons/nh-icon-192x192.png" alt="NeuroHack ENEM" className="h-6 w-6 rounded" />
               <span className="text-gold">NeuroHack Enem 2025</span>
             </h1>
             <p className="text-xs text-muted-foreground">O maior sistema de aprovação já criado</p>

@@ -8,7 +8,7 @@ export function CasosSucessoRevisao() {
       title: "O MILAGRE DA LETÍCIA",
       situacao: [
         "Não havia estudado durante o ano",
-        "30 dias antes da prova estava desesperada",
+        "15 dias antes da prova estava desesperada",
         "Primeira tentativa: 543 pontos (insuficiente)"
       ],
       resultado: [
@@ -17,7 +17,7 @@ export function CasosSucessoRevisao() {
         "Gain de 304 pontos em um mês"
       ],
       aplicacao: [
-        "Seguiu religiosamente o cronograma de 30 dias",
+        "Seguiu religiosamente o cronograma de 15 dias",
         "Focou nos 240 tópicos essenciais",
         "Fez 15 simulados completos",
         "Usou mapas mentais para memorização acelerada"

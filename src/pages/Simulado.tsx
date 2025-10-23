@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Clock, Target, Award, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 // import PaywallModal from "@/components/PaywallModal";
 
 interface Question {
@@ -30,6 +31,7 @@ const Simulado = () => {
   // const [showPaywall, setShowPaywall] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const isOnline = useOnlineStatus();
 
   useEffect(() => {
     checkAccessAndLoadQuestions();
@@ -203,26 +205,23 @@ const Simulado = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/tabs" className="flex items-center gap-2 text-foreground hover:text-primary">
-              <ArrowLeft className="h-5 w-5" />
-              <span className="font-semibold">Voltar</span>
-            </Link>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">
-                Questão {currentQuestion + 1} de {questions.length}
-              </span>
-              {/* Remover badge de demo em build premium */}
-              {/* {!hasAccess && currentQuestion >= 9 && (
-                <span className="text-xs bg-gold/20 text-gold px-2 py-1 rounded-full">
-                  Demo (10 questões)
-                </span>
-              )} */}
-            </div>
-          </div>
+        <div className="container mx-auto flex items-center justify-between px-4 py-4">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-foreground hover:text-primary">
+            <ArrowLeft className="h-5 w-5" />
+            <span className="font-semibold">Voltar</span>
+          </button>
+          <h1 className="text-xl font-bold">
+            <span className="text-gold">Simulado</span>
+          </h1>
+          <div className="w-20"></div>
         </div>
       </header>
+
+      {!isOnline && (
+        <div className="bg-yellow-50 border-y border-yellow-200 text-yellow-800 text-sm p-2 text-center">
+          Você está offline. O simulado pode necessitar conexão para carregar e salvar.
+        </div>
+      )}
 
       <div className="container mx-auto max-w-4xl px-4 py-8">
         <Progress value={progress} className="mb-8" />

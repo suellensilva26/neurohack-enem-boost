@@ -82,7 +82,7 @@ export const ModalUpgrade = ({ isOpen, onClose, tipo, limiteUsado, limiteMaximo 
               {getDescricao()} Com o upgrade, você terá acesso ilimitado a todo o conteúdo!
             </p>
             <Badge variant="outline" className="text-gold border-gold">
-              Aprovação em 30 dias garantida
+              Aprovação em 15 dias garantida
             </Badge>
           </div>
 

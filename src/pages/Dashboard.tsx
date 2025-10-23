@@ -96,7 +96,7 @@ export default function Dashboard() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Dashboard ENEM 30 Dias</h1>
+            <h1 className="text-3xl font-bold">Dashboard ENEM 15 Dias</h1>
             <p className="text-muted-foreground">Bem-vindo, {userData.nome}!</p>
           </div>
           <Badge variant="destructive" className="text-lg px-4 py-2">
@@ -310,7 +310,7 @@ export default function Dashboard() {
           <TabsContent value="cronograma">
             <Card>
               <CardHeader>
-                <CardTitle>Cronograma dos Próximos 30 Dias</CardTitle>
+                <CardTitle>Cronograma dos Próximos 15 Dias</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">

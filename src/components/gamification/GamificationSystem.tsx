@@ -70,10 +70,10 @@ const badges: Badge[] = [
   {
     id: "streak_30",
     name: "Mestre da Disciplina",
-    description: "30 dias de estudo consecutivo",
+    description: "15 dias de estudo intensivo consecutivo",
     icon: <Crown className="h-5 w-5" />,
     rarity: "legendary",
-    requirement: "30 dias consecutivos",
+    requirement: "15 dias consecutivos",
     unlocked: false,
     xpReward: 1000
   },

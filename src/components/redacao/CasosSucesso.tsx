@@ -18,7 +18,7 @@ const CASOS = [
     escola: "Cursinho Popular - SP",
     notaAnterior: 520,
     notaFinal: 920,
-    tempo: "30 dias",
+    tempo: "15 dias",
     depoimento: "Eu achava que redação era 'dom'. Tentava escrever bonito e complicado, mas sempre tirava notas baixas. Quando entendi que existe uma FÓRMULA matemática (7-8 linhas por parágrafo, repertório legitimado, proposta completa), tudo mudou. Segui o protocolo ao pé da letra.",
     segredo: "Focou em ESTRUTURA, não em criatividade. Usou o sistema de memorização de 3 dias e escreveu 10 redações completas no mês."
   },

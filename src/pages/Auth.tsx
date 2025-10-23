@@ -85,8 +85,9 @@ const AuthPage = () => {
             <ArrowLeft className="h-5 w-5" />
             <span className="font-semibold">Voltar</span>
           </Link>
-          <h1 className="text-xl font-bold">
-            <span className="text-gold">ENEM 30 Dias</span>
+          <h1 className="text-xl font-bold flex items-center justify-center gap-2">
+            <img src="/icons/nh-icon-192x192.png" alt="NeuroHack ENEM" className="h-6 w-6 rounded" />
+            <span className="text-gold">NeuroHack Enem 2025</span>
           </h1>
           <div className="w-20"></div>
         </div>

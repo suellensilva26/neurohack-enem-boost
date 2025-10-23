@@ -105,7 +105,7 @@ export const PersonalizedSchedule = () => {
   };
 
   const generatePersonalizedSchedule = (profile: any): ScheduleData => {
-    const totalDays = 30; // ENEM em 30 dias
+    const totalDays = 15; // ENEM em 15 dias
     const studyDaysPerWeek = profile.study_days_available || 5;
     const studyHoursPerDay = 2; // Baseado no perfil
     const weakSubjects = [profile.main_difficulty || "Matemática"];
@@ -288,7 +288,7 @@ export const PersonalizedSchedule = () => {
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-xl font-bold">Seu Cronograma de 30 Dias</h2>
+              <h2 className="text-xl font-bold">Seu Cronograma de 15 Dias</h2>
               <p className="text-muted-foreground">
                 Personalizado para {scheduleData.studyDaysPerWeek} dias por semana
               </p>

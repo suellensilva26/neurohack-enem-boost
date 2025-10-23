@@ -192,7 +192,7 @@ export const PaywallModal = ({
     "⚡ Aprendizagem Acelerada com IA",
     "📊 Análise Personalizada de Desempenho",
     "🔥 Simulados Ilimitados",
-    "🎓 Revisão Express para os 30 Dias Finais",
+    "🎓 Revisão Express Intensiva para os 15 Dias Finais",
     "📱 Suporte Prioritário"
   ];
 

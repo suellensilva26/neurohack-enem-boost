@@ -1,12 +1,13 @@
 {
-  "name": "enem-30x-boost",
+  "name": "enem-15dias-intensivo",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://suellensilva26.github.io/enem-30x-boost",
+  "homepage": "https://suellensilva26.github.io/enem-15dias-intensivo",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "generate-icons": "node scripts/generate-icons.cjs",
+    "dev": "npm run generate-icons && vite",
+    "build": "npm run generate-icons && vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",

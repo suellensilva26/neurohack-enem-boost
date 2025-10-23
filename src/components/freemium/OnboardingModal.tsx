@@ -75,7 +75,7 @@ export const OnboardingModal = ({ open, onComplete }: OnboardingModalProps) => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">
             <GraduationCap className="h-6 w-6 text-primary" />
-            Bem-vindo ao ENEM 30 Dias
+            Bem-vindo ao ENEM 15 Dias
           </DialogTitle>
           <div className="flex items-center gap-2 text-destructive font-bold mt-2">
             <Clock className="h-5 w-5" />

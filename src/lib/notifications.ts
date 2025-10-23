@@ -24,6 +24,7 @@ export function canUseNotifications(): NotifyResult {
   return { ok: true };
 }
 
+// Mantém a assinatura esperada pelos componentes: retorna NotificationPermission
 export async function requestNotificationPermission(): Promise<NotificationPermission> {
   if (typeof window === "undefined" || !("Notification" in window)) return "denied";
   try {
@@ -37,29 +38,29 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
 export function safeNotify(title: string, options?: NotificationOptions): NotifyResult {
   const check = canUseNotifications();
   if (!check.ok) return check;
-  // Prefer Service Worker notifications to avoid Illegal constructor in some browsers
+
+  // Prefer Service Worker notifications; aguarda registro existente, sem tentar registrar manualmente.
   if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
-    // Fire and forget registration/show; avoid throwing to the app
-    navigator.serviceWorker
-      .getRegistration()
-      .then(async (reg) => {
+    // Usa navigator.serviceWorker.ready para evitar erros em dev quando /sw.js não existe ainda.
+    navigator.serviceWorker.ready
+      .then((reg) => {
         try {
-          if (!reg) {
-            const newReg = await navigator.serviceWorker.register("/sw.js");
-            await newReg.showNotification(title, options);
-          } else {
-            await reg.showNotification(title, options);
-          }
-        } catch (err) {
-          // Swallow errors; we report ok=false via return value below if needed
-          // But since this is async, no need to disrupt UI
+          reg.showNotification(title, options);
+        } catch {
+          // Evita quebrar a UI em caso de erro; não precisamos lançar.
         }
       })
       .catch(() => {
-        // Ignore
+        // Silencia erros de readiness.
       });
     return { ok: true };
   }
-  // If Service Workers are unsupported, avoid using the Notification constructor to prevent Illegal constructor
-  return { ok: false, reason: "unsupported" };
+
+  // Fallback: se Service Workers não forem suportados, tenta usar Notification diretamente
+  try {
+    new Notification(title, options);
+    return { ok: true };
+  } catch {
+    return { ok: false, reason: "error" };
+  }
 }

@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ENEM 30 Dias - Premium Black & Gold Design System */
+/* ENEM 15 Dias - Premium Black & Gold Design System */
 
 @layer base {
   :root {
@@ -127,4 +127,17 @@
     content: '🔒';
     @apply text-4xl;
   }
+}
+
+@layer utilities {
+  /* Override legacy green classes to gold/black theme */
+  .text-green-500, .text-green-600, .text-green-700, .text-green-800 { color: hsl(45 100% 51%) !important; }
+  .dark\:text-green-300 { color: hsl(45 100% 70%) !important; }
+
+  .bg-green-50 { background-color: hsl(45 100% 51% / 0.06) !important; }
+  .bg-green-100 { background-color: hsl(45 100% 51% / 0.12) !important; }
+  .bg-green-500, .bg-green-600 { background-color: hsl(45 100% 51%) !important; }
+
+  .border-green-200 { border-color: hsl(45 100% 51% / 0.25) !important; }
+  .border-green-500 { border-color: hsl(45 100% 51% / 0.45) !important; }
 }

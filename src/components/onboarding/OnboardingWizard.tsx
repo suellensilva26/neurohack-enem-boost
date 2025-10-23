@@ -25,7 +25,7 @@ interface OnboardingData {
 const onboardingSteps = [
   {
     id: "welcome",
-    title: "Bem-vindo ao ENEM 30x Boost! 🚀",
+    title: "Bem-vindo ao ENEM 15 Dias! 🚀",
     subtitle: "Vamos personalizar sua experiência de estudo",
     icon: <Star className="h-8 w-8 text-gold" />
   },
@@ -196,7 +196,7 @@ export const OnboardingWizard = ({ onComplete }: { onComplete: () => void }) => 
             <div>
               <h2 className="text-2xl font-bold mb-2">Bem-vindo ao futuro dos seus estudos!</h2>
               <p className="text-muted-foreground">
-                Em apenas 30 dias, você estará pronto para conquistar sua vaga no ENEM.
+                Em apenas 15 dias, você estará pronto para conquistar sua vaga no ENEM.
                 Vamos personalizar tudo para você!
               </p>
             </div>
