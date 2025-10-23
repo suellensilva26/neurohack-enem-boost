@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { safeNotify, requestNotificationPermission } from "@/lib/notifications";
+import * as logger from "@/utils/logger";
 
 interface SmartNotification {
   id: string;
@@ -122,7 +123,7 @@ export const IntelligentNotifications = () => {
         setIsEnabled(parsed.enabled !== false);
       }
     } catch (error) {
-      console.error('Erro ao carregar configurações:', error);
+      logger.error('Erro ao carregar configurações:', error);
     }
   };
 

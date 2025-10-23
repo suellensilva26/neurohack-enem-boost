@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import * as logger from "@/utils/logger";
 
 export const DualCodingSystem = () => {
   const [contentType, setContentType] = useState<"cartao" | "storyboard" | "diagrama">("cartao");
@@ -45,7 +46,7 @@ export const DualCodingSystem = () => {
       setTitle("");
       setContent("");
     } catch (error) {
-      console.error("Error saving content:", error);
+      logger.error("Error saving content:", error);
       toast.error("Erro ao salvar conteúdo");
     }
   };

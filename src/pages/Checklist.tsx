@@ -20,6 +20,7 @@ import {
   ChecklistItem
 } from "@/data/checklistData";
 import { useFreemiumLimits } from "@/hooks/useFreemiumLimits";
+import * as logger from "@/utils/logger";
 
 type FilterType = 'all' | 'critical' | 'high' | 'medium' | 'low';
 type SortType = 'importance' | 'frequency' | 'alphabetical' | 'category';
@@ -41,7 +42,7 @@ export default function Checklist() {
         const parsed = JSON.parse(savedData);
         setSubjects(parsed);
       } catch (error) {
-        console.error('Erro ao carregar progresso:', error);
+        logger.error('Erro ao carregar progresso:', error);
       }
     }
   }, []);

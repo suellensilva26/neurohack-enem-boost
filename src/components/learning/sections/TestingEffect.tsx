@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Target, FileText, BookOpen, MessageCircle, AlertCircle, Plus } from "lucide-react";
+import * as logger from "@/utils/logger";
 
 export const TestingEffect = () => {
   const [errorTracking, setErrorTracking] = useState({
@@ -58,7 +59,7 @@ export const TestingEffect = () => {
       toast.success("Erro registrado!");
       setErrorTracking({ subject: "", errorType: "", strategy: "" });
     } catch (error) {
-      console.error("Error saving error:", error);
+      logger.error("Error saving error:", error);
       toast.error("Erro ao registrar");
     }
   };

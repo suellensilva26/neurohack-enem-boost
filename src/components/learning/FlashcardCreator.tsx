@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import * as logger from "@/utils/logger";
 
 interface FlashcardCreatorProps {
   onCardCreated?: () => void;
@@ -50,7 +51,7 @@ export const FlashcardCreator = ({ onCardCreated, source }: FlashcardCreatorProp
       onCardCreated?.();
     } catch (error) {
       toast.error("Erro ao salvar flashcard");
-      console.error(error);
+      logger.error(error);
     } finally {
       setIsLoading(false);
     }

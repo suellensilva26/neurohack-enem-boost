@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle, XCircle, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import * as logger from "@/utils/logger";
 
 interface Question {
   id: string;
@@ -64,7 +65,7 @@ export const QuizEngine = ({ lessonId, onComplete }: QuizEngineProps) => {
       
       setQuestions(data || []);
     } catch (error) {
-      console.error("Error loading questions:", error);
+      logger.error("Error loading questions:", error);
       toast({
         title: "Erro ao carregar questões",
         description: "Tente novamente mais tarde.",
@@ -108,7 +109,7 @@ export const QuizEngine = ({ lessonId, onComplete }: QuizEngineProps) => {
           });
         }
       } catch (error) {
-        console.error("Error saving quiz result:", error);
+        logger.error("Error saving quiz result:", error);
       }
 
       if (onComplete) {

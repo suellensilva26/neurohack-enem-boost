@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, Circle, BookOpen, Target } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import * as logger from "@/utils/logger";
 
 interface Props {
   onUpdate: () => void;
@@ -95,7 +96,7 @@ export const PadroesMatematica = ({ onUpdate }: Props) => {
         description: isCompleted ? "Continue assim!" : "Volte quando quiser"
       });
     } catch (error) {
-      console.error("Error:", error);
+      logger.error("Error:", error);
       toast({
         title: "Erro ao salvar",
         variant: "destructive"
@@ -126,7 +127,7 @@ export const PadroesMatematica = ({ onUpdate }: Props) => {
         title: "Anotações salvas! 📝"
       });
     } catch (error) {
-      console.error("Error:", error);
+      logger.error("Error:", error);
     }
   };
 

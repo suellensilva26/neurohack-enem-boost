@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, Clock, Target, Award, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import * as logger from "@/utils/logger";
 // import PaywallModal from "@/components/PaywallModal";
 
 interface Question {
@@ -73,7 +74,7 @@ const Simulado = () => {
       setQuestions(questionsData || []);
       setAnswers(new Array(questionsData?.length || 0).fill(-1));
     } catch (error) {
-      console.error("Error loading simulado:", error);
+      logger.error("Error loading simulado:", error);
       toast({
         title: "Erro ao carregar simulado",
         description: "Tente novamente mais tarde",
@@ -115,7 +116,7 @@ const Simulado = () => {
         });
       }
     } catch (error) {
-      console.error("Error saving results:", error);
+      logger.error("Error saving results:", error);
     }
 
     setShowResults(true);

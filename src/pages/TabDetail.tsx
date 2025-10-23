@@ -15,6 +15,7 @@ import { GamificationSystem } from "@/components/gamification/GamificationSystem
 import { AdvancedAnalytics } from "@/components/analytics/AdvancedAnalytics";
 import { IntelligentNotifications } from "@/components/notifications/IntelligentNotifications";
 import { PersonalizedSchedule } from "@/components/schedule/PersonalizedSchedule";
+import * as logger from "@/utils/logger";
 
 interface Ebook {
   id: string;
@@ -114,7 +115,7 @@ const TabDetail = () => {
         setShowOnboarding(true);
       }
     } catch (error) {
-      console.error("Erro ao verificar onboarding:", error);
+      logger.error("Erro ao verificar onboarding:", error);
     }
   };
 
@@ -204,7 +205,7 @@ const TabDetail = () => {
 
       setHasAccess(access);
     } catch (error) {
-      console.error("Error checking access:", error);
+      logger.error("Error checking access:", error);
       toast({
         title: "Erro ao carregar conteúdo",
         description: "Tente novamente mais tarde.",
@@ -384,7 +385,7 @@ const AiTipWaitlist = () => {
 
       // Se falhar, tenta na tabela com colunas em português: lista_de_espera_ai
       if (insertError) {
-        console.warn("Falha ao inserir em ai_waitlist, tentando lista_de_espera_ai:", insertError?.message || insertError);
+        logger.warn("Falha ao inserir em ai_waitlist, tentando lista_de_espera_ai:", insertError?.message || insertError);
         const payloadPt = {
           telefone: digits,
           fonte: "ai_tip_tab",
@@ -397,7 +398,7 @@ const AiTipWaitlist = () => {
             throw errorPt;
           }
         } catch (e2) {
-          console.warn("Supabase erro ao inserir lista_de_espera_ai:", (e2 as any)?.message || e2);
+          logger.warn("Supabase erro ao inserir lista_de_espera_ai:", (e2 as any)?.message || e2);
           // Fallback final: localStorage
           const list = JSON.parse(localStorage.getItem("ai_waitlist") || "[]");
           list.push(payload);
@@ -412,7 +413,7 @@ const AiTipWaitlist = () => {
         duration: 4000,
       });
     } catch (err) {
-      console.error("Falha ao registrar na lista de espera:", err);
+      logger.error("Falha ao registrar na lista de espera:", err);
       toast({
         title: "Erro ao registrar",
         description: "Tente novamente em instantes.",

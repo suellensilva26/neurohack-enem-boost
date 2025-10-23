@@ -10,6 +10,7 @@ import {
   PieChart, LineChart, Zap, CheckCircle, XCircle, AlertTriangle,
   BookOpen, Award, Users, Star, Eye, Filter, Trophy, Flame, Sparkles
 } from "lucide-react";
+import * as logger from "@/utils/logger";
 
 interface StudyData {
   date: string;
@@ -93,7 +94,7 @@ export const AdvancedAnalytics = () => {
         setMetrics(calculatedMetrics);
       }
     } catch (error) {
-      console.error("Erro ao carregar analytics:", error);
+      logger.error("Erro ao carregar analytics:", error);
     } finally {
       setLoading(false);
     }

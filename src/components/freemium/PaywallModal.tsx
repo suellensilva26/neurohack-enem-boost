@@ -5,6 +5,7 @@ import { Check, Zap, Users, Timer, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
+import * as logger from "@/utils/logger";
 
 interface FreemiumPaywallProps {
   open: boolean;
@@ -39,7 +40,7 @@ export default function FreemiumPaywallModal({ open, onClose, triggerType, descr
           .limit(1);
       }
     } catch (error) {
-      console.error("Erro ao atualizar click:", error);
+      logger.error("Erro ao atualizar click:", error);
     }
     navigate("/pricing");
   };
@@ -159,7 +160,7 @@ export const PaywallModal = ({
         clicked: false
       });
     } catch (error) {
-      console.error("Erro ao rastrear trigger:", error);
+      logger.error("Erro ao rastrear trigger:", error);
     }
   };
 
@@ -176,7 +177,7 @@ export const PaywallModal = ({
           .limit(1);
       }
     } catch (error) {
-      console.error("Erro ao atualizar click:", error);
+      logger.error("Erro ao atualizar click:", error);
     }
     navigate("/pricing");
   };

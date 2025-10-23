@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, Circle, Zap, Atom, Dna, Target } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import * as logger from "@/utils/logger";
 
 interface Props {
   onUpdate: () => void;
@@ -152,7 +153,7 @@ export const PadroesCiencias = ({ onUpdate }: Props) => {
         title: isCompleted ? "Padrão dominado! 🎯" : "Marcado para revisar"
       });
     } catch (error) {
-      console.error("Error:", error);
+      logger.error("Error:", error);
 +     toast({
 +       title: "Erro ao salvar",
 +       description: "Tente novamente em instantes.",
@@ -180,7 +181,7 @@ export const PadroesCiencias = ({ onUpdate }: Props) => {
 
       toast({ title: "Anotações salvas! 📝" });
     } catch (error) {
-      console.error("Error:", error);
+      logger.error("Error:", error);
 +     toast({
 +       title: "Erro ao salvar anotações",
 +       description: "Verifique sua conexão e tente novamente.",

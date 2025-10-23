@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Brain, Wind, Eye, Smartphone, Target as TargetIcon } from "lucide-react";
+import * as logger from "@/utils/logger";
 
 export const FundacaoNeural = () => {
   const [objective, setObjective] = useState("");
@@ -45,7 +46,7 @@ export const FundacaoNeural = () => {
 
         toast.success("Preparação neural completa! 🧠");
       } catch (error) {
-        console.error("Error saving session:", error);
+        logger.error("Error saving session:", error);
       }
     }
   };
@@ -70,7 +71,7 @@ export const FundacaoNeural = () => {
         toast.success("Objetivo salvo!");
       }
     } catch (error) {
-      console.error("Error saving objective:", error);
+      logger.error("Error saving objective:", error);
     }
   };
 

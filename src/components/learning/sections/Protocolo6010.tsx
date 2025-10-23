@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Clock, Play, Pause, CheckCircle } from "lucide-react";
+import * as logger from "@/utils/logger";
 
 interface Phase {
   name: string;
@@ -117,7 +118,7 @@ export const Protocolo6010 = ({ onSessionComplete }: Protocolo6010Props) => {
 
       onSessionComplete?.();
     } catch (error) {
-      console.error("Error saving session:", error);
+      logger.error("Error saving session:", error);
     }
   };
 

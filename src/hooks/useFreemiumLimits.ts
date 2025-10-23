@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import * as logger from "@/utils/logger";
 
 export interface FreemiumLimits {
   isPremium: boolean;
@@ -77,7 +78,7 @@ export const useFreemiumLimits = (): FreemiumLimits => {
 
       setIsPremium(hasPremiumRole || hasFullAccess);
     } catch (error) {
-      console.error("Erro ao verificar acesso:", error);
+      logger.error("Erro ao verificar acesso:", error);
     }
   };
 
@@ -88,7 +89,7 @@ export const useFreemiumLimits = (): FreemiumLimits => {
       setStudyHoursToday(usage.studyHoursToday || 0);
       setCurrentStreak(usage.currentStreak || 0);
     } catch (error) {
-      console.error("Erro ao carregar uso diário:", error);
+      logger.error("Erro ao carregar uso diário:", error);
     }
   };
 

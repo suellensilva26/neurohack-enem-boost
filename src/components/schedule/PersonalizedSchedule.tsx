@@ -9,6 +9,7 @@ import {
   TrendingUp, Zap, Star, AlertTriangle, Trophy, Users
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import * as logger from "@/utils/logger";
 
 interface StudyDay {
   day: number;
@@ -98,7 +99,7 @@ export const PersonalizedSchedule = () => {
         setScheduleData(schedule);
       }
     } catch (error) {
-      console.error("Erro ao carregar cronograma:", error);
+      logger.error("Erro ao carregar cronograma:", error);
     } finally {
       setLoading(false);
     }

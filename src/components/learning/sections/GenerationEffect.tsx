@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import * as logger from "@/utils/logger";
 
 export const GenerationEffect = () => {
   const [contentType, setContentType] = useState<"exemplo" | "questao" | "analogia">("exemplo");
@@ -47,7 +48,7 @@ export const GenerationEffect = () => {
       setContent("");
       setMetadata({ subject: "", topic: "", correctAnswer: "" });
     } catch (error) {
-      console.error("Error saving content:", error);
+      logger.error("Error saving content:", error);
       toast.error("Erro ao salvar conteúdo");
     }
   };

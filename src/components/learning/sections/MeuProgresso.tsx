@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Brain, Zap, Eye, Target, Lightbulb, Clock, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import * as logger from "@/utils/logger";
 
 export const MeuProgresso = () => {
   const [loading, setLoading] = useState(true);
@@ -47,7 +48,7 @@ export const MeuProgresso = () => {
         protocolSessions: protocol.data || []
       });
     } catch (error) {
-      console.error("Error loading data:", error);
+      logger.error("Error loading data:", error);
       toast.error("Erro ao carregar dados");
     } finally {
       setLoading(false);

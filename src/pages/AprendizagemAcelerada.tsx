@@ -12,6 +12,7 @@ import { GenerationEffect } from "@/components/learning/sections/GenerationEffec
 import { Protocolo6010 } from "@/components/learning/sections/Protocolo6010";
 import { MeuProgresso } from "@/components/learning/sections/MeuProgresso";
 import { supabase } from "@/integrations/supabase/client";
+import * as logger from "@/utils/logger";
 
 const AprendizagemAcelerada = () => {
   const [stats, setStats] = useState({
@@ -48,7 +49,7 @@ const AprendizagemAcelerada = () => {
         });
       }
     } catch (error) {
-      console.error("Error loading stats:", error);
+      logger.error("Error loading stats:", error);
     }
   };
 

@@ -15,6 +15,7 @@ import { useSimuladoCache, ResultadoSimulado } from '@/hooks/useSimuladoCache';
 import { useFreemiumLimits } from '@/hooks/useFreemiumLimits';
 import { SimuladoInterface } from './SimuladoInterface';
 import { HistoricoSimulados } from './HistoricoSimulados';
+import * as logger from "@/utils/logger";
 
 const DISCIPLINAS_OPCOES = [
   { value: 'matematica', label: 'Matemática', icon: '📐', color: 'bg-blue-100 text-blue-800' },
@@ -144,7 +145,7 @@ export const SimuladosEnem = () => {
       setSimuladoAtivo(simulado);
       // Removido: incrementarSimulados();
     } catch (error) {
-      console.error('Erro ao iniciar simulado:', error);
+      logger.error("Erro ao iniciar simulado:", error);
       // Mostrar toast de erro
     } finally {
       setLoading(false);

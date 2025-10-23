@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Mic, Square, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import * as logger from "@/utils/logger";
 
 interface AudioRecorderProps {
   onRecordingComplete?: (blob: Blob, duration: number) => void;
@@ -57,7 +58,7 @@ export const AudioRecorder = ({
       }, 1000);
     } catch (error) {
       toast.error("Erro ao acessar o microfone");
-      console.error(error);
+      logger.error(error);
     }
   };
 

@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, Circle, Clock, MapPin, Target } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import * as logger from "@/utils/logger";
 
 interface Props {
   onUpdate: () => void;
@@ -139,7 +140,7 @@ export const PadroesHumanas = ({ onUpdate }: Props) => {
         title: isCompleted ? "Padrão dominado! 🎯" : "Marcado para revisar"
       });
     } catch (error) {
-      console.error("Error:", error);
+      logger.error("Error:", error);
     }
   };
 
@@ -162,7 +163,7 @@ export const PadroesHumanas = ({ onUpdate }: Props) => {
 
       toast({ title: "Anotações salvas! 📝" });
     } catch (error) {
-      console.error("Error:", error);
+      logger.error("Error:", error);
     }
   };
 

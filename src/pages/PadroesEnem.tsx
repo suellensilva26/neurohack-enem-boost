@@ -9,6 +9,7 @@ import { PadroesPortugues } from "@/components/padroes/PadroesPortugues";
 import { PadroesCiencias } from "@/components/padroes/PadroesCiencias";
 import { PadroesHumanas } from "@/components/padroes/PadroesHumanas";
 import { MeuProgressoPadroes } from "@/components/padroes/MeuProgressoPadroes";
+import * as logger from "@/utils/logger";
 
 const PadroesEnem = () => {
   const [stats, setStats] = useState({
@@ -42,7 +43,7 @@ const PadroesEnem = () => {
         });
       }
     } catch (error) {
-      console.error("Error loading stats:", error);
+      logger.error("Error loading stats:", error);
     }
   };
 

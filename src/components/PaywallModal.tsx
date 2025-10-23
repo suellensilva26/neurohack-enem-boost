@@ -4,6 +4,7 @@ import { Check, Lock, Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import * as logger from "@/utils/logger";
 
 export default function PaywallModal({ open, onClose, price }: { open: boolean; onClose: () => void; price: number; }) {
   const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'true') === 'true';
@@ -22,7 +23,7 @@ export default function PaywallModal({ open, onClose, price }: { open: boolean; 
       }
       // lógica de compra...
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     } finally {
       setLoading(false);
     }

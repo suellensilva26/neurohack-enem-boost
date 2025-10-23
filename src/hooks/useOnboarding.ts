@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import * as logger from "@/utils/logger";
 
 export const useOnboarding = () => {
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
@@ -25,7 +26,7 @@ export const useOnboarding = () => {
 
       setNeedsOnboarding(!profile?.onboarding_completed);
     } catch (error) {
-      console.error("Erro ao verificar onboarding:", error);
+      logger.error("Erro ao verificar onboarding:", error);
     } finally {
       setLoading(false);
     }

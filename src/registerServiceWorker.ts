@@ -1,4 +1,5 @@
 import { registerSW } from 'virtual:pwa-register'
+import * as logger from "@/utils/logger";
 
 const updateSW = registerSW({
   onNeedRefresh() {
@@ -7,6 +8,6 @@ const updateSW = registerSW({
     }
   },
   onOfflineReady() {
-    console.log('App pronto para uso offline')
+    logger.log('App pronto para uso offline')
   },
 })

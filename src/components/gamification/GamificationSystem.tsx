@@ -10,6 +10,7 @@ import {
   TrendingUp, Users, Gift
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import * as logger from "@/utils/logger";
 
 interface Badge {
   id: string;
@@ -261,7 +262,7 @@ export const GamificationSystem = () => {
         });
       }
     } catch (error) {
-      console.error("Erro ao carregar estatísticas:", error);
+      logger.error("Erro ao carregar estatísticas:", error);
     }
   };
 

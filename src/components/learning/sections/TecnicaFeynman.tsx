@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Zap, MessageSquare } from "lucide-react";
+import * as logger from "@/utils/logger";
 
 export const TecnicaFeynman = () => {
   const [template, setTemplate] = useState({
@@ -50,7 +51,7 @@ export const TecnicaFeynman = () => {
       toast.success("Gravação salva com sucesso!");
       setShowFlashcardCreator(true);
     } catch (error) {
-      console.error("Error saving recording:", error);
+      logger.error("Error saving recording:", error);
       toast.error("Erro ao salvar gravação");
     }
   };

@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { BookOpen, ChevronLeft, ChevronRight, Target, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PaywallModal from "./PaywallModal";
+import * as logger from "@/utils/logger";
 
 interface Chapter {
   id: string;
@@ -62,7 +63,7 @@ export const EbookReader = ({ ebookId, hasAccess = false, ebookPrice = 0, ebookT
         setCurrentChapter(data[0]);
       }
     } catch (error) {
-      console.error("Error loading chapters:", error);
+      logger.error("Error loading chapters:", error);
     } finally {
       setLoading(false);
     }
@@ -84,7 +85,7 @@ export const EbookReader = ({ ebookId, hasAccess = false, ebookPrice = 0, ebookT
         setCurrentLesson(data[0]);
       }
     } catch (error) {
-      console.error("Error loading lessons:", error);
+      logger.error("Error loading lessons:", error);
     }
   };
 

@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { Calculator, BookOpen, Atom, Globe, TrendingUp, CheckCircle2 } from "lucide-react";
+import * as logger from "@/utils/logger";
 
 export const MeuProgressoPadroes = () => {
   const [progressData, setProgressData] = useState<any[]>([]);
@@ -28,7 +29,7 @@ export const MeuProgressoPadroes = () => {
         setProgressData(data);
       }
     } catch (error) {
-      console.error("Error loading progress:", error);
+      logger.error("Error loading progress:", error);
     } finally {
       setLoading(false);
     }

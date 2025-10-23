@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import * as logger from "@/utils/logger";
 
 export interface QuestaoEnem {
   id: string;
@@ -219,7 +220,7 @@ export const useEnemAPI = (): UseEnemAPIReturn => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       setError(errorMessage);
-      console.error('Erro ao buscar questões:', err);
+      logger.error('Erro ao buscar questões:', err);
       return [];
     } finally {
       setLoading(false);
@@ -291,7 +292,7 @@ export const useEnemAPI = (): UseEnemAPIReturn => {
 
       return simulado;
     } catch (err) {
-      console.error('Erro ao gerar simulado:', err);
+      logger.error('Erro ao gerar simulado:', err);
       throw new Error('Falha ao gerar simulado');
     }
   }, [buscarQuestoes]);
@@ -312,7 +313,7 @@ export const useEnemAPI = (): UseEnemAPIReturn => {
       setCache(cacheKey, anos);
       return anos;
     } catch (err) {
-      console.error('Erro ao listar anos:', err);
+      logger.error('Erro ao listar anos:', err);
       // Fallback para anos conhecidos
       return [2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009];
     }
