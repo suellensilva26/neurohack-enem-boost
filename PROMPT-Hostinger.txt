@@ -1,0 +1,31 @@
+TASK: Upload do site para Hostinger via ZIP (sem erros)
+
+1) Use o Gerenciador de Arquivos da Hostinger
+   - Caminho: /public_html/
+   - Apague arquivos antigos (faça backup se necessário)
+
+2) Faça upload do arquivo: hostinger-upload.zip
+   - Local: raiz do projeto no seu PC
+   - Após upload, clique com botão direito → Extrair
+
+3) Confirme:
+   - /public_html/index.html presente
+   - /public_html/.htaccess presente com regras de SPA:
+     <IfModule mod_rewrite.c>
+       RewriteEngine On
+       RewriteBase /
+       RewriteRule ^index\.html$ - [L]
+       RewriteCond %{REQUEST_FILENAME} !-f
+       RewriteCond %{REQUEST_FILENAME} !-d
+       RewriteRule . /index.html [L]
+     </IfModule>
+
+4) Teste no navegador:
+   - https://neurohackenem.pro
+   - Rotas internas sem 404
+   - PWA (instalar app) aparece em navegadores suportados
+
+5) Se precisar atualizar o site futuramente:
+   - npm run build
+   - Compactar pasta dist/ em novo ZIP
+   - Upload + Extrair em /public_html/

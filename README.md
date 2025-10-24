@@ -1,60 +1,105 @@
-# 🚀 NeuroHack ENEM 15 Dias Intensivo
+# NeuroHack ENEM 2025 🧠⚡
 
-**App completo de preparação para o ENEM em 15 dias**
+Plataforma completa de preparação para o ENEM 2025 com estratégias neurohacking, simulados, redação e análise de padrões.
 
-## 🎯 Funcionalidades
+## 🚀 Funcionalidades
 
-### 📱 Área Gratuita
-- ✅ **Dashboard Principal** com countdown e progresso
-- ✅ **Flashcards Gratuitos** (limite 5/dia)
-- ✅ **Questão do Dia** com sistema de pontuação
-- ✅ **Checklist Essencial** com tópicos do ENEM
-- ✅ **Notificações Básicas** configuráveis
+- **Dashboard Inteligente**: Acompanhamento personalizado do progresso
+- **Simulados Completos**: Simulações realistas do ENEM
+- **Banco de Questões**: Milhares de questões organizadas por matéria
+- **Redação Completa**: Sistema completo de correção e feedback
+- **Estratégias Secretas**: Técnicas neurohacking para otimizar o aprendizado
+- **Padrões ENEM**: Análise de padrões das provas anteriores
+- **Flashcards Inteligentes**: Sistema de repetição espaçada
+- **Revisão Express**: Revisões rápidas e eficientes
+- **PWA**: Funciona offline e pode ser instalado como app
 
-### 💎 Área Premium
-- ✅ **Padrões do ENEM** - 10 módulos interativos
-- ✅ **150 Questões Recorrentes** com cronômetro
-- ✅ **Aprendizagem Acelerada** com técnicas Pomodoro
-- ✅ **Gamificação** com badges e XP
-- ✅ **Analytics Avançado** com gráficos
-- ✅ **Cronograma Personalizado** de 30 dias
-- ✅ **Notificações Inteligentes** adaptativas
+## 🛠️ Tecnologias
 
-## 🚀 Deploy
+- **Frontend**: React + TypeScript + Vite
+- **Styling**: Tailwind CSS + shadcn/ui
+- **Backend**: Supabase
+- **PWA**: Workbox + Service Workers
+- **Deploy**: Vercel
+- **Analytics**: Sistema próprio de analytics
 
-O app está configurado para deploy automático no GitHub Pages:
+## 📱 PWA Features
 
-- **URL:** https://suellensilva26.github.io/enem-30x-boost
-- **Deploy:** Automático via GitHub Actions
-- **Branch:** gh-pages (criada automaticamente)
+- ✅ Instalável como aplicativo
+- ✅ Funciona offline
+- ✅ Notificações push
+- ✅ Sincronização em background
+- ✅ Cache inteligente
 
-## 🔧 Configuração Local
+## 🔧 Instalação e Desenvolvimento
 
 ```bash
-# Clonar repositório
-git clone https://github.com/suellensilva26/enem-30x-boost.git
+# Clone o repositório
+git clone https://github.com/suellensilva26/NeuroHack_Enem_2025.git
 
-# Instalar dependências
+# Instale as dependências
 npm install
 
-# Executar em desenvolvimento
+# Configure as variáveis de ambiente
+cp .env.example .env
+
+# Execute em modo desenvolvimento
 npm run dev
 
 # Build para produção
 npm run build
+
+# Preview da build
+npm run preview
 ```
 
-## 📊 Tecnologias
+## 🌍 Variáveis de Ambiente
 
-- **Frontend:** React + TypeScript + Vite
-- **UI:** Shadcn/ui + Tailwind CSS
-- **Backend:** Supabase
-- **Deploy:** GitHub Pages + GitHub Actions
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+VITE_APP_URL=https://neurohackenem.pro
+VITE_API_BASE_URL=https://api.neurohackenem.com
+VITE_PREMIUM_BUILD=true
+```
 
-## 🎉 Status
+## 📦 Deploy
 
-✅ **App 100% funcional e online!**
+### Vercel (Recomendado)
+
+1. Conecte o repositório ao Vercel
+2. Configure as variáveis de ambiente
+3. Deploy automático a cada push
+
+### Hostinger
+
+1. Execute `npm run build`
+2. Faça upload do conteúdo da pasta `dist`
+3. Configure o domínio
+
+## 🎯 Roadmap
+
+- [ ] Sistema de gamificação avançado
+- [ ] IA para correção automática de redações
+- [ ] Planos de estudo personalizados
+- [ ] Integração com calendário
+- [ ] Sistema de mentoria
+- [ ] App mobile nativo
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## 👥 Contribuição
+
+Contribuições são bem-vindas! Por favor, leia as [diretrizes de contribuição](CONTRIBUTING.md) antes de submeter um PR.
+
+## 📞 Contato
+
+- **Website**: [neurohackenem.pro](https://neurohackenem.pro)
+- **Email**: suellensilva.empresa@gmail.com
+- **GitHub**: [@suellensilva26](https://github.com/suellensilva26)
 
 ---
 
-**Desenvolvido para aprovação no ENEM em 30 dias** 🎯
+Desenvolvido com ❤️ para ajudar estudantes a conquistarem seus sonhos no ENEM 2025!

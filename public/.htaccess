@@ -1,8 +1,32 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-  RewriteRule ^index\.html$ - [L]
+
+  # Não reescreva arquivos ou diretórios reais
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+
+  # Reescreva rotas para index.html (SPA)
+  RewriteRule ^(.*)$ index.html [L]
+</IfModule>
+
+# Corrigir MIME types
+<FilesMatch "\.(js|mjs)$">
+  AddType application/javascript .js
+  AddType application/javascript .mjs
+</FilesMatch>
+
+<FilesMatch "\.json$">
+  AddType application/json .json
+</FilesMatch>
+
+<FilesMatch "\.webmanifest$">
+  AddType application/manifest+json .webmanifest
+</FilesMatch>
+
+# Cache básico para estáticos
+<IfModule mod_headers.c>
+  <FilesMatch "\.(jpg|jpeg|png|gif|ico|css|js)$">
+    Header set Cache-Control "max-age=2592000, public"
+  </FilesMatch>
 </IfModule>

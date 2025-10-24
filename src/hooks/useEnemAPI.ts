@@ -50,7 +50,7 @@ interface GerarSimuladoParams {
   limite?: number;
 }
 
-const API_BASE_URL = 'https://api.enem.dev/v1';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.enem.dev/v1';
 
 // Dados mock para fallback quando a API estiver indisponível
 const MOCK_QUESTOES: QuestaoEnem[] = [
