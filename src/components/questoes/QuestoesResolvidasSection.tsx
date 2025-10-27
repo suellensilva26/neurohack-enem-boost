@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,11 +7,33 @@ import { Brain, GraduationCap, CheckCircle2, XCircle, ChevronRight, ChevronLeft 
 import { questoesResolvidasData } from "@/data/questoesResolvidasData";
 
 const QuestoesResolvidasSection = () => {
+  const [allQuestions, setAllQuestions] = useState<any[]>(questoesResolvidasData);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
 
-  const question = questoesResolvidasData[currentQuestion];
+  useEffect(() => {
+    // Tenta carregar dataset completo de /questoes.json (em /public)
+    const loadExternal = async () => {
+      try {
+        const res = await fetch("/questoes.json", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            setAllQuestions(data);
+            setCurrentQuestion(0);
+            setSelectedAnswer(null);
+            setShowExplanation(false);
+          }
+        }
+      } catch (_) {
+        // Silenciar falhas; mantém fallback local (questoesResolvidasData)
+      }
+    };
+    loadExternal();
+  }, []);
+
+  const question = allQuestions[currentQuestion];
 
   const handleSelectAnswer = (option: string) => {
     setSelectedAnswer(option);
@@ -22,7 +44,7 @@ const QuestoesResolvidasSection = () => {
   };
 
   const handleNext = () => {
-    if (currentQuestion < questoesResolvidasData.length - 1) {
+    if (currentQuestion < allQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(null);
       setShowExplanation(false);
@@ -37,13 +59,21 @@ const QuestoesResolvidasSection = () => {
     }
   };
 
-  const isCorrect = selectedAnswer === question.gabarito;
+  const isCorrect = selectedAnswer === question?.gabarito;
+
+  if (!question) {
+    return (
+      <div className="space-y-6">
+        <Badge variant="outline" className="text-sm">Carregando questões...</Badge>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Badge variant="outline" className="text-sm">
-          Questão {currentQuestion + 1} de {questoesResolvidasData.length}
+          Questão {currentQuestion + 1} de {allQuestions.length}
         </Badge>
         <Badge variant="secondary">{question.materia}</Badge>
       </div>
@@ -174,7 +204,7 @@ const QuestoesResolvidasSection = () => {
             </Button>
             <Button
               onClick={handleNext}
-              disabled={currentQuestion === questoesResolvidasData.length - 1}
+              disabled={currentQuestion === allQuestions.length - 1}
               className="flex-1"
             >
               Próxima

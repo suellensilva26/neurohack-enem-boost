@@ -50,7 +50,7 @@ interface GerarSimuladoParams {
   limite?: number;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.enem.dev/v1';
+const API_BASE_URL = import.meta.env.VITE_ENEM_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || 'https://api.enem.dev/v1';
 
 // Dados mock para fallback quando a API estiver indisponível
 const MOCK_QUESTOES: QuestaoEnem[] = [
@@ -221,7 +221,14 @@ export const useEnemAPI = (): UseEnemAPIReturn => {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       setError(errorMessage);
       logger.error('Erro ao buscar questões:', err);
-      return [];
+      // Fallback: gerar questões mock localmente
+      const limiteQuestoes = params.limit || 45;
+      const ano = params.year || 2023;
+      const disc = params.discipline;
+      const mock = gerarQuestoesMock(ano, disc, limiteQuestoes);
+      setQuestoes(mock);
+      setCache(cacheKey, mock);
+      return mock;
     } finally {
       setLoading(false);
     }

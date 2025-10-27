@@ -59,7 +59,13 @@ const notificacoesPadrao: Notificacao[] = [
 export const NotificacoesBasicas = () => {
   const [notificacoes, setNotificacoes] = useState<Notificacao[]>(() => {
     const saved = localStorage.getItem('notificacoesBasicas');
-    return saved ? JSON.parse(saved) : notificacoesPadrao;
+    if (!saved) return notificacoesPadrao;
+    try {
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) && parsed.length ? parsed : notificacoesPadrao;
+    } catch {
+      return notificacoesPadrao;
+    }
   });
   const [permissaoNotificacao, setPermissaoNotificacao] = useState<NotificationPermission>("default");
   const { toast } = useToast();

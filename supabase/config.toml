@@ -1,4 +1,4 @@
-project_id = "tucbdotwiqrlbjpfejxf"
+project_id = "ilzffofiqmhrycseixjd"
 
 [functions.create-checkout-session]
 verify_jwt = true

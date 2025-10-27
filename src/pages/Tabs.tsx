@@ -300,13 +300,14 @@ const TabsPage = () => {
               {ebooksFromDB.filter(e => e.premium).map((ebook) => {
                 const tabData = premiumTabs.find(t => t.id === ebook.id);
                 const Icon = tabData?.icon || BookOpen;
+                // Se o Supabase trouxer um URL direto (PDF/external), use-o
+                const externalUrl: string | undefined = (ebook.url as string | undefined);
                 const linkTo = tabData?.directLink || `/tab/${ebook.id}`;
-                return (
-                  <Link
-                    key={ebook.id}
-                    to={linkTo}
-                    className={`card-premium group hover:scale-105 transition-all ${(!hasAccess(ebook.id) && !PREMIUM_BUILD) ? 'tab-locked' : ''}`}
-                  >
+
+                const isExternal = !!externalUrl && (externalUrl.startsWith("http") || externalUrl.startsWith("/pdfs/"));
+
+                const CardInner = (
+                  <div className={`card-premium group hover:scale-105 transition-all ${(!hasAccess(ebook.id) && !PREMIUM_BUILD) ? 'tab-locked' : ''}`}>
                     <div className="mb-4 flex items-center gap-3">
                       <div className="rounded-lg bg-gold/20 p-3 group-hover:bg-gold/30 transition-colors">
                         <Icon className="h-6 w-6 text-gold" />
@@ -339,6 +340,27 @@ const TabsPage = () => {
                     <Button className={`w-full rounded-xl bg-primary`}>
                       Acessar Conteúdo
                     </Button>
+                  </div>
+                );
+
+                // Se for link externo/PDF, usar <a>; caso contrário, usar <Link>
+                return isExternal ? (
+                  <a
+                    key={ebook.id}
+                    href={externalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    {CardInner}
+                  </a>
+                ) : (
+                  <Link
+                    key={ebook.id}
+                    to={linkTo}
+                    className="block"
+                  >
+                    {CardInner}
                   </Link>
                 );
               })}
