@@ -1,117 +1,120 @@
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Brain, GraduationCap, CheckCircle2, XCircle, ChevronRight, ChevronLeft } from "lucide-react";
-import { questoesResolvidasData } from "@/data/questoesResolvidasData";
+import { useState, useEffect } from 'react'
+import { useQuestoesEnem } from '@/hooks/useQuestoesEnem'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { Brain, GraduationCap, CheckCircle2, XCircle, ChevronRight, ChevronLeft } from 'lucide-react'
 
-const QuestoesResolvidasSection = () => {
-  const [allQuestions, setAllQuestions] = useState<any[]>(questoesResolvidasData);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [showExplanation, setShowExplanation] = useState(false);
+export default function QuestoesResolvidasSection() {
+  const { questoes, loading, error } = useQuestoesEnem(150)
+  const [indiceAtual, setIndiceAtual] = useState(0)
+  const [respostaSelecionada, setRespostaSelecionada] = useState<number | null>(null)
+  const [mostrarExplicacao, setMostrarExplicacao] = useState(false)
 
+  // Reset quando mudar de questão
   useEffect(() => {
-    // Tenta carregar dataset completo de /questoes.json (em /public)
-    const loadExternal = async () => {
-      try {
-        const res = await fetch("/questoes.json", { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data) && data.length > 0) {
-            setAllQuestions(data);
-            setCurrentQuestion(0);
-            setSelectedAnswer(null);
-            setShowExplanation(false);
-          }
-        }
-      } catch (_) {
-        // Silenciar falhas; mantém fallback local (questoesResolvidasData)
-      }
-    };
-    loadExternal();
-  }, []);
+    setRespostaSelecionada(null)
+    setMostrarExplicacao(false)
+  }, [indiceAtual])
 
-  const question = allQuestions[currentQuestion];
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+          <p className="text-lg">⏳ Carregando 150 questões...</p>
+        </div>
+      </div>
+    )
+  }
 
-  const handleSelectAnswer = (option: string) => {
-    setSelectedAnswer(option);
-  };
+  if (error) {
+    return (
+      <div className="p-6 bg-red-50 border border-red-200 rounded">
+        <p className="text-red-700 font-bold mb-2">⚠️ Aviso:</p>
+        <p className="text-red-600">{error}</p>
+      </div>
+    )
+  }
+
+  if (!questoes || questoes.length === 0) {
+    return (
+      <div className="p-6 bg-yellow-50 border border-yellow-200 rounded">
+        <p className="text-yellow-700 font-bold mb-2">📋 Nenhuma questão encontrada</p>
+        <p className="text-yellow-600">Verifique se o arquivo banco-enem.json existe e contém questões válidas.</p>
+      </div>
+    )
+  }
+
+  const questaoAtual = questoes[indiceAtual]
+  const isCorrect = respostaSelecionada === questaoAtual.correctIndex
+
+  const handleSelectAnswer = (index: number) => {
+    if (!mostrarExplicacao) {
+      setRespostaSelecionada(index)
+    }
+  }
 
   const handleConfirm = () => {
-    setShowExplanation(true);
-  };
+    setMostrarExplicacao(true)
+  }
 
   const handleNext = () => {
-    if (currentQuestion < allQuestions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer(null);
-      setShowExplanation(false);
+    if (indiceAtual < questoes.length - 1) {
+      setIndiceAtual(indiceAtual + 1)
     }
-  };
+  }
 
   const handlePrevious = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
-      setSelectedAnswer(null);
-      setShowExplanation(false);
+    if (indiceAtual > 0) {
+      setIndiceAtual(indiceAtual - 1)
     }
-  };
-
-  const isCorrect = selectedAnswer === question?.gabarito;
-
-  if (!question) {
-    return (
-      <div className="space-y-6">
-        <Badge variant="outline" className="text-sm">Carregando questões...</Badge>
-      </div>
-    );
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Badge variant="outline" className="text-sm">
-          Questão {currentQuestion + 1} de {allQuestions.length}
+          Questão {indiceAtual + 1} de {questoes.length}
         </Badge>
-        <Badge variant="secondary">{question.materia}</Badge>
+        <Badge variant="secondary">{questaoAtual.disciplina}</Badge>
       </div>
 
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">
-            Questão {question.id} - {question.sub_materia}
+            Questão {questaoAtual.id} - {questaoAtual.disciplina}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="prose prose-sm max-w-none">
-            <p className="whitespace-pre-line text-foreground">{question.enunciado}</p>
+            <p className="whitespace-pre-line text-foreground">{questaoAtual.enunciado}</p>
           </div>
 
           <div className="space-y-3">
-            {["A", "B", "C", "D", "E"].map((option, index) => (
+            {questaoAtual.alternativas.map((alternativa, index) => (
               <button
-                key={option}
-                onClick={() => !showExplanation && handleSelectAnswer(option)}
-                disabled={showExplanation}
+                key={index}
+                onClick={() => handleSelectAnswer(index)}
+                disabled={mostrarExplicacao}
                 className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
-                  showExplanation && option === question.gabarito
+                  mostrarExplicacao && index === questaoAtual.correctIndex
                     ? "border-green-500 bg-green-50 dark:bg-green-950"
-                    : showExplanation && option === selectedAnswer && !isCorrect
+                    : mostrarExplicacao && index === respostaSelecionada && !isCorrect
                     ? "border-red-500 bg-red-50 dark:bg-red-950"
-                    : selectedAnswer === option
+                    : respostaSelecionada === index
                     ? "border-primary bg-primary/10"
                     : "border-border hover:border-primary/50"
-                } ${showExplanation ? "cursor-default" : "cursor-pointer"}`}
+                } ${mostrarExplicacao ? "cursor-default" : "cursor-pointer"}`}
               >
                 <div className="flex items-start gap-3">
-                  <span className="font-bold text-lg">{option})</span>
-                  <span className="flex-1">{question.alternativas[index]}</span>
-                  {showExplanation && option === question.gabarito && (
+                  <span className="font-bold text-lg">{String.fromCharCode(65 + index)})</span>
+                  <span className="flex-1">{alternativa}</span>
+                  {mostrarExplicacao && index === questaoAtual.correctIndex && (
                     <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
                   )}
-                  {showExplanation && option === selectedAnswer && !isCorrect && (
+                  {mostrarExplicacao && index === respostaSelecionada && !isCorrect && (
                     <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
                   )}
                 </div>
@@ -119,13 +122,13 @@ const QuestoesResolvidasSection = () => {
             ))}
           </div>
 
-          {!showExplanation && selectedAnswer && (
+          {!mostrarExplicacao && respostaSelecionada !== null && (
             <Button onClick={handleConfirm} className="w-full" size="lg">
               Confirmar Resposta
             </Button>
           )}
 
-          {showExplanation && (
+          {mostrarExplicacao && (
             <div className="space-y-6 mt-6">
               <Separator />
               
@@ -140,54 +143,41 @@ const QuestoesResolvidasSection = () => {
                     <>
                       <XCircle className="h-5 w-5 text-red-600" />
                       <span className="text-red-700 dark:text-red-300">
-                        Resposta Incorreta. A alternativa correta é: {question.gabarito}
+                        Resposta Incorreta. A alternativa correta é: {String.fromCharCode(65 + questaoAtual.correctIndex)}
                       </span>
                     </>
                   )}
                 </p>
               </div>
 
-              {/* Explicação Técnica */}
-              {question.explicacaoTecnica && (
+              {/* Explicação */}
+              {questaoAtual.explicacao && (
                 <Card className="border-primary/30">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-base">
                       <GraduationCap className="h-5 w-5 text-primary" />
-                      Explicação Técnica
+                      Explicação
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground whitespace-pre-line">{question.explicacaoTecnica}</p>
+                    <p className="text-sm text-muted-foreground whitespace-pre-line">{questaoAtual.explicacao}</p>
                   </CardContent>
                 </Card>
               )}
 
-              {/* Explicação Lógica */}
-              {question.explicacaoLogica && (
-                <Card className="border-accent/30">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <Brain className="h-5 w-5 text-accent" />
-                      Explicação Lógica (sem conhecimento prévio)
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground whitespace-pre-line">{question.explicacaoLogica}</p>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Dica de Chute */}
-              {question.dicaChute && (
-                <Card className="border-accent/30 bg-accent/5">
-                  <CardContent className="pt-6">
-                    <p className="text-sm">
-                      <strong className="text-accent">💡 Dica de chute inteligente:</strong>{" "}
-                      {question.dicaChute}
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
+              {/* Informações adicionais */}
+              <div className="flex flex-wrap gap-2">
+                {questaoAtual.dificuldade && (
+                  <Badge variant="outline">
+                    Dificuldade: {questaoAtual.dificuldade}
+                  </Badge>
+                )}
+                {questaoAtual.source && (
+                  <Badge variant="outline">
+                    Fonte: {questaoAtual.source}
+                  </Badge>
+                )}
+              </div>
             </div>
           )}
 
@@ -195,7 +185,7 @@ const QuestoesResolvidasSection = () => {
           <div className="flex gap-3 pt-4">
             <Button
               onClick={handlePrevious}
-              disabled={currentQuestion === 0}
+              disabled={indiceAtual === 0}
               variant="outline"
               className="flex-1"
             >
@@ -204,7 +194,7 @@ const QuestoesResolvidasSection = () => {
             </Button>
             <Button
               onClick={handleNext}
-              disabled={currentQuestion === allQuestions.length - 1}
+              disabled={indiceAtual === questoes.length - 1}
               className="flex-1"
             >
               Próxima
@@ -214,7 +204,5 @@ const QuestoesResolvidasSection = () => {
         </CardContent>
       </Card>
     </div>
-  );
-};
-
-export default QuestoesResolvidasSection;
+  )
+}

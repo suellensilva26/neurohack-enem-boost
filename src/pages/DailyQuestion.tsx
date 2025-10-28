@@ -10,11 +10,13 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getDailyQuestion, getQuestionHistory, DailyQuestion } from "@/data/dailyQuestionsData";
+import { useQuestoesEnem } from "@/hooks/useQuestoesEnem";
 import { useFreemiumLimits } from "@/hooks/useFreemiumLimits";
 
 export default function DailyQuestion() {
   const navigate = useNavigate();
   const { isPremium, dailyQuestionsUsed, dailyQuestionsLimit, incrementQuestions } = useFreemiumLimits();
+  const { questoes, loading: hookLoading } = useQuestoesEnem(1);
   const [currentQuestion, setCurrentQuestion] = useState<DailyQuestion | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -28,14 +30,46 @@ export default function DailyQuestion() {
     loadHistory();
   }, []);
 
-  const loadQuestion = () => {
-    const question = getDailyQuestion();
-    setCurrentQuestion(question);
-    setSelectedAnswer(null);
-    setShowAnswer(false);
-    setShowExplanation(false);
-    setIsCorrect(null);
-    setLoading(false);
+  // Atualiza a questão quando o hook local-first terminar de carregar
+  useEffect(() => {
+    if (!hookLoading) {
+      loadQuestion();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hookLoading, questoes]);
+
+  const loadQuestion = async () => {
+    setLoading(true);
+    try {
+      const q = questoes && questoes[0];
+      if (q) {
+        const mapped: DailyQuestion = {
+          id: q.id,
+          question: q.enunciado,
+          options: q.alternativas,
+          correctAnswer: q.correctIndex,
+          explanation: q.explicacao || "Gabarito disponível ao responder.",
+          subject: (q.disciplina || "geral").toLowerCase(),
+          category: "Questão ENEM",
+          difficulty: (q.dificuldade || "medium") as any,
+          year: undefined,
+          source: q.source,
+        };
+        setCurrentQuestion(mapped);
+      } else {
+        const fallback = getDailyQuestion();
+        setCurrentQuestion(fallback);
+      }
+    } catch (err) {
+      const fallback = getDailyQuestion();
+      setCurrentQuestion(fallback);
+    } finally {
+      setSelectedAnswer(null);
+      setShowAnswer(false);
+      setShowExplanation(false);
+      setIsCorrect(null);
+      setLoading(false);
+    }
   };
 
   const loadHistory = () => {
@@ -82,7 +116,7 @@ export default function DailyQuestion() {
 
   const canAnswerMore = isPremium || dailyQuestionsUsed < dailyQuestionsLimit;
 
-  if (loading) {
+  if (loading || hookLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">

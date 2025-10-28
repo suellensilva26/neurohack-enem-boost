@@ -1,0 +1,12 @@
+[
+  {"id":1,"questao":"Questão recorrente 1: Texto demonstrativo do ENEM.","alternativas":["Alternativa A","Alternativa B","Alternativa C","Alternativa D","Alternativa E"],"gabarito":1,"explicacao":"Explicação sintetizada para a questão 1."},
+  {"id":2,"questao":"Questão recorrente 2: Texto demonstrativo do ENEM.","alternativas":["Alternativa A","Alternativa B","Alternativa C","Alternativa D","Alternativa E"],"gabarito":2,"explicacao":"Explicação sintetizada para a questão 2."},
+  {"id":3,"questao":"Questão recorrente 3: Texto demonstrativo do ENEM.","alternativas":["Alternativa A","Alternativa B","Alternativa C","Alternativa D","Alternativa E"],"gabarito":3,"explicacao":"Explicação sintetizada para a questão 3."},
+  {"id":4,"questao":"Questão recorrente 4: Texto demonstrativo do ENEM.","alternativas":["Alternativa A","Alternativa B","Alternativa C","Alternativa D","Alternativa E"],"gabarito":4,"explicacao":"Explicação sintetizada para a questão 4."},
+  {"id":5,"questao":"Questão recorrente 5: Texto demonstrativo do ENEM.","alternativas":["Alternativa A","Alternativa B","Alternativa C","Alternativa D","Alternativa E"],"gabarito":0,"explicacao":"Explicação sintetizada para a questão 5."},
+  {"id":6,"questao":"Questão recorrente 6: Texto demonstrativo do ENEM.","alternativas":["Alternativa A","Alternativa B","Alternativa C","Alternativa D","Alternativa E"],"gabarito":1,"explicacao":"Explicação sintetizada para a questão 6."},
+  {"id":7,"questao":"Questão recorrente 7: Texto demonstrativo do ENEM.","alternativas":["Alternativa A","Alternativa B","Alternativa C","Alternativa D","Alternativa E"],"gabarito":2,"explicacao":"Explicação sintetizada para a questão 7."},
+  {"id":8,"questao":"Questão recorrente 8: Texto demonstrativo do ENEM.","alternativas":["Alternativa A","Alternativa B","Alternativa C","Alternativa D","Alternativa E"],"gabarito":3,"explicacao":"Explicação sintetizada para a questão 8."},
+  {"id":9,"questao":"Questão recorrente 9: Texto demonstrativo do ENEM.","alternativas":["Alternativa A","Alternativa B","Alternativa C","Alternativa D","Alternativa E"],"gabarito":4,"explicacao":"Explicação sintetizada para a questão 9."},
+  {"id":10,"questao":"Questão recorrente 10: Texto demonstrativo do ENEM.","alternativas":["Alternativa A","Alternativa B","Alternativa C","Alternativa D","Alternativa E"],"gabarito":0,"explicacao":"Explicação sintetizada para a questão 10."}
+]

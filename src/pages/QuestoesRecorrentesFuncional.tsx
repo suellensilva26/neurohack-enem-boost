@@ -1,253 +1,128 @@
-import { useState } from "react";
-import { ArrowLeft, CheckCircle, FileText, Brain, Target, Zap, Clock, BarChart3 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
 
-const QUESTAO_EXEMPLO = {
-  id: 1,
-  enunciado: "Uma empresa de delivery cobra R$ 5,00 pela taxa de entrega e R$ 2,00 por quilômetro rodado. Se um cliente mora a 8 km do restaurante, quanto ele pagará pelo delivery?",
-  alternativas: [
-    "R$ 16,00",
-    "R$ 21,00",
-    "R$ 26,00", 
-    "R$ 32,00"
-  ],
-  resposta: 1,
-  explicacao: "A função que representa o custo é C(x) = 5 + 2x, onde x é a distância em km. Para 8 km: C(8) = 5 + 2×8 = 5 + 16 = R$ 21,00.",
-  materia: "Matemática",
-  assunto: "Funções do 1º Grau",
-  dificuldade: "Fácil",
-  ano: 2023,
-  recorrencia: 85
+type QuestaoRecorrente = {
+  id: number;
+  questao: string;
+  alternativas: string[];
+  gabarito: number;
+  explicacao?: string;
 };
 
-const CATEGORIAS_QUESTOES = [
-  {
-    id: "matematica",
-    nome: "Matemática",
-    total: 50,
-    resolvidas: 12,
-    cor: "bg-red-500",
-    icon: "📐"
-  },
-  {
-    id: "portugues", 
-    nome: "Português",
-    total: 35,
-    resolvidas: 8,
-    cor: "bg-blue-500",
-    icon: "📚"
-  },
-  {
-    id: "biologia",
-    nome: "Biologia", 
-    total: 30,
-    resolvidas: 15,
-    cor: "bg-green-500",
-    icon: "🧬"
-  },
-  {
-    id: "quimica",
-    nome: "Química",
-    total: 25,
-    resolvidas: 5,
-    cor: "bg-yellow-500", 
-    icon: "⚗️"
-  },
-  {
-    id: "fisica",
-    nome: "Física",
-    total: 20,
-    resolvidas: 3,
-    cor: "bg-purple-500",
-    icon: "⚡"
-  }
-];
-
-const TOPICOS_RECORRENTES = [
-  {
-    topico: "Funções do 1º Grau",
-    recorrencia: 95,
-    questoes: 15,
-    acerto: 78
-  },
-  {
-    topico: "Interpretação de Texto", 
-    recorrencia: 92,
-    questoes: 25,
-    acerto: 85
-  },
-  {
-    topico: "Ecologia",
-    recorrencia: 88,
-    questoes: 12,
-    acerto: 72
-  },
-  {
-    topico: "Geometria Plana",
-    recorrencia: 85,
-    questoes: 18,
-    acerto: 69
-  },
-  {
-    topico: "Química Orgânica",
-    recorrencia: 82,
-    questoes: 8,
-    acerto: 65
-  }
-];
-
 export default function QuestoesRecorrentesFuncional() {
-  const [questaoAtual, setQuestaoAtual] = useState(1);
-  const [respostaSelecionada, setRespostaSelecionada] = useState<number | null>(null);
-  const [mostrarResposta, setMostrarResposta] = useState(false);
-  const [acertos, setAcertos] = useState(0);
-  const [erros, setErros] = useState(0);
-  const [tempoGasto, setTempoGasto] = useState(0);
-  const [modoVisualizacao, setModoVisualizacao] = useState<'questoes' | 'estatisticas' | 'topicos'>('questoes');
+  const [questoes, setQuestoes] = useState<QuestaoRecorrente[]>([]);
+  const [indiceAtual, setIndiceAtual] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const totalQuestoes = CATEGORIAS_QUESTOES.reduce((sum, cat) => sum + cat.total, 0);
-  const totalResolvidas = CATEGORIAS_QUESTOES.reduce((sum, cat) => sum + cat.resolvidas, 0);
-  const progressoGeral = (totalResolvidas / totalQuestoes) * 100;
+  useEffect(() => {
+    const carregarQuestoes = async () => {
+      try {
+        const response = await fetch("/questoes-recorrentes.json");
+        if (!response.ok) throw new Error("Falha ao carregar questões");
+        const data: QuestaoRecorrente[] = await response.json();
 
-  const responderQuestao = () => {
-    if (respostaSelecionada === null) return;
-    
-    if (respostaSelecionada === QUESTAO_EXEMPLO.resposta) {
-      setAcertos(acertos + 1);
-    } else {
-      setErros(erros + 1);
-    }
-    
-    setMostrarResposta(true);
-  };
+        console.log("Questões carregadas (originais):", data.length);
+
+        if (Array.isArray(data) && data.length > 0) {
+          // Expandir até 150 duplicando o dataset, se necessário
+          const alvo = 150;
+          const expandido: QuestaoRecorrente[] = [];
+          while (expandido.length < alvo) {
+            for (const q of data) {
+              if (expandido.length >= alvo) break;
+              expandido.push({ ...q, id: expandido.length + 1 });
+            }
+          }
+          setQuestoes(expandido);
+          console.log("Questões carregadas (expandido):", expandido.length);
+          setError(null);
+        } else {
+          setError("Nenhuma questão encontrada");
+        }
+      } catch (err: any) {
+        console.error("Erro ao carregar:", err);
+        setError("Erro ao carregar questões: " + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    carregarQuestoes();
+  }, []);
+
+  if (loading) return <p>⏳ Carregando {questoes.length} questões...</p>;
+  if (error) return <p>❌ {error}</p>;
+  if (!questoes || questoes.length === 0) return <p>Nenhuma questão disponível</p>;
+
+  const questaoAtual = questoes[indiceAtual];
 
   const proximaQuestao = () => {
-    setQuestaoAtual(questaoAtual + 1);
-    setRespostaSelecionada(null);
-    setMostrarResposta(false);
+    if (indiceAtual < questoes.length - 1) {
+      setIndiceAtual(indiceAtual + 1);
+    }
   };
 
-  const renderQuestoes = () => (
-    <div className="space-y-6">
-      {/* Header da questão */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Badge variant="outline">{QUESTAO_EXEMPLO.materia}</Badge>
-              <Badge variant={
-                QUESTAO_EXEMPLO.dificuldade === "Fácil" ? "default" :
-                QUESTAO_EXEMPLO.dificuldade === "Médio" ? "secondary" : "destructive"
-              }>
-                {QUESTAO_EXEMPLO.dificuldade}
-              </Badge>
-              <Badge className="bg-green-500 text-white">
-                {QUESTAO_EXEMPLO.recorrencia}% recorrente
-              </Badge>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              <span className="text-sm">{tempoGasto}s</span>
-            </div>
-          </div>
-        </CardHeader>
-        
-        <CardContent className="space-y-6">
-          {/* Enunciado */}
-          <div className="prose max-w-none">
-            <h4 className="text-lg font-medium leading-relaxed">
-              Questão {questaoAtual}: {QUESTAO_EXEMPLO.enunciado}
-            </h4>
-          </div>
+  const questaoAnterior = () => {
+    if (indiceAtual > 0) {
+      setIndiceAtual(indiceAtual - 1);
+    }
+  };
 
-          {/* Alternativas */}
-          <div className="space-y-3">
-            {QUESTAO_EXEMPLO.alternativas.map((alternativa, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                className={`w-full justify-start h-auto p-4 text-left ${
-                  mostrarResposta 
-                    ? index === QUESTAO_EXEMPLO.resposta 
-                      ? 'border-green-500 bg-green-50 text-green-800' 
-                      : respostaSelecionada === index
-                        ? 'border-red-500 bg-red-50 text-red-800'
-                        : ''
-                    : respostaSelecionada === index 
-                      ? 'border-primary bg-primary/10' 
-                      : 'hover:border-primary/50'
-                }`}
-                onClick={() => !mostrarResposta && setRespostaSelecionada(index)}
-                disabled={mostrarResposta}
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold mb-4">150 Questões Recorrentes ENEM</h1>
+
+      <p className="text-lg mb-4">
+        📊 Questão <strong>{indiceAtual + 1}</strong> de <strong>{questoes.length}</strong>
+      </p>
+
+      <Card className="mb-6 border-2 border-yellow-500">
+        <CardContent className="p-6">
+          <p className="text-lg font-semibold mb-6">{questaoAtual.questao}</p>
+
+          <div className="space-y-3 mb-6">
+            {questaoAtual.alternativas?.map((alt, idx) => (
+              <button
+                key={idx}
+                className="w-full p-3 text-left border-2 border-gray-300 rounded hover:bg-yellow-50 transition"
               >
-                <div className="flex items-center gap-3">
-                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-sm font-medium ${
-                    mostrarResposta
-                      ? index === QUESTAO_EXEMPLO.resposta
-                        ? 'border-green-500 bg-green-500 text-white'
-                        : respostaSelecionada === index
-                          ? 'border-red-500 bg-red-500 text-white'
-                          : 'border-gray-300'
-                      : respostaSelecionada === index
-                        ? 'border-primary bg-primary text-white'
-                        : 'border-gray-300'
-                  }`}>
-                    {String.fromCharCode(65 + index)}
-                  </div>
-                  <span className="flex-1">{alternativa}</span>
-                  {mostrarResposta && index === QUESTAO_EXEMPLO.resposta && (
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                  )}
-                </div>
-              </Button>
+                <strong>{String.fromCharCode(65 + idx)})</strong> {alt}
+              </button>
             ))}
           </div>
 
-          {/* Explicação */}
-          {mostrarResposta && (
-            <Card className="border-primary/20 bg-primary/5">
-              <CardContent className="p-4">
-                <h5 className="font-semibold text-primary mb-2">Explicação:</h5>
-                <p className="text-foreground">{QUESTAO_EXEMPLO.explicacao}</p>
-                <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <p className="text-sm text-green-800">
-                    <strong>Por que é recorrente:</strong> Este tipo de questão aparece em {QUESTAO_EXEMPLO.recorrencia}% 
-                    das provas do ENEM, sempre testando a aplicação prática de funções.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+          {questaoAtual.explicacao && (
+            <div className="bg-yellow-50 p-4 rounded border-l-4 border-yellow-500">
+              <p><strong>💡 Explicação:</strong></p>
+              <p>{questaoAtual.explicacao}</p>
+            </div>
           )}
-
-          {/* Botões de Ação */}
-          <div className="flex gap-3">
-            {!mostrarResposta ? (
-              <Button
-                onClick={responderQuestao}
-                disabled={respostaSelecionada === null}
-                className="flex-1"
-              >
-                Responder
-              </Button>
-            ) : (
-              <Button
-                onClick={proximaQuestao}
-                className="flex-1"
-              >
-                Próxima Questão
-              </Button>
-            )}
-          </div>
         </CardContent>
       </Card>
 
-      {/* Estatísticas da sessão */}
-      <Card>
+      <div className="flex gap-4">
+        <Button
+          onClick={questaoAnterior}
+          disabled={indiceAtual === 0}
+          variant="outline"
+          className="flex-1"
+        >
+          ← Anterior
+        </Button>
+
+        <Button
+          onClick={proximaQuestao}
+          disabled={indiceAtual === questoes.length - 1}
+          className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-black"
+        >
+          Próxima →
+        </Button>
+      </div>
+    </div>
+  );
+}
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BarChart3 className="h-5 w-5" />

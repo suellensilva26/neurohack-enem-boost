@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle2, XCircle, Trophy, Clock, Target, BookOpen, Grid3x3 } from "lucide-react";
 import { simuladoData } from "@/data/simuladoData";
+import { useQuestoesEnem } from "@/hooks/useQuestoesEnem";
 
 const SimuladoSection = () => {
   const [selectedBlock, setSelectedBlock] = useState<number | null>(null);
@@ -14,16 +15,64 @@ const SimuladoSection = () => {
   const [startTime] = useState(Date.now());
   const [endTime, setEndTime] = useState<number | null>(null);
 
+  const { questoes, loading } = useQuestoesEnem(100);
+
+  // Rotação automática de questões a cada 30 segundos (opcional)
+  const [autoRotate, setAutoRotate] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(30);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (autoRotate && !showResults && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            // Auto-avançar para próxima questão
+            setCurrentQuestion((current) => {
+              if (current < activeQuestions.length - 1) {
+                return current + 1;
+              }
+              // Ao atingir a última questão, parar auto rotação
+              setAutoRotate(false);
+              return current;
+            });
+            return 30; // Reset timer
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [autoRotate, showResults, timeLeft, activeQuestions.length]);
+
   const blocks = Array.from({ length: 10 }, (_, i) => ({
     id: i + 1,
     start: i * 10,
-    end: Math.min(i * 10 + 9, simuladoData.length - 1),
-    label: `Bloco ${i + 1} (Q${i * 10 + 1}-Q${Math.min(i * 10 + 10, simuladoData.length)})`
+    end: Math.min(i * 10 + 9, (questoes.length > 0 ? questoes.length : simuladoData.length) - 1),
+    label: `Bloco ${i + 1} (Q${i * 10 + 1}-Q${Math.min(i * 10 + 10, questoes.length > 0 ? questoes.length : simuladoData.length)})`
   }));
 
+  const normalizedFromHook = questoes.map((q, idx) => ({
+    id: Number(q.id ?? idx + 1),
+    materia: q.disciplina || "",
+    sub_materia: q.dificuldade || "",
+    enunciado: q.enunciado,
+    alternativas: q.alternativas,
+    gabarito: ["A", "B", "C", "D", "E"][q.correctIndex ?? 0],
+    explicacaoTecnica: q.explicacao || "",
+    explicacaoLogica: "",
+    dicaChute: "",
+  }));
+
+  const dataset = normalizedFromHook.length > 0 ? normalizedFromHook : simuladoData;
+
   const rawActiveQuestions = selectedBlock === null || selectedBlock === 0
-    ? simuladoData 
-    : simuladoData.slice(blocks[selectedBlock - 1].start, blocks[selectedBlock - 1].end + 1);
+    ? dataset
+    : dataset.slice(blocks[selectedBlock - 1].start, blocks[selectedBlock - 1].end + 1);
 
   const activeQuestions = rawActiveQuestions.filter((q) =>
     Array.isArray(q.alternativas) &&
@@ -87,7 +136,7 @@ const SimuladoSection = () => {
           </CardHeader>
           <CardContent className="space-y-6">
             <p className="text-muted-foreground">
-              Você pode fazer todas as {simuladoData.length} questões de uma vez ou praticar em blocos de 10 questões
+              Você pode fazer todas as {(dataset.length)} questões de uma vez ou praticar em blocos de 10 questões
             </p>
 
             <div className="grid gap-4">
@@ -103,12 +152,12 @@ const SimuladoSection = () => {
                 <div className="flex flex-col items-center gap-2">
                   <BookOpen className="h-8 w-8" />
                   <span className="text-lg font-bold">Simulado Completo</span>
-                  <span className="text-sm opacity-90">{simuladoData.length} Questões</span>
+                  <span className="text-sm opacity-90">{dataset.length} Questões</span>
                 </div>
               </Button>
 
               <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                {blocks.filter((_, i) => i * 10 < simuladoData.length).map((block) => (
+                {blocks.filter((_, i) => i * 10 < dataset.length).map((block) => (
                   <Button
                     key={block.id}
                     variant="outline"
@@ -289,6 +338,11 @@ const SimuladoSection = () => {
             {selectedBlock && selectedBlock !== 0 && (
               <Badge>Bloco {selectedBlock}</Badge>
             )}
+            {autoRotate && (
+              <Badge variant="secondary" className="animate-pulse">
+                Auto: {timeLeft}s
+              </Badge>
+            )}
           </div>
         </div>
         <Progress value={progress} className="h-2" />
@@ -335,35 +389,57 @@ const SimuladoSection = () => {
             ))}
           </div>
 
-          <div className="flex gap-3 pt-4">
-            <Button
-              onClick={() => {
-                setSelectedBlock(null);
-                setCurrentQuestion(0);
-                setAnswers({});
-                setShowResults(false);
-              }}
-              variant="outline"
-            >
-              Menu
-            </Button>
-            <Button
-              onClick={handlePrevious}
-              disabled={currentQuestion === 0}
-              variant="outline"
-              className="flex-1"
-            >
-              Anterior
-            </Button>
-            {currentQuestion === activeQuestions.length - 1 ? (
-              <Button onClick={handleFinish} className="flex-1" size="lg">
-                Finalizar
+          <div className="space-y-3 pt-4">
+            {/* Controles de Rotação Automática */}
+            <div className="flex items-center justify-center gap-3">
+              <Button
+                onClick={() => {
+                  setAutoRotate(!autoRotate);
+                  setTimeLeft(30);
+                }}
+                variant={autoRotate ? "default" : "outline"}
+                size="sm"
+              >
+                {autoRotate ? "⏸️ Pausar Auto" : "▶️ Auto Rotação"}
               </Button>
-            ) : (
-              <Button onClick={handleNext} className="flex-1">
-                Próxima
+              {autoRotate && (
+                <span className="text-sm text-muted-foreground">
+                  Próxima questão em {timeLeft}s
+                </span>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                onClick={() => {
+                  setSelectedBlock(null);
+                  setCurrentQuestion(0);
+                  setAnswers({});
+                  setShowResults(false);
+                  setAutoRotate(false);
+                }}
+                variant="outline"
+              >
+                Menu
               </Button>
-            )}
+              <Button
+                onClick={handlePrevious}
+                disabled={currentQuestion === 0}
+                variant="outline"
+                className="flex-1"
+              >
+                Anterior
+              </Button>
+              {currentQuestion === activeQuestions.length - 1 ? (
+                <Button onClick={handleFinish} className="flex-1" size="lg">
+                  Finalizar
+                </Button>
+              ) : (
+                <Button onClick={handleNext} className="flex-1">
+                  Próxima
+                </Button>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
