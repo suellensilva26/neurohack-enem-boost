@@ -1,6 +1,17 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "functions": {
+    "api/stripe-checkout.ts": {
+      "maxDuration": 30
+    },
+    "api/verify-payment.ts": {
+      "maxDuration": 10
+    },
+    "api/stripe-webhook.ts": {
+      "maxDuration": 30
+    }
+  },
   "rewrites": [
     { "source": "/pdfs/(.*)", "destination": "/pdfs/$1" },
     {

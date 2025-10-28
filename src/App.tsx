@@ -11,6 +11,7 @@ import Auth from "./pages/Auth";
 import DailyQuestion from "./pages/DailyQuestion";
 import Checklist from "./pages/Checklist";
 import { OfflineMessage } from "@/components/OfflineMessage";
+import { PaymentGuard } from "@/components/PaymentGuard";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { toast } from "sonner";
 
@@ -77,63 +78,77 @@ const App = () => {
             <Route
               path="/aprendizagem-acelerada"
               element={
-                <Suspense fallback={<Fallback />}>
-                  <AprendizagemAceleradaFuncional />
-                </Suspense>
+                <PaymentGuard>
+                  <Suspense fallback={<Fallback />}>
+                    <AprendizagemAceleradaFuncional />
+                  </Suspense>
+                </PaymentGuard>
               }
             />
             
             <Route
               path="/redacao-completa"
               element={
-                <Suspense fallback={<Fallback />}>
-                  <RedacaoCompleta />
-                </Suspense>
+                <PaymentGuard>
+                  <Suspense fallback={<Fallback />}>
+                    <RedacaoCompleta />
+                  </Suspense>
+                </PaymentGuard>
               }
             />
             
             <Route
               path="/revisao-express"
               element={
-                <Suspense fallback={<Fallback />}>
-                  <RevisaoExpress />
-                </Suspense>
+                <PaymentGuard>
+                  <Suspense fallback={<Fallback />}>
+                    <RevisaoExpress />
+                  </Suspense>
+                </PaymentGuard>
               }
             />
             
             <Route
               path="/estrategias-secretas"
               element={
-                <Suspense fallback={<Fallback />}>
-                  <EstrategiasSecretas />
-                </Suspense>
+                <PaymentGuard>
+                  <Suspense fallback={<Fallback />}>
+                    <EstrategiasSecretas />
+                  </Suspense>
+                </PaymentGuard>
               }
             />
             
             <Route
               path="/padroes-enem"
               element={
-                <Suspense fallback={<Fallback />}>
-                  <PadroesEnemFuncional />
-                </Suspense>
+                <PaymentGuard>
+                  <Suspense fallback={<Fallback />}>
+                    <PadroesEnemFuncional />
+                  </Suspense>
+                </PaymentGuard>
               }
             />
             
             <Route
               path="/questoes-recorrentes"
               element={
-                <Suspense fallback={<Fallback />}>
-                  <QuestoesRecorrentes />
-                </Suspense>
+                <PaymentGuard>
+                  <Suspense fallback={<Fallback />}>
+                    <QuestoesRecorrentes />
+                  </Suspense>
+                </PaymentGuard>
               }
             />
 
             <Route
               path="/flashcards"
               element={
-                <Suspense fallback={<Fallback />}>
-                  <Flashcards />
-                </Suspense>
+                <PaymentGuard>
+                  <Suspense fallback={<Fallback />}>
+                    <Flashcards />
+                  </Suspense>
+                </PaymentGuard>
               }
             />
 
@@ -143,36 +158,44 @@ const App = () => {
             <Route
               path="/dashboard"
               element={
-                <Suspense fallback={<Fallback />}>
-                  <Dashboard />
-                </Suspense>
+                <PaymentGuard>
+                  <Suspense fallback={<Fallback />}>
+                    <Dashboard />
+                  </Suspense>
+                </PaymentGuard>
               }
             />
 
             <Route
               path="/banco-questoes"
               element={
-                <Suspense fallback={<Fallback />}>
-                  <BancoQuestoes />
-                </Suspense>
+                <PaymentGuard>
+                  <Suspense fallback={<Fallback />}>
+                    <BancoQuestoes />
+                  </Suspense>
+                </PaymentGuard>
               }
             />
 
             <Route
               path="/quiz/:lessonId"
               element={
-                <Suspense fallback={<Fallback />}>
-                  <Quiz />
-                </Suspense>
+                <PaymentGuard>
+                  <Suspense fallback={<Fallback />}>
+                    <Quiz />
+                  </Suspense>
+                </PaymentGuard>
               }
             />
 
             <Route
               path="/simulado"
               element={
-                <Suspense fallback={<Fallback />}>
-                  <Simulado />
-                </Suspense>
+                <PaymentGuard>
+                  <Suspense fallback={<Fallback />}>
+                    <Simulado />
+                  </Suspense>
+                </PaymentGuard>
               }
             />
 

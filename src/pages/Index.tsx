@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BookOpen, Brain, Target, Zap, Lock, CheckCircle, TrendingUp, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OnboardingModal } from "@/components/freemium/OnboardingModal";
@@ -11,7 +11,15 @@ import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 const Index = () => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const { needsOnboarding, loading, completeOnboarding } = useOnboarding();
+  const navigate = useNavigate();
   const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'true') === 'true';
+
+  // Redirecionar para pricing se for build premium
+  useEffect(() => {
+    if (PREMIUM_BUILD) {
+      navigate('/pricing');
+    }
+  }, [PREMIUM_BUILD, navigate]);
 
   useEffect(() => {
     const targetDate = new Date("2025-11-03T00:00:00").getTime();

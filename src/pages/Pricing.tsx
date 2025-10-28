@@ -1,285 +1,251 @@
-import { Link } from "react-router-dom";
-import { Check, ArrowLeft, Sparkles, Zap } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Check, Star, Zap, Target, BookOpen, Trophy } from 'lucide-react';
+import { useCheckoutSession } from '@/hooks/useCheckoutSession';
+import { toast } from 'sonner';
 
 const Pricing = () => {
-  const individualTabs = [
+  const { createCheckoutSession, isLoading, error } = useCheckoutSession();
+  const [email, setEmail] = useState('');
+
+  useEffect(() => {
+    // Verificar se há parâmetros de URL indicando resultado do pagamento
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    
+    if (paymentStatus === 'success') {
+      toast.success('Pagamento realizado com sucesso! Redirecionando...');
+      setTimeout(() => {
+        window.location.href = '/#/simulado';
+      }, 2000);
+    } else if (paymentStatus === 'cancelled') {
+      toast.error('Pagamento cancelado. Tente novamente!');
+    }
+  }, []);
+
+  const handlePurchase = async () => {
+    if (!email.trim()) {
+      toast.error('Por favor, insira seu email');
+      return;
+    }
+
+    try {
+      await createCheckoutSession({
+        email: email.trim(),
+      });
+    } catch (err) {
+      toast.error('Erro ao processar pagamento. Tente novamente.');
+    }
+  };
+
+  const features = [
     {
-      title: "Redação Nota 1000",
-      price: 149,
-      features: [
-        "Fórmula coringa para qualquer tema",
-        "Repertórios socioculturais versáteis",
-        "8 módulos completos",
-        "Videoaulas com avatar IA",
-        "Exercícios práticos",
-        "Modelos de redação",
-      ],
+      icon: <Zap className="h-5 w-5" />,
+      title: "Aprendizagem Acelerada",
+      description: "Técnicas neurocientíficas para estudar 3x mais rápido"
     },
     {
-      title: "Kit Revisão Express",
-      price: 119,
-      features: [
-        "240 tópicos essenciais",
-        "Cobre 85% das questões",
-        "12 módulos organizados",
-        "Sistema trifásico 15 dias",
-        "Cronogramas personalizados",
-        "Checklists de revisão",
-      ],
-    },
-    {
+      icon: <Target className="h-5 w-5" />,
       title: "Estratégias Secretas",
-      price: 89,
-      features: [
-        "Técnicas de chute estratégico",
-        "7 eliminadores fatais",
-        "Scanner neural 30s/questão",
-        "Acerte sem saber o conteúdo",
-        "Padrões psicológicos",
-        "Exercícios de reconhecimento",
-      ],
+      description: "Padrões e macetes que só quem passou no ENEM conhece"
     },
     {
-      title: "Aprendizado Acelerado",
-      price: 99,
-      features: [
-        "Absorva 10x mais rápido",
-        "Método Feynman aplicado",
-        "Reset neurológico",
-        "9 módulos práticos",
-        "Técnicas de memorização",
-        "Flashcards visuais",
-      ],
+      icon: <BookOpen className="h-5 w-5" />,
+      title: "Banco de Questões",
+      description: "Mais de 10.000 questões do ENEM com resoluções detalhadas"
     },
     {
-      title: "Padrões do ENEM",
-      price: 129,
-      features: [
-        "Acerte 40% a mais",
-        "Identificador de padrões",
-        "10 módulos especializados",
-        "Drill personalizado",
-        "Simulador preditivo",
-        "Análise TRI",
-      ],
-    },
-    {
-      title: "100 Questões Recorrentes",
-      price: 79,
-      features: [
-        "Banco completo com gabarito",
-        "Questões que mais caem",
-        "Explicações detalhadas",
-        "Filtros por disciplina",
-        "Modo estudo ativo",
-        "Acompanhamento de desempenho",
-      ],
-    },
+      icon: <Trophy className="h-5 w-5" />,
+      title: "Simulados Inteligentes",
+      description: "Simulados adaptativos que identificam suas fraquezas"
+    }
   ];
 
-  const totalIndividual = individualTabs.reduce((acc, tab) => acc + tab.price, 0);
-  const savings = totalIndividual - 297;
-
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <Link to="/" className="flex items-center gap-2 text-foreground hover:text-primary">
-            <ArrowLeft className="h-5 w-5" />
-            <span className="font-semibold">Voltar</span>
-          </Link>
-          <h1 className="text-xl font-bold">
-            <span className="text-gold">Planos & Preços</span>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div className="container mx-auto px-4 py-16">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <Badge variant="secondary" className="mb-4">
+            <Star className="h-4 w-4 mr-1" />
+            Plataforma Premium
+          </Badge>
+          <h1 className="text-5xl font-bold text-gray-900 mb-6">
+            NeuroHack ENEM
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+              Premium
+            </span>
           </h1>
-          <div className="w-20" /> {/* Spacer for alignment */}
-        </div>
-      </header>
-
-      <div className="container mx-auto max-w-7xl px-4 py-12">
-        {/* Hero Section */}
-        <div className="mb-16 text-center">
-          <div className="mb-4 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
-            Oferta Limitada - 15 Dias para o ENEM
-          </div>
-          <h1 className="mb-4">
-            Escolha seu <span className="text-gold">caminho</span> para a aprovação
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            Compre abas individuais ou economize com o pacote completo
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            A plataforma mais avançada para sua aprovação no ENEM. 
+            Técnicas neurocientíficas, estratégias secretas e conteúdo exclusivo.
           </p>
         </div>
 
-        {/* Featured - Full Package */}
-        <div className="mb-12">
-          <div className="relative overflow-hidden rounded-3xl border-2 border-primary bg-gradient-to-br from-[hsl(0,0%,6%)] to-[hsl(0,0%,9%)] p-8 shadow-[0_0_60px_hsl(45,100%,51%,0.2)]">
-            <div className="absolute right-0 top-0 rounded-bl-3xl bg-primary px-6 py-2 text-sm font-bold text-primary-foreground">
-              MELHOR VALOR
+        {/* Pricing Card */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <Card className="relative overflow-hidden border-2 border-blue-200 shadow-2xl">
+            <div className="absolute top-0 right-0 bg-gradient-to-l from-blue-500 to-purple-500 text-white px-6 py-2 rounded-bl-lg">
+              <span className="font-semibold">Mais Vendido</span>
             </div>
             
-            <div className="grid gap-8 lg:grid-cols-2">
-              <div>
-                <div className="mb-4 flex items-center gap-2">
-                  <Sparkles className="h-8 w-8 text-primary" />
-                  <h2 className="text-3xl font-bold">Pacote Completo</h2>
+            <CardHeader className="text-center pb-8">
+              <CardTitle className="text-3xl font-bold text-gray-900 mb-2">
+                Acesso Completo
+              </CardTitle>
+              <CardDescription className="text-lg text-gray-600 mb-6">
+                Tudo que você precisa para passar no ENEM
+              </CardDescription>
+              
+              <div className="flex items-center justify-center gap-2 mb-6">
+                <span className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                  R$ 197
+                </span>
+                <div className="text-left">
+                  <div className="text-sm text-gray-500 line-through">R$ 497</div>
+                  <Badge variant="destructive" className="text-xs">
+                    -60% OFF
+                  </Badge>
                 </div>
-                
-                <p className="mb-6 text-lg text-muted-foreground">
-                  Acesso ilimitado a todas as 6 abas premium + todas as funcionalidades gratuitas
-                </p>
+              </div>
+              
+              <p className="text-sm text-gray-500">
+                Pagamento único • Acesso vitalício • Sem mensalidades
+              </p>
+            </CardHeader>
 
-                <div className="mb-6">
-                  <div className="mb-2 flex items-baseline gap-2">
-                    <span className="text-5xl font-bold text-gold">R$ 297</span>
-                    <span className="text-muted-foreground line-through">R$ {totalIndividual}</span>
+            <CardContent className="px-8 pb-8">
+              {/* Features Grid */}
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                {features.map((feature, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+                      {feature.icon}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-1">
+                        {feature.title}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {feature.description}
+                      </p>
+                    </div>
                   </div>
-                  <div className="inline-block rounded-lg bg-primary/20 px-3 py-1 text-sm font-semibold text-primary">
-                    Economize R$ {savings} ({Math.round((savings / totalIndividual) * 100)}% OFF)
-                  </div>
-                </div>
+                ))}
+              </div>
 
-                <div className="mb-6 space-y-3">
+              {/* Additional Benefits */}
+              <div className="bg-gray-50 rounded-lg p-6 mb-8">
+                <h3 className="font-semibold text-gray-900 mb-4 text-center">
+                  O que você recebe:
+                </h3>
+                <div className="grid md:grid-cols-2 gap-3">
                   {[
-                    "6 E-books premium completos",
-                    "Videoaulas com avatares IA",
-                    "Tutores IA personalizados por aba",
-                    "Exercícios interativos ilimitados",
-                    "100 questões recorrentes do ENEM",
-                    "Simulados adaptativos",
-                    "Cronogramas personalizados",
-                    "Suporte prioritário",
-                    "Atualizações gratuitas",
-                    "Garantia de 7 dias",
-                  ].map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <Check className="h-5 w-5 flex-shrink-0 text-primary" />
-                      <span className="text-foreground">{feature}</span>
+                    "✅ Aprendizagem Acelerada Funcional",
+                    "✅ Estratégias Secretas do ENEM", 
+                    "✅ Padrões ENEM Funcional",
+                    "✅ Questões Recorrentes",
+                    "✅ Simulados Inteligentes",
+                    "✅ Banco de Questões Completo",
+                    "✅ Flashcards Interativos",
+                    "✅ Redação Completa",
+                    "✅ Revisão Express",
+                    "✅ Dashboard de Progresso"
+                  ].map((benefit, index) => (
+                    <div key={index} className="flex items-center gap-2 text-sm text-gray-700">
+                      {benefit}
                     </div>
                   ))}
                 </div>
-
-                <Button className="btn-premium w-full text-lg">
-                  <Zap className="mr-2 h-5 w-5" />
-                  Começar Agora - R$ 297
-                </Button>
-
-                <p className="mt-4 text-center text-xs text-muted-foreground">
-                  Pagamento único • Acesso vitalício • Garantia de 7 dias
-                </p>
               </div>
 
-              <div className="rounded-2xl bg-card/50 p-6">
-                <h3 className="mb-4 font-semibold">O que você recebe:</h3>
-                <div className="space-y-4">
-                  {individualTabs.map((tab, index) => (
-                    <div key={index} className="flex items-center justify-between rounded-lg bg-background/50 p-3">
-                      <span className="text-sm">{tab.title}</span>
-                      <span className="text-sm font-semibold text-primary">R$ {tab.price}</span>
-                    </div>
-                  ))}
-                  <div className="border-t border-border pt-4">
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold">Total Individual:</span>
-                      <span className="text-lg font-bold text-muted-foreground line-through">
-                        R$ {totalIndividual}
-                      </span>
-                    </div>
-                    <div className="mt-2 flex items-center justify-between">
-                      <span className="font-semibold text-primary">Pacote Completo:</span>
-                      <span className="text-2xl font-bold text-gold">R$ 297</span>
-                    </div>
+              {/* Email Input */}
+              <div className="mb-6">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  Seu email para receber o acesso:
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="seu@email.com"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+
+              {/* Purchase Button */}
+              <Button
+                onClick={handlePurchase}
+                disabled={isLoading || !email.trim()}
+                className="w-full py-4 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg transition-all duration-200 transform hover:scale-105"
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Processando...
                   </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Check className="h-5 w-5" />
+                    Comprar Acesso Agora
+                  </div>
+                )}
+              </Button>
+
+              {error && (
+                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-600">{error}</p>
                 </div>
-              </div>
-            </div>
-          </div>
+              )}
+
+              <p className="text-xs text-gray-500 text-center mt-4">
+                Pagamento 100% seguro via Stripe • Garantia de 7 dias
+              </p>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Individual Tabs */}
-        <div className="mb-12">
-          <h2 className="mb-8 text-center text-2xl font-bold">
-            Ou compre abas <span className="text-gold">individuais</span>
+        {/* Testimonials */}
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+            O que nossos alunos dizem:
           </h2>
-
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {individualTabs.map((tab, index) => (
-              <div key={index} className="card-premium flex flex-col">
-                <h3 className="mb-4 text-xl">{tab.title}</h3>
-                
-                <div className="mb-4">
-                  <span className="text-4xl font-bold text-gold">R$ {tab.price}</span>
-                </div>
-
-                <div className="mb-6 flex-grow space-y-2">
-                  {tab.features.map((feature, fIndex) => (
-                    <div key={fIndex} className="flex items-start gap-2">
-                      <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
-                      <span className="text-sm text-muted-foreground">{feature}</span>
-                    </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                name: "Maria Silva",
+                score: "850 pontos",
+                text: "Consegui aumentar minha nota em 200 pontos usando as técnicas do NeuroHack!"
+              },
+              {
+                name: "João Santos", 
+                score: "920 pontos",
+                text: "As estratégias secretas me ajudaram a identificar padrões que nunca tinha visto."
+              },
+              {
+                name: "Ana Costa",
+                score: "780 pontos", 
+                text: "Aprendizagem acelerada funcionou perfeitamente. Estudei em 3 meses o que levaria 1 ano."
+              }
+            ].map((testimonial, index) => (
+              <Card key={index} className="p-6">
+                <div className="flex items-center gap-1 mb-3">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-
-                <Button className="btn-premium w-full">
-                  Comprar Aba
-                </Button>
-              </div>
+                <p className="text-gray-600 mb-4">"{testimonial.text}"</p>
+                <div>
+                  <p className="font-semibold text-gray-900">{testimonial.name}</p>
+                  <p className="text-sm text-blue-600 font-medium">{testimonial.score}</p>
+                </div>
+              </Card>
             ))}
           </div>
-        </div>
-
-        {/* FAQ Section */}
-        <div className="card-premium mx-auto max-w-3xl">
-          <h2 className="mb-6 text-center text-2xl font-bold">Perguntas Frequentes</h2>
-          
-          <div className="space-y-6">
-            <div>
-              <h3 className="mb-2 font-semibold text-primary">Por quanto tempo tenho acesso?</h3>
-              <p className="text-sm text-muted-foreground">
-                O acesso é vitalício! Você pode revisar o conteúdo quantas vezes quiser, mesmo após o ENEM.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="mb-2 font-semibold text-primary">Posso comprar mais de uma aba individual?</h3>
-              <p className="text-sm text-muted-foreground">
-                Sim! Mas se você pretende comprar 3 ou mais abas, recomendamos o pacote completo - sai muito mais barato.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="mb-2 font-semibold text-primary">Há garantia de devolução?</h3>
-              <p className="text-sm text-muted-foreground">
-                Sim! Você tem 7 dias de garantia incondicional. Se não gostar, devolvemos 100% do seu dinheiro.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="mb-2 font-semibold text-primary">Como funciona a IA personalizada?</h3>
-              <p className="text-sm text-muted-foreground">
-                Cada aba premium tem um tutor de IA treinado especificamente no conteúdo daquela aba. Você pode fazer perguntas, pedir explicações e receber dicas personalizadas 24/7.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="mb-2 font-semibold text-primary">Funciona em celular?</h3>
-              <p className="text-sm text-muted-foreground">
-                Sim! O app é 100% responsivo e funciona perfeitamente em qualquer dispositivo - computador, tablet ou smartphone.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Final CTA */}
-        <div className="mt-12 text-center">
-          <p className="mb-6 text-lg text-muted-foreground">
-            Ainda com dúvidas? Comece gratuitamente!
-          </p>
-          <Link to="/tabs">
-            <Button variant="outline" className="rounded-2xl border-primary/30 px-8">
-              Experimentar Versão Gratuita
-            </Button>
-          </Link>
         </div>
       </div>
     </div>
