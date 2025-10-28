@@ -6,9 +6,11 @@ import { ArrowLeft, BookOpen, Brain, GraduationCap, Target } from "lucide-react"
 import { useNavigate } from "react-router-dom";
 import QuestoesResolvidasSection from "@/components/questoes/QuestoesResolvidasSection";
 import SimuladoSection from "@/components/questoes/SimuladoSection";
+import { useQuestoesEnem } from "@/hooks/useQuestoesEnem";
 
 const QuestoesRecorrentes = () => {
   const navigate = useNavigate();
+  const { questoes, loading, error } = useQuestoesEnem(150);
 
   return (
     <div className="min-h-screen bg-background">
@@ -31,6 +33,22 @@ const QuestoesRecorrentes = () => {
       </header>
 
       <div className="container mx-auto px-4 py-8">
+        {/* Status de carregamento das 150 questões */}
+        {loading && (
+          <div className="mb-4 p-3 rounded border border-yellow-200 bg-yellow-50">
+            ⏳ Carregando 150 questões...
+          </div>
+        )}
+        {error && (
+          <div className="mb-4 p-3 rounded border border-red-200 bg-red-50">
+            ⚠️ {error}
+          </div>
+        )}
+        {!loading && !error && questoes && (
+          <div className="mb-4 p-3 rounded border border-primary/20 bg-primary/5 text-sm">
+            Questões disponíveis: <strong>{questoes.length}</strong>
+          </div>
+        )}
         <Tabs defaultValue="resolvidas" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="resolvidas" className="flex items-center gap-2">

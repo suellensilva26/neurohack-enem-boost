@@ -17,38 +17,7 @@ const SimuladoSection = () => {
 
   const { questoes, loading } = useQuestoesEnem(100);
 
-  // Rotação automática de questões a cada 30 segundos (opcional)
-  const [autoRotate, setAutoRotate] = useState(true);
-  const [timeLeft, setTimeLeft] = useState(30);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    
-    if (autoRotate && !showResults && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            // Auto-avançar para próxima questão
-            setCurrentQuestion((current) => {
-              if (current < activeQuestions.length - 1) {
-                return current + 1;
-              }
-              // Ao atingir a última questão, parar auto rotação
-              setAutoRotate(false);
-              return current;
-            });
-            return 30; // Reset timer
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [autoRotate, showResults, timeLeft, activeQuestions.length]);
-
+  // Pré-calcular dataset e activeQuestions ANTES de usar em efeitos/deps
   const blocks = Array.from({ length: 10 }, (_, i) => ({
     id: i + 1,
     start: i * 10,
@@ -81,9 +50,41 @@ const SimuladoSection = () => {
   );
 
   const hiddenCount = rawActiveQuestions.length - activeQuestions.length;
-
   const question = activeQuestions[currentQuestion];
   const progress = ((currentQuestion + 1) / activeQuestions.length) * 100;
+  const activeLength = activeQuestions.length;
+
+  // Rotação automática de questões a cada 30 segundos (opcional)
+  const [autoRotate, setAutoRotate] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(30);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (autoRotate && !showResults && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            setCurrentQuestion((current) => {
+              if (current < activeLength - 1) {
+                return current + 1;
+              }
+              setAutoRotate(false);
+              return current;
+            });
+            return 30;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [autoRotate, showResults, timeLeft, activeLength]);
+
+  
 
   const handleSelectAnswer = (option: string) => {
     setAnswers({ ...answers, [currentQuestion]: option });
