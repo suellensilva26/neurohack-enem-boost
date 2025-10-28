@@ -2,13 +2,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "functions": {
-    "api/stripe-checkout.ts": {
-      "maxDuration": 30
-    },
-    "api/verify-payment.ts": {
-      "maxDuration": 10
-    },
-    "api/stripe-webhook.ts": {
+    "api/checkout-session.ts": {
       "maxDuration": 30
     }
   },

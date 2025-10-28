@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BookOpen, Brain, Target, Zap, Lock, CheckCircle, TrendingUp, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OnboardingModal } from "@/components/freemium/OnboardingModal";
@@ -7,19 +7,42 @@ import { FloatingCTA } from "@/components/freemium/FloatingCTA";
 import { UrgencyBanner } from "@/components/freemium/UrgencyBanner";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
+import { useCheckout } from "@/hooks/useCheckout";
+import { toast } from "sonner";
 
 const Index = () => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const { needsOnboarding, loading, completeOnboarding } = useOnboarding();
-  const navigate = useNavigate();
-  const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'true') === 'true';
+  const { createCheckoutSession, isLoading, error } = useCheckout();
+  const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'false') === 'true';
 
-  // Redirecionar para pricing se for build premium
+  // Verificar se há parâmetros de URL indicando resultado do pagamento
   useEffect(() => {
-    if (PREMIUM_BUILD) {
-      navigate('/pricing');
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    
+    if (paymentStatus === 'success') {
+      toast.success('Pagamento realizado com sucesso! Acesso liberado.');
+      // Salvar token de acesso no localStorage
+      localStorage.setItem('neurohack_access_token', 'premium_' + Date.now());
+    } else if (paymentStatus === 'cancelled') {
+      toast.error('Pagamento cancelado. Tente novamente!');
     }
-  }, [PREMIUM_BUILD, navigate]);
+  }, []);
+
+  const handlePurchaseClick = async () => {
+    const email = prompt('Digite seu email para receber o acesso:');
+    if (!email) {
+      toast.error('Email é obrigatório');
+      return;
+    }
+
+    try {
+      await createCheckoutSession(email);
+    } catch (err) {
+      toast.error('Erro ao processar pagamento. Tente novamente.');
+    }
+  };
 
   useEffect(() => {
     const targetDate = new Date("2025-11-03T00:00:00").getTime();
@@ -100,14 +123,26 @@ const Index = () => {
             </div>
 
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Link to="/auth">
-                <Button className="btn-premium w-full sm:w-auto">
-                  Começar Intensivo Agora
-                </Button>
-              </Link>
-              <Link to="/pricing">
+              <Button 
+                onClick={handlePurchaseClick}
+                disabled={isLoading}
+                className="btn-premium w-full sm:w-auto"
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Processando...
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5" />
+                    ✓ Comprar Acesso Agora - R$ 197
+                  </div>
+                )}
+              </Button>
+              <Link to="/tabs">
                 <Button variant="outline" className="w-full rounded-2xl border-primary/30 text-foreground hover:border-primary sm:w-auto">
-                  Ver Planos Premium
+                  Ver Conteúdo Gratuito
                 </Button>
               </Link>
             </div>

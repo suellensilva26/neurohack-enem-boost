@@ -5,13 +5,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter as BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
-import Pricing from "./pages/Pricing";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import DailyQuestion from "./pages/DailyQuestion";
 import Checklist from "./pages/Checklist";
 import { OfflineMessage } from "@/components/OfflineMessage";
-import { PaymentGuard } from "@/components/PaymentGuard";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { toast } from "sonner";
 
@@ -78,77 +76,63 @@ const App = () => {
             <Route
               path="/aprendizagem-acelerada"
               element={
-                <PaymentGuard>
-                  <Suspense fallback={<Fallback />}>
-                    <AprendizagemAceleradaFuncional />
-                  </Suspense>
-                </PaymentGuard>
+                <Suspense fallback={<Fallback />}>
+                  <AprendizagemAceleradaFuncional />
+                </Suspense>
               }
             />
             
             <Route
               path="/redacao-completa"
               element={
-                <PaymentGuard>
-                  <Suspense fallback={<Fallback />}>
-                    <RedacaoCompleta />
-                  </Suspense>
-                </PaymentGuard>
+                <Suspense fallback={<Fallback />}>
+                  <RedacaoCompleta />
+                </Suspense>
               }
             />
             
             <Route
               path="/revisao-express"
               element={
-                <PaymentGuard>
-                  <Suspense fallback={<Fallback />}>
-                    <RevisaoExpress />
-                  </Suspense>
-                </PaymentGuard>
+                <Suspense fallback={<Fallback />}>
+                  <RevisaoExpress />
+                </Suspense>
               }
             />
             
             <Route
               path="/estrategias-secretas"
               element={
-                <PaymentGuard>
-                  <Suspense fallback={<Fallback />}>
-                    <EstrategiasSecretas />
-                  </Suspense>
-                </PaymentGuard>
+                <Suspense fallback={<Fallback />}>
+                  <EstrategiasSecretas />
+                </Suspense>
               }
             />
             
             <Route
               path="/padroes-enem"
               element={
-                <PaymentGuard>
-                  <Suspense fallback={<Fallback />}>
-                    <PadroesEnemFuncional />
-                  </Suspense>
-                </PaymentGuard>
+                <Suspense fallback={<Fallback />}>
+                  <PadroesEnemFuncional />
+                </Suspense>
               }
             />
             
             <Route
               path="/questoes-recorrentes"
               element={
-                <PaymentGuard>
-                  <Suspense fallback={<Fallback />}>
-                    <QuestoesRecorrentes />
-                  </Suspense>
-                </PaymentGuard>
+                <Suspense fallback={<Fallback />}>
+                  <QuestoesRecorrentes />
+                </Suspense>
               }
             />
 
             <Route
               path="/flashcards"
               element={
-                <PaymentGuard>
-                  <Suspense fallback={<Fallback />}>
-                    <Flashcards />
-                  </Suspense>
-                </PaymentGuard>
+                <Suspense fallback={<Fallback />}>
+                  <Flashcards />
+                </Suspense>
               }
             />
 
@@ -158,48 +142,39 @@ const App = () => {
             <Route
               path="/dashboard"
               element={
-                <PaymentGuard>
-                  <Suspense fallback={<Fallback />}>
-                    <Dashboard />
-                  </Suspense>
-                </PaymentGuard>
+                <Suspense fallback={<Fallback />}>
+                  <Dashboard />
+                </Suspense>
               }
             />
 
             <Route
               path="/banco-questoes"
               element={
-                <PaymentGuard>
-                  <Suspense fallback={<Fallback />}>
-                    <BancoQuestoes />
-                  </Suspense>
-                </PaymentGuard>
+                <Suspense fallback={<Fallback />}>
+                  <BancoQuestoes />
+                </Suspense>
               }
             />
 
             <Route
               path="/quiz/:lessonId"
               element={
-                <PaymentGuard>
-                  <Suspense fallback={<Fallback />}>
-                    <Quiz />
-                  </Suspense>
-                </PaymentGuard>
+                <Suspense fallback={<Fallback />}>
+                  <Quiz />
+                </Suspense>
               }
             />
 
             <Route
               path="/simulado"
               element={
-                <PaymentGuard>
-                  <Suspense fallback={<Fallback />}>
-                    <Simulado />
-                  </Suspense>
-                </PaymentGuard>
+                <Suspense fallback={<Fallback />}>
+                  <Simulado />
+                </Suspense>
               }
             />
 
-            <Route path="/pricing" element={<Pricing />} />
             <Route path="/auth" element={<Auth />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
