@@ -24,7 +24,7 @@ const RedacaoCompleta = React.lazy(() => import("./pages/RedacaoCompleta"));
 const RevisaoExpress = React.lazy(() => import("./pages/RevisaoExpress"));
 const EstrategiasSecretas = React.lazy(() => import("./pages/EstrategiasSecretas"));
 const PadroesEnemFuncional = React.lazy(() => import("./pages/PadroesEnemFuncional"));
-const QuestoesRecorrentesFuncional = React.lazy(() => import("./pages/QuestoesRecorrentesFuncional"));
+const QuestoesRecorrentes = React.lazy(() => import("./pages/QuestoesRecorrentes"));
 const Flashcards = React.lazy(() => import("./pages/Flashcards"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const BancoQuestoes = React.lazy(() => import("./pages/BancoQuestoes"));
@@ -123,7 +123,7 @@ const App = () => {
               path="/questoes-recorrentes"
               element={
                 <Suspense fallback={<Fallback />}>
-                  <QuestoesRecorrentesFuncional />
+                  <QuestoesRecorrentes />
                 </Suspense>
               }
             />
