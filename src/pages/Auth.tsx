@@ -45,52 +45,6 @@ const AuthPage = () => {
     }
   };
 
-  const handleTestLogin = async () => {
-    setIsLoading(true);
-    
-    try {
-      // Tentar fazer login com usuário de teste
-      const { error } = await supabase.auth.signInWithPassword({
-        email: "teste@neurohack.com",
-        password: "123456",
-      });
-
-      if (error) {
-        // Se não existir, criar o usuário de teste
-        const { error: signUpError } = await supabase.auth.signUp({
-          email: "teste@neurohack.com",
-          password: "123456",
-          options: {
-            data: {
-              full_name: "Usuário Teste",
-            },
-          },
-        });
-
-        if (signUpError) throw signUpError;
-
-        toast({
-          title: "✅ Usuário de teste criado!",
-          description: "Faça login novamente com: teste@neurohack.com / 123456",
-        });
-      } else {
-        toast({
-          title: "✨ Login de teste realizado!",
-          description: "Bem-vindo ao NeuroHack ENEM!",
-        });
-        navigate("/tabs");
-      }
-    } catch (error: any) {
-      toast({
-        title: "Erro no login de teste",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -181,25 +135,6 @@ const AuthPage = () => {
                 </div>
                 <Button type="submit" className="w-full btn-premium" disabled={isLoading}>
                   {isLoading ? "Entrando..." : "Entrar"}
-                </Button>
-                
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">ou</span>
-                  </div>
-                </div>
-                
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className="w-full" 
-                  onClick={handleTestLogin}
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Processando..." : "🚀 Login de Teste"}
                 </Button>
               </form>
             </TabsContent>
