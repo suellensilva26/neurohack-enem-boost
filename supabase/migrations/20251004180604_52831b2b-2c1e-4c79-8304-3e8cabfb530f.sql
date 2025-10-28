@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS purchases (
   product_id text NOT NULL,
   amount numeric NOT NULL,
   currency text DEFAULT 'BRL',
-  stripe_session_id text,
   created_at timestamptz DEFAULT now()
 );
 

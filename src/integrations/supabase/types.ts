@@ -605,7 +605,6 @@ export type Database = {
           currency: string | null
           id: string
           product_id: string
-          stripe_session_id: string | null
           user_id: string
         }
         Insert: {
@@ -614,7 +613,6 @@ export type Database = {
           currency?: string | null
           id: string
           product_id: string
-          stripe_session_id?: string | null
           user_id: string
         }
         Update: {
@@ -623,7 +621,6 @@ export type Database = {
           currency?: string | null
           id?: string
           product_id?: string
-          stripe_session_id?: string | null
           user_id?: string
         }
         Relationships: []

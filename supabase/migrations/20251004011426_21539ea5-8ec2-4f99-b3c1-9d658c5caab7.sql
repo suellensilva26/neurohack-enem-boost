@@ -100,7 +100,6 @@ CREATE TABLE public.purchases (
   product_id TEXT NOT NULL,
   amount NUMERIC NOT NULL,
   currency TEXT DEFAULT 'BRL',
-  stripe_session_id TEXT,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
