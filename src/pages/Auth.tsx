@@ -50,22 +50,36 @@ const AuthPage = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      // Criar conta
+      const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             full_name: fullName,
           },
+          emailRedirectTo: window.location.origin, // Sem confirmação obrigatória
         },
       });
 
-      if (error) throw error;
+      if (signUpError) throw signUpError;
 
-      toast({
-        title: "🎉 Conta criada!",
-        description: "Sua conta foi criada com sucesso. Faça login para começar.",
+      // IMEDIATAMENTE fazer login após criar conta
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
+
+      if (signInError) throw signInError;
+
+      if (data.session) {
+        // Usuário já está logado!
+        toast({
+          title: "🎉 Conta criada e logado!",
+          description: "Bem-vindo ao NeuroHack ENEM!",
+        });
+        navigate("/tabs");
+      }
     } catch (error: any) {
       toast({
         title: "Erro no cadastro",
