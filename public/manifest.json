@@ -1,42 +1,13 @@
 {
   "name": "NeuroHack ENEM 2025",
   "short_name": "NeuroHack",
-  "description": "Plataforma de preparação para o ENEM com simulados, flashcards e conteúdo completo",
   "start_url": "/",
-  "scope": "/",
+  "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#D4AF37",
-  "display": "standalone",
-  "orientation": "portrait-primary",
-  "categories": ["education", "productivity"],
+  "description": "Plataforma ENEM 2025",
   "icons": [
-    {
-      "src": "/icons/nh-icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/nh-icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/nh-icon-192x192-maskable.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/icons/nh-icon-512x512-maskable.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
-  ],
-  "screenshots": [
-    {"src": "/screenshots/home.png", "sizes": "540x720", "type": "image/png"},
-    {"src": "/screenshots/quiz.png", "sizes": "540x720", "type": "image/png"}
+    { "src": "/logo.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
