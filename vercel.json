@@ -3,7 +3,10 @@
   "outputDirectory": "dist",
   "rewrites": [
     { "source": "/pdfs/(.*)", "destination": "/pdfs/$1" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/((?!.*\\.(?:js|css|ico|png|jpg|jpeg|webp|svg|json|webmanifest|pdf|txt|html)).*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
