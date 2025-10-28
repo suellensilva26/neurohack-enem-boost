@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator'
 import { Brain, GraduationCap, CheckCircle2, XCircle, ChevronRight, ChevronLeft } from 'lucide-react'
 
 export default function QuestoesResolvidasSection() {
-  const { questoes, loading, error } = useQuestoesEnem(150)
+  const { questoes, loading, error } = useQuestoesEnem(50)
   const [indiceAtual, setIndiceAtual] = useState(0)
   const [respostaSelecionada, setRespostaSelecionada] = useState<number | null>(null)
   const [mostrarExplicacao, setMostrarExplicacao] = useState(false)
@@ -23,7 +23,7 @@ export default function QuestoesResolvidasSection() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
-          <p className="text-lg">⏳ Carregando 150 questões...</p>
+          <p className="text-lg">⏳ Carregando 50 questões...</p>
         </div>
       </div>
     )
