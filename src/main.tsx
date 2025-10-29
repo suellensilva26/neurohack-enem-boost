@@ -17,17 +17,6 @@ if ('serviceWorker' in navigator) {
   );
 }
 
-// Mostrar alerta automático para usuários iOS
-if (isIOS()) {
-  // Aguardar um pouco para o app carregar
-  setTimeout(() => {
-    alert(
-      'Para instalar o app no seu iPhone:\n\n1. Toque no ícone de compartilhamento (quadrado com seta).\n2. Escolha "Adicionar à Tela de Início".\n3. Pronto! O app estará instalado como nativo!'
-    );
-  }, 3000);
-}
-
-// PWA Install Prompt - Remover para evitar conflito
-// O componente InstallPrompt vai gerenciar isso
+// Remover alerta automático - agora só aparece no botão
 
 createRoot(document.getElementById("root")!).render(<App />);
