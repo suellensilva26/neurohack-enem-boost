@@ -97,11 +97,22 @@ const Index = () => {
                   Começar Intensivo Agora
                 </Button>
               </Link>
-              <Link to="/tabs">
-                <Button variant="outline" className="w-full rounded-2xl border-primary/30 text-foreground hover:border-primary sm:w-auto">
-                  Ver Conteúdo Gratuito
-                </Button>
-              </Link>
+              <Button 
+                variant="outline" 
+                className="w-full rounded-2xl border-primary/30 text-foreground hover:border-primary sm:w-auto"
+                onClick={() => {
+                  // Scroll para seção de preços ou mostrar modal de pagamento
+                  const pricingSection = document.querySelector('[data-section="pricing"]');
+                  if (pricingSection) {
+                    pricingSection.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    // Se não encontrar, mostrar alerta com informações de pagamento
+                    alert('🎯 NEUROHACK ENEM 2025\n\n💰 Valor: R$ 197,00\n🔥 Desconto: 60% OFF\n💳 Formas de pagamento: PIX, Cartão\n\n📱 Entre em contato para adquirir seu acesso!');
+                  }
+                }}
+              >
+                💰 Ver Preços e Descontos
+              </Button>
             </div>
 
             {/* Quote */}
@@ -160,25 +171,33 @@ const Index = () => {
         <div className="container mx-auto max-w-6xl">
           <h2 className="mb-4 text-center">Conteúdo do Programa</h2>
           <p className="mb-12 text-center text-lg text-muted-foreground">
-            Abas gratuitas para começar + 6 abas premium com conteúdo completo
+            Acesso completo a todas as abas premium com conteúdo exclusivo
           </p>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Free Tab */}
-            <div className="card-premium border-primary/50">
+            {/* Premium Access Tab */}
+            <div className="card-premium border-primary/50 bg-gradient-to-br from-primary/5 to-primary/10">
               <div className="mb-3 flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-primary" />
-                <span className="text-sm font-semibold text-primary">GRÁTIS</span>
+                <Award className="h-5 w-5 text-primary" />
+                <span className="text-sm font-semibold text-primary">PREMIUM</span>
               </div>
-              <h3 className="mb-2">Dashboard Inicial</h3>
+              <h3 className="mb-2">Acesso Completo</h3>
               <p className="mb-4 text-sm text-muted-foreground">
-                Countdown, citação motivacional, progresso básico e acesso à questão do dia
+                Dashboard completo, todas as abas premium, IA personalizada e materiais exclusivos
               </p>
-              <Link to="/tabs">
-                <Button variant="outline" className="w-full rounded-xl border-primary/30">
-                  Acessar Grátis
-                </Button>
-              </Link>
+              <div className="mb-3 text-center">
+                <div className="text-lg font-bold text-primary">R$ 197,00</div>
+                <div className="text-xs text-muted-foreground line-through">R$ 297,00</div>
+                <div className="text-xs text-primary font-semibold">60% OFF</div>
+              </div>
+              <Button 
+                className="w-full rounded-xl bg-primary hover:bg-primary/90 text-black"
+                onClick={() => {
+                  alert('🎯 NEUROHACK ENEM 2025\n\n💰 Valor: R$ 197,00\n🔥 Desconto: 60% OFF\n💳 Formas de pagamento: PIX, Cartão\n\n📱 Entre em contato para adquirir seu acesso!');
+                }}
+              >
+                💰 Adquirir Acesso
+              </Button>
             </div>
 
             {/* Premium Tabs */}
@@ -263,13 +282,21 @@ const Index = () => {
             Pronto para mudar sua história?
           </h2>
           <p className="mb-8 text-xl text-muted-foreground">
-            Comece agora gratuitamente e veja a diferença em 24 horas
+            Adquira seu acesso premium e veja a diferença em 24 horas
           </p>
-          <Link to="/tabs">
-            <Button className="btn-premium">
-              Iniciar Jornada Intensiva
-            </Button>
-          </Link>
+          <div className="mb-6">
+            <div className="text-3xl font-bold text-primary">R$ 197,00</div>
+            <div className="text-sm text-muted-foreground line-through">R$ 297,00</div>
+            <div className="text-sm text-primary font-semibold">60% OFF - Oferta Limitada!</div>
+          </div>
+          <Button 
+            className="btn-premium"
+            onClick={() => {
+              alert('🎯 NEUROHACK ENEM 2025\n\n💰 Valor: R$ 197,00\n🔥 Desconto: 60% OFF\n💳 Formas de pagamento: PIX, Cartão\n\n📱 Entre em contato para adquirir seu acesso!');
+            }}
+          >
+            💰 Adquirir Acesso Premium
+          </Button>
         </div>
       </section>
     </div>
