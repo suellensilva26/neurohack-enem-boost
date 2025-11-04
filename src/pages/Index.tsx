@@ -12,7 +12,6 @@ const Index = () => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const { needsOnboarding, loading, completeOnboarding } = useOnboarding();
   const PREMIUM_BUILD = (import.meta.env.VITE_PREMIUM_BUILD ?? 'false') === 'true';
-  const PUBLIC_MODE = (import.meta.env.VITE_PUBLIC_MODE ?? 'false') === 'true';
 
   useEffect(() => {
     const targetDate = new Date("2025-11-03T00:00:00").getTime();
@@ -93,7 +92,7 @@ const Index = () => {
             </div>
 
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Link to={PUBLIC_MODE ? "/tabs" : "/auth"}>
+              <Link to="/auth">
                 <Button className="btn-premium w-full sm:w-auto">
                   Começar Intensivo Agora
                 </Button>
