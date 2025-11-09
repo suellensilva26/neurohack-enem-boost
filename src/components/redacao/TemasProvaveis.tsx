@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Clock, Lightbulb, FileText } from "lucide-react";
+import { Clock, Lightbulb, FileText, CheckCircle } from "lucide-react";
 
 const TEMAS = [
   {
@@ -41,20 +41,25 @@ Portanto, é fundamental que governos municipais promovam políticas de renatura
   },
   {
     id: 3,
-    titulo: "Saúde Mental dos Jovens no Brasil",
-    justificativa: "Aumento alarmante de casos de depressão, ansiedade e suicídio entre jovens, agravado por redes sociais e pandemia.",
+    titulo: "Perspectivas acerca do envelhecimento na sociedade brasileira",
+    justificativa: "O Brasil vive uma transição demográfica acelerada: segundo o Censo 2022 do IBGE, a população com mais de 65 anos cresceu de 7,4% em 2010 para 10,9% em 2022, a maior proporção desde 1940. Esse envelhecimento populacional impacta previdência, saúde pública e mercado de trabalho, exigindo políticas urgentes.",
     repertorios: [
-      "Émile Durkheim - 'O Suicídio' (anomia social)",
-      "Zygmunt Bauman - Modernidade Líquida",
-      "Setembro Amarelo e políticas de prevenção ao suicídio"
+      "Estatuto da Pessoa Idosa (Lei 10.741/2003) - Direitos fundamentais e proteção social",
+      "Censo Demográfico IBGE 2022 - Dados sobre transição demográfica brasileira",
+      "Conceito de Familismo (Deusivania Falcão) - Solidariedade intergeracional nas famílias latino-americanas",
+      "Projeto Falas da Vida (TV Globo 2025) - Visibilidade e combate ao etarismo",
+      "Política Nacional de Saúde da Pessoa Idosa - Estratégias de envelhecimento ativo e saudável",
+      "Agenda 2030 da ONU - ODS relacionado ao bem-estar em todas as idades"
     ],
-    exemplo: `No cenário contemporâneo, a saúde mental dos jovens brasileiros tornou-se uma questão de saúde pública urgente. Segundo dados da Organização Pan-Americana da Saúde (OPAS), o Brasil registra aumento de 40% nos casos de transtornos mentais entre adolescentes na última década. Conforme o sociólogo Émile Durkheim, em "O Suicídio", períodos de rápida transformação social geram anomia, ou seja, perda de referências coletivas que orientam comportamentos. Nesse sentido, a digitalização das relações sociais e pressões acadêmicas/profissionais configuram-se como fatores desestabilizadores. Diante disso, torna-se fundamental analisar as causas desse adoecimento psíquico e buscar soluções efetivas.
+    exemplo: `O envelhecimento populacional tornou-se uma das principais transformações demográficas do século XXI no Brasil. Segundo dados do Censo Demográfico de 2022, realizado pelo Instituto Brasileiro de Geografia e Estatística (IBGE), a proporção de brasileiros com mais de 65 anos cresceu de 7,4% em 2010 para 10,9% em 2022, representando a maior proporção desde 1940. Essa transição demográfica acelerada, caracterizada pelo aumento da expectativa de vida e redução da taxa de natalidade, configura-se como um desafio estrutural que impacta previdência social, sistema de saúde e mercado de trabalho. Diante disso, torna-se fundamental analisar as perspectivas do envelhecimento na sociedade brasileira e propor políticas públicas adequadas.
 
-Em primeira análise, é importante destacar o papel das redes sociais na deterioração da saúde mental juvenil. Segundo Zygmunt Bauman, em "Modernidade Líquida", relações contemporâneas são marcadas por superficialidade e competição constante por validação externa. Esse cenário evidencia-se em plataformas como Instagram e TikTok, onde jovens comparam-se incessantemente a padrões inalcançáveis de beleza, sucesso e felicidade. Estudos da Universidade de São Paulo (USP) demonstram correlação direta entre tempo de uso de redes sociais e sintomas depressivos em adolescentes. Portanto, fica evidente a necessidade de educação digital crítica desde o ensino fundamental.
+Em primeira análise, é importante destacar que o Estatuto da Pessoa Idosa (Lei 10.741/2003) estabelece direitos fundamentais para brasileiros com 60 anos ou mais, incluindo saúde, educação, cultura e trabalho. Entretanto, a implementação efetiva desses direitos ainda enfrenta obstáculos estruturais. Segundo relatório do Ministério da Saúde, apenas 30% dos municípios brasileiros possuem Centros de Referência de Assistência à Pessoa Idosa (CRAS) adequadamente equipados, resultando em déficit assistencial para milhões de idosos. Esse cenário evidencia-se especialmente em regiões periféricas, onde idosos enfrentam dificuldades de acesso a serviços de saúde especializados e enfrentam isolamento social. Portanto, fica evidente a necessidade de ampliar investimentos em políticas públicas de envelhecimento ativo.
 
-Além disso, outro aspecto relevante relaciona-se à precarização do acesso a tratamento psicológico no Sistema Único de Saúde (SUS). De acordo com dados do Conselho Federal de Psicologia, o SUS dispõe de apenas 1 psicólogo para cada 20 mil habitantes, número muito abaixo da recomendação da OMS. Tal situação pode ser observada em capitais como Rio de Janeiro, onde tempo de espera para atendimento psiquiátrico no SUS ultrapassa 6 meses. Esse déficit assistencial resulta em agravamento de quadros clínicos e aumento de tentativas de suicídio, especialmente entre jovens de baixa renda. Dessa forma, torna-se imprescindível ampliar investimentos em saúde mental pública.
+Além disso, outro aspecto relevante relaciona-se ao etarismo e à exclusão digital da população idosa. Conforme o Projeto Falas da Vida, exibido pela TV Globo em 2025, o preconceito etário ainda é uma realidade no Brasil, manifestando-se em discriminação no mercado de trabalho, violência doméstica e invisibilização social. Tal situação pode ser observada em dados da Pesquisa Nacional por Amostra de Domicílios (PNAD), que revelam que apenas 25% dos idosos brasileiros possuem acesso regular à internet, limitando sua participação em serviços digitais essenciais como telemedicina e bancos digitais. Esse processo de exclusão digital agrava isolamento social e dificulta acesso a direitos fundamentais. Dessa forma, torna-se imprescindível promover políticas de inclusão digital específicas para essa faixa etária.
 
-Portanto, é fundamental que o Ministério da Educação promova programas de letramento digital e saúde mental nas escolas, por meio de psicólogos escolares e campanhas de conscientização, a fim de desenvolver resiliência emocional nos jovens. Ademais, o Ministério da Saúde deve ampliar a rede de Centros de Atenção Psicossocial (CAPS) e garantir atendimento psicológico gratuito em até 30 dias. Somente assim será possível reverter essa crise silenciosa que afeta milhões de brasileiros.`
+Ademais, é fundamental considerar o papel da família no suporte ao envelhecimento saudável. Segundo a psicóloga brasileira Deusivania Falcão, o conceito de "familismo" caracteriza-se como valor cultural presente nas famílias latino-americanas, marcado por forte identificação e solidariedade intergeracional. Entretanto, mudanças sociais contemporâneas, como urbanização acelerada e inserção feminina no mercado de trabalho, fragilizam essas redes de apoio familiar. Esse cenário exige políticas públicas que fortaleçam redes comunitárias de cuidado e promovam envelhecimento saudável em diferentes contextos familiares.
+
+Portanto, é fundamental que o Ministério da Cidadania promova programas de inclusão digital para idosos, por meio de parcerias com universidades e organizações da sociedade civil, oferecendo cursos de alfabetização digital gratuitos em centros comunitários, a fim de reduzir exclusão tecnológica e facilitar acesso a serviços públicos digitais. Ademais, o Ministério da Saúde deve ampliar a rede de Atenção Primária à Saúde com equipes multidisciplinares especializadas em geriatria, garantindo acompanhamento preventivo e tratamento adequado para doenças crônicas comuns ao envelhecimento. Somente assim será possível construir uma sociedade verdadeiramente inclusiva que valorize e proteja seus cidadãos em todas as fases da vida.`
   }
 ];
 
@@ -92,77 +97,107 @@ export function TemasProvaveis() {
   return (
     <div className="space-y-6">
       {/* Introdução */}
-      <Card className="p-6 bg-primary/5 border-primary/20">
-        <h3 className="font-semibold text-lg mb-3 text-foreground">
+      <Card className="p-4 sm:p-6 bg-primary/5 border-primary/20">
+        <h3 className="font-semibold text-base sm:text-lg mb-3 text-foreground leading-tight">
           Os 3 Temas Mais Prováveis para ENEM 2025
         </h3>
-        <p className="text-muted-foreground">
+        <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
           Baseado em análise de tendências sociais, eventos recentes e padrões históricos do ENEM. 
           Cada tema vem com redação modelo nota 1000 e repertórios essenciais.
         </p>
       </Card>
 
       {/* Seletor de Tema */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {TEMAS.map((t) => (
           <Button
             key={t.id}
             variant={temaSelecionado === t.id ? "default" : "outline"}
             onClick={() => setTemaSelecionado(t.id)}
-            className="h-auto py-4 text-left justify-start"
+            className={`h-auto py-4 px-4 text-left justify-start transition-all ${
+              temaSelecionado === t.id 
+                ? "bg-primary text-primary-foreground shadow-md scale-[1.02]" 
+                : "hover:bg-primary/5"
+            }`}
           >
-            <div>
-              <div className="font-semibold">Tema {t.id}</div>
-              <div className="text-xs opacity-90">{t.titulo}</div>
+            <div className="w-full space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-base sm:text-lg">Tema {t.id}</span>
+                {temaSelecionado === t.id && (
+                  <CheckCircle className="h-5 w-5 flex-shrink-0" />
+                )}
+              </div>
+              <div className="text-xs sm:text-sm leading-tight opacity-90 line-clamp-2">
+                {t.titulo}
+              </div>
             </div>
           </Button>
         ))}
       </div>
 
       {/* Detalhes do Tema */}
-      <Card className="p-6">
-        <h4 className="text-xl font-bold mb-3 text-foreground">{tema.titulo}</h4>
+      <Card className="p-4 sm:p-6">
+        <h4 className="text-lg sm:text-xl font-bold mb-3 text-foreground leading-tight">
+          {tema.titulo}
+        </h4>
         
-        <div className="mb-4 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
-          <span className="font-medium text-foreground">Por que é provável: </span>
-          <span className="text-muted-foreground">{tema.justificativa}</span>
+        <div className="mb-4 p-3 sm:p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
+          <span className="font-semibold text-sm sm:text-base text-foreground block mb-1">
+            Por que é provável:
+          </span>
+          <span className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            {tema.justificativa}
+          </span>
         </div>
 
         <div className="mb-4">
-          <h5 className="font-semibold mb-2 flex items-center gap-2 text-foreground">
-            <Lightbulb className="h-4 w-4 text-primary" />
+          <h5 className="font-semibold mb-3 flex items-center gap-2 text-sm sm:text-base text-foreground">
+            <Lightbulb className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
             Repertórios Recomendados:
           </h5>
-          <ul className="space-y-1">
+          <ul className="space-y-2 sm:space-y-2.5">
             {tema.repertorios.map((rep, idx) => (
-              <li key={idx} className="text-sm text-muted-foreground flex items-start gap-2">
-                <span className="text-primary mt-1">•</span>
-                {rep}
+              <li 
+                key={idx} 
+                className="text-xs sm:text-sm text-muted-foreground flex items-start gap-2.5 leading-relaxed"
+              >
+                <span className="text-primary mt-1.5 flex-shrink-0 font-bold">•</span>
+                <span className="flex-1">{rep}</span>
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setModoTimer(false)}>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button 
+            variant="outline" 
+            onClick={() => setModoTimer(false)}
+            className="w-full sm:w-auto sm:flex-1"
+          >
             <FileText className="h-4 w-4 mr-2" />
             Ver Redação Modelo
           </Button>
-          <Button onClick={iniciarTimer} className="bg-primary">
+          <Button 
+            onClick={iniciarTimer} 
+            className="w-full bg-primary sm:w-auto sm:flex-1"
+          >
             <Clock className="h-4 w-4 mr-2" />
-            Treinar com Timer (40min)
+            <span className="hidden sm:inline">Treinar com Timer (40min)</span>
+            <span className="sm:hidden">Timer (40min)</span>
           </Button>
         </div>
       </Card>
 
       {/* Modo Visualização */}
       {!modoTimer && (
-        <Card className="p-6">
-          <h5 className="font-semibold mb-4 text-lg text-foreground">Redação Modelo Nota 1000</h5>
-          <div className="p-4 rounded-lg bg-secondary whitespace-pre-line font-serif text-sm leading-relaxed text-foreground">
+        <Card className="p-4 sm:p-6">
+          <h5 className="font-semibold mb-4 text-base sm:text-lg text-foreground">
+            Redação Modelo Nota 1000
+          </h5>
+          <div className="p-3 sm:p-4 rounded-lg bg-secondary whitespace-pre-line font-serif text-xs sm:text-sm leading-relaxed text-foreground overflow-x-auto">
             {tema.exemplo}
           </div>
-          <div className="mt-4 p-3 rounded-lg bg-green-500/10 border border-green-500/30 text-sm text-foreground">
+          <div className="mt-4 p-3 rounded-lg bg-green-500/10 border border-green-500/30 text-xs sm:text-sm text-foreground leading-relaxed">
             ✅ Esta redação atende todos os critérios: estrutura clara, repertórios legítimos, 
             proposta de intervenção completa (agente, ação, modo, finalidade, detalhamento) e respeito aos direitos humanos.
           </div>
@@ -171,18 +206,21 @@ export function TemasProvaveis() {
 
       {/* Modo Timer */}
       {modoTimer && (
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h5 className="font-semibold text-lg text-foreground">Escreva sua redação</h5>
-            <div className="flex items-center gap-3">
-              <Clock className="h-5 w-5 text-primary" />
-              <span className={`text-2xl font-bold ${tempoRestante < 300 ? 'text-destructive' : 'text-primary'}`}>
+        <Card className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+            <h5 className="font-semibold text-base sm:text-lg text-foreground">
+              Escreva sua redação
+            </h5>
+            <div className="flex items-center justify-between sm:justify-end gap-3">
+              <Clock className="h-5 w-5 text-primary flex-shrink-0" />
+              <span className={`text-xl sm:text-2xl font-bold ${tempoRestante < 300 ? 'text-destructive' : 'text-primary'}`}>
                 {formatarTempo(tempoRestante)}
               </span>
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => setTimerAtivo(!timerAtivo)}
+                className="flex-shrink-0"
               >
                 {timerAtivo ? "Pausar" : "Continuar"}
               </Button>
@@ -193,18 +231,21 @@ export function TemasProvaveis() {
             value={minhaRedacao}
             onChange={(e) => setMinhaRedacao(e.target.value)}
             placeholder="Comece a escrever sua redação aqui..."
-            className="min-h-[400px] font-serif"
+            className="min-h-[300px] sm:min-h-[400px] font-serif text-sm sm:text-base"
           />
 
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">
+          <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <span className="text-xs sm:text-sm text-muted-foreground">
               Palavras: {minhaRedacao.trim() ? minhaRedacao.trim().split(/\s+/).length : 0} | 
               Linhas aproximadas: {Math.ceil((minhaRedacao.trim().split(/\s+/).length) / 10)}
             </span>
-            <Button onClick={() => {
-              localStorage.setItem(`redacao-${tema.id}`, minhaRedacao);
-              alert("Redação salva!");
-            }}>
+            <Button 
+              onClick={() => {
+                localStorage.setItem(`redacao-${tema.id}`, minhaRedacao);
+                alert("Redação salva!");
+              }}
+              className="w-full sm:w-auto"
+            >
               Salvar Redação
             </Button>
           </div>
@@ -213,7 +254,7 @@ export function TemasProvaveis() {
 
       {/* Dica Final */}
       <Card className="p-4 bg-blue-500/10 border-blue-500/30">
-        <p className="text-sm text-foreground">
+        <p className="text-xs sm:text-sm text-foreground leading-relaxed">
           💡 <strong>Estratégia de Preparação:</strong> Escreva pelo menos uma redação completa para cada tema. 
           Memorize os repertórios sugeridos e pratique adaptá-los. No dia da prova, você reconhecerá semelhanças com esses temas.
         </p>
