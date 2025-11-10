@@ -14,13 +14,13 @@ const TEMAS = [
       "Hannah Arendt - Responsabilidade em tempos de automação",
       "Lei Geral de Proteção de Dados (LGPD)"
     ],
-    exemplo: `No contexto contemporâneo, a Inteligência Artificial representa uma revolução tecnológica sem precedentes, modificando profundamente as relações sociais e trabalhistas. Segundo Michel Foucault, em "Vigiar e Punir", mecanismos de controle social são cada vez mais sofisticados e invisíveis. Nesse sentido, a IA configura-se como um novo paradigma de poder, capaz de influenciar comportamentos através de algoritmos e análise de dados. Diante disso, torna-se fundamental analisar os desafios éticos dessa tecnologia e sua regulamentação no Brasil.
+    exemplo: `Com os avanços tecnológicos do século XXI, a inteligência artificial (IA) tornou-se um dos principais motores de transformação da sociedade contemporânea. Presente em aplicativos, indústrias e sistemas de segurança, essa ferramenta redefine padrões de produtividade, comunicação e tomada de decisão. Entretanto, ao mesmo tempo em que traz benefícios, também suscita dilemas éticos e sociais relacionados ao desemprego, à privacidade e ao controle das informações. Diante disso, é fundamental discutir de que forma a IA pode contribuir para o progresso humano sem comprometer valores fundamentais como a ética e a dignidade.
 
-Em primeira análise, é importante destacar que a ausência de regulamentação adequada permite abusos no uso de IA. De acordo com a Lei Geral de Proteção de Dados (LGPD), brasileira, o tratamento de informações pessoais deve respeitar princípios de transparência e finalidade. Entretanto, algoritmos de recomendação manipulam usuários sem seu conhecimento explícito, criando "bolhas" informacionais que fragmentam o debate público. Esse cenário evidencia-se nas eleições brasileiras de 2022, onde deepfakes e desinformação automatizada influenciaram milhões de eleitores. Portanto, fica evidente a necessidade de mecanismos de fiscalização mais rígidos.
+Inicialmente, é inegável que a inteligência artificial proporciona inúmeros avanços para a humanidade. Sistemas automatizados em hospitais, por exemplo, auxiliam diagnósticos com precisão superior à humana, enquanto algoritmos em plataformas digitais otimizam o acesso à informação. Contudo, esses mesmos mecanismos podem reforçar desigualdades e reduzir postos de trabalho, especialmente em setores que dependem de mão de obra repetitiva. O filósofo Yuval Harari alerta que a "automação pode criar uma nova classe inútil", composta por indivíduos excluídos do mercado por falta de qualificação tecnológica.
 
-Além disso, outro aspecto relevante relaciona-se ao impacto da IA no mercado de trabalho brasileiro. Segundo estimativas da Organização Internacional do Trabalho (OIT), até 2030, aproximadamente 30% dos empregos podem ser automatizados. Tal situação pode ser observada em setores como telemarketing, contabilidade e até medicina diagnóstica, onde algoritmos já substituem profissionais humanos. Esse processo de automação, embora aumente produtividade, agrava desigualdades sociais ao eliminar postos de trabalho de baixa qualificação, afetando especialmente populações vulneráveis. Dessa forma, torna-se imprescindível repensar políticas de educação e qualificação profissional.
+Além disso, o uso desregulado da IA levanta preocupações éticas e morais. Empresas de tecnologia coletam e analisam grandes volumes de dados, muitas vezes sem o consentimento adequado dos usuários, o que ameaça a privacidade e a liberdade individual. Ademais, algoritmos enviesados podem reproduzir preconceitos existentes na sociedade, gerando injustiças em processos seletivos e sistemas judiciais. A ausência de uma legislação robusta e de mecanismos de transparência contribui para a falta de responsabilidade sobre as decisões tomadas por máquinas.
 
-Portanto, é fundamental que o Congresso Nacional promova a regulamentação específica de IA no Brasil, por meio de leis que estabeleçam limites éticos para desenvolvimento e aplicação dessas tecnologias, a fim de proteger direitos fundamentais dos cidadãos. Ademais, o Ministério da Educação deve implementar currículos de letramento digital nas escolas públicas, preparando jovens para conviver criticamente com essas ferramentas. Somente assim será possível aproveitar benefícios da IA minimizando seus riscos sociais.`
+Portanto, é imperativo que governos e instituições adotem políticas públicas e regulamentações claras sobre o uso ético da inteligência artificial. A criação de leis que garantam a proteção de dados, a inclusão digital e a capacitação profissional são medidas indispensáveis. Além disso, escolas e universidades devem preparar os cidadãos para conviver de forma crítica e consciente com as novas tecnologias. Assim, será possível transformar a IA em um instrumento de equidade e progresso social, assegurando que o avanço tecnológico caminhe lado a lado com o respeito aos direitos humanos.`
   },
   {
     id: 2,
@@ -31,13 +31,13 @@ Portanto, é fundamental que o Congresso Nacional promova a regulamentação esp
       "Estatuto das Cidades (Lei 10.257/2001)",
       "Relatórios do IPCC sobre mudanças climáticas"
     ],
-    exemplo: `A sustentabilidade urbana tornou-se um dos maiores desafios do século XXI, especialmente no Brasil, onde o rápido processo de urbanização não foi acompanhado de planejamento adequado. Conforme a Agenda 2030 da ONU, o Objetivo de Desenvolvimento Sustentável 11 estabelece a necessidade de tornar cidades inclusivas, seguras e resilientes. Entretanto, enchentes devastadoras em São Paulo, deslizamentos em Petrópolis e ilhas de calor em grandes metrópoles evidenciam o fracasso na gestão urbana sustentável. Diante disso, torna-se essencial analisar as causas estruturais desse problema e propor soluções integradas.
+    exemplo: `No contexto das grandes cidades brasileiras, o desafio da sustentabilidade urbana tem se tornado cada vez mais urgente. O crescimento desordenado, a falta de planejamento e o consumo excessivo de recursos naturais comprometem a qualidade de vida da população e o equilíbrio ambiental. Nesse sentido, é possível afirmar que as cidades brasileiras ainda carecem de políticas efetivas que conciliem desenvolvimento econômico e preservação ambiental. Diante disso, torna-se imprescindível repensar os modelos de urbanização vigentes e adotar práticas sustentáveis que assegurem o futuro das próximas gerações.
 
-Em primeira análise, é importante destacar que a impermeabilização excessiva do solo urbano agrava catástrofes climáticas. Segundo o Estatuto das Cidades (Lei 10.257/2001), municípios devem garantir direito à cidade sustentável, incluindo saneamento e drenagem adequados. Entretanto, dados do Instituto Brasileiro de Geografia e Estatística (IBGE) revelam que apenas 46% dos municípios brasileiros possuem planos diretores atualizados, resultando em ocupação irregular de áreas de risco e ausência de áreas verdes. Esse cenário evidencia-se tragicamente nas enchentes de 2024 no Rio Grande do Sul, que deixaram milhares de desabrigados. Portanto, fica evidente a necessidade de fiscalização mais rigorosa do uso do solo urbano.
+Em primeiro lugar, observa-se que o processo de urbanização no Brasil ocorreu de forma acelerada e sem planejamento adequado. A partir da Revolução Industrial e do êxodo rural no século XX, as cidades passaram a crescer de maneira desordenada, gerando problemas como poluição, favelização e congestionamentos. Essa realidade é agravada pela ausência de infraestrutura básica em muitas regiões urbanas, o que amplia desigualdades sociais e ambientais. Como destacou o geógrafo Milton Santos, o espaço urbano brasileiro é marcado pela coexistência de "circuitos superiores e inferiores" da economia, evidenciando a exclusão dos menos favorecidos.
 
-Além disso, outro aspecto relevante relaciona-se à poluição atmosférica e seus impactos na saúde pública. De acordo com a Organização Mundial da Saúde (OMS), poluição do ar causa cerca de 50 mil mortes prematuras anualmente no Brasil. Tal situação pode ser observada em metrópoles como São Paulo, onde a frota de veículos ultrapassa 8 milhões de unidades, gerando concentrações perigosas de poluentes. Esse processo não apenas degrada qualidade de vida, mas também sobrecarrega o sistema de saúde com doenças respiratórias e cardiovasculares. Dessa forma, torna-se imprescindível investir em mobilidade urbana sustentável.
+Além disso, a falta de políticas públicas voltadas à mobilidade sustentável e à gestão de resíduos contribui para o agravamento da crise ambiental urbana. A dependência do transporte individual e a escassez de áreas verdes são exemplos de práticas que comprometem a sustentabilidade. Ainda que existam iniciativas pontuais — como ciclovias, coleta seletiva e programas de energia limpa —, essas ações isoladas não são suficientes diante da magnitude dos problemas. É necessário integrar poder público, setor privado e sociedade civil na construção de cidades inteligentes e ambientalmente equilibradas.
 
-Portanto, é fundamental que governos municipais promovam políticas de renaturalização urbana, por meio da criação de parques lineares e telhados verdes obrigatórios em novas construções, a fim de aumentar permeabilidade do solo e mitigar ilhas de calor. Ademais, o Ministério das Cidades deve incentivar transporte público de qualidade e ciclovias, reduzindo dependência de automóveis individuais. Somente assim será possível construir cidades mais resilientes e habitáveis para as próximas gerações.`
+Portanto, faz-se essencial que o Estado promova políticas urbanas baseadas em planejamento sustentável e inclusão social. Investimentos em transporte público eficiente, reciclagem, energias renováveis e educação ambiental devem ser ampliados e monitorados. Ademais, a conscientização da população, estimulada pela mídia e pelas escolas, é fundamental para mudar hábitos e construir uma cultura ecológica. Assim, o Brasil poderá transformar seus centros urbanos em espaços de convivência harmônica entre o ser humano e o meio ambiente, garantindo um futuro mais justo e sustentável.`
   },
   {
     id: 3,
@@ -51,26 +51,32 @@ Portanto, é fundamental que governos municipais promovam políticas de renatura
       "Política Nacional de Saúde da Pessoa Idosa - Estratégias de envelhecimento ativo e saudável",
       "Agenda 2030 da ONU - ODS relacionado ao bem-estar em todas as idades"
     ],
-    exemplo: `O envelhecimento populacional tornou-se uma das principais transformações demográficas do século XXI no Brasil. Segundo dados do Censo Demográfico de 2022, realizado pelo Instituto Brasileiro de Geografia e Estatística (IBGE), a proporção de brasileiros com mais de 65 anos cresceu de 7,4% em 2010 para 10,9% em 2022, representando a maior proporção desde 1940. Essa transição demográfica acelerada, caracterizada pelo aumento da expectativa de vida e redução da taxa de natalidade, configura-se como um desafio estrutural que impacta previdência social, sistema de saúde e mercado de trabalho. Diante disso, torna-se fundamental analisar as perspectivas do envelhecimento na sociedade brasileira e propor políticas públicas adequadas.
+    exemplo: `No Brasil contemporâneo, o processo de envelhecimento populacional tem se intensificado em virtude dos avanços da medicina e da melhoria nas condições de vida. Contudo, embora a longevidade seja um indicador de progresso social, ela também revela desafios estruturais que comprometem a dignidade da população idosa. A negligência estatal e o preconceito etário, ainda fortemente enraizados, tornam-se obstáculos à plena inclusão desse grupo social. Assim, é fundamental refletir sobre as perspectivas do envelhecimento na sociedade brasileira e sobre a urgência de políticas públicas que assegurem respeito e qualidade de vida aos idosos.
 
-Em primeira análise, é importante destacar que o Estatuto da Pessoa Idosa (Lei 10.741/2003) estabelece direitos fundamentais para brasileiros com 60 anos ou mais, incluindo saúde, educação, cultura e trabalho. Entretanto, a implementação efetiva desses direitos ainda enfrenta obstáculos estruturais. Segundo relatório do Ministério da Saúde, apenas 30% dos municípios brasileiros possuem Centros de Referência de Assistência à Pessoa Idosa (CRAS) adequadamente equipados, resultando em déficit assistencial para milhões de idosos. Esse cenário evidencia-se especialmente em regiões periféricas, onde idosos enfrentam dificuldades de acesso a serviços de saúde especializados e enfrentam isolamento social. Portanto, fica evidente a necessidade de ampliar investimentos em políticas públicas de envelhecimento ativo.
+Em primeiro lugar, observa-se que o envelhecimento é muitas vezes associado à incapacidade e à inutilidade, reforçando estereótipos que marginalizam o idoso. Esse fenômeno, conhecido como etarismo, contribui para a exclusão social e para a perda da autoestima entre aqueles que ultrapassam a terceira idade. Além disso, o mercado de trabalho raramente oferece oportunidades para pessoas mais velhas, o que agrava a dependência financeira e emocional dessa parcela da população. Conforme o filósofo Bauman, em uma sociedade líquida, o que não é produtivo tende a ser descartado, e isso se aplica também aos idosos, vistos, muitas vezes, como "obsoletos".
 
-Além disso, outro aspecto relevante relaciona-se ao etarismo e à exclusão digital da população idosa. Conforme o Projeto Falas da Vida, exibido pela TV Globo em 2025, o preconceito etário ainda é uma realidade no Brasil, manifestando-se em discriminação no mercado de trabalho, violência doméstica e invisibilização social. Tal situação pode ser observada em dados da Pesquisa Nacional por Amostra de Domicílios (PNAD), que revelam que apenas 25% dos idosos brasileiros possuem acesso regular à internet, limitando sua participação em serviços digitais essenciais como telemedicina e bancos digitais. Esse processo de exclusão digital agrava isolamento social e dificulta acesso a direitos fundamentais. Dessa forma, torna-se imprescindível promover políticas de inclusão digital específicas para essa faixa etária.
+Paralelamente, a ausência de políticas públicas eficazes agrava a vulnerabilidade dos idosos. Apesar da existência do Estatuto do Idoso, a aplicação prática de seus direitos ainda é insuficiente, sobretudo nas áreas de saúde e assistência social. Hospitais públicos sobrecarregados, aposentadorias defasadas e o abandono familiar são realidades que denunciam o descaso governamental e social. Ademais, a falta de campanhas educativas voltadas ao respeito e à valorização do envelhecimento impede a construção de uma cultura intergeracional mais empática e solidária, essencial para um país que envelhece rapidamente.
 
-Ademais, é fundamental considerar o papel da família no suporte ao envelhecimento saudável. Segundo a psicóloga brasileira Deusivania Falcão, o conceito de "familismo" caracteriza-se como valor cultural presente nas famílias latino-americanas, marcado por forte identificação e solidariedade intergeracional. Entretanto, mudanças sociais contemporâneas, como urbanização acelerada e inserção feminina no mercado de trabalho, fragilizam essas redes de apoio familiar. Esse cenário exige políticas públicas que fortaleçam redes comunitárias de cuidado e promovam envelhecimento saudável em diferentes contextos familiares.
-
-Portanto, é fundamental que o Ministério da Cidadania promova programas de inclusão digital para idosos, por meio de parcerias com universidades e organizações da sociedade civil, oferecendo cursos de alfabetização digital gratuitos em centros comunitários, a fim de reduzir exclusão tecnológica e facilitar acesso a serviços públicos digitais. Ademais, o Ministério da Saúde deve ampliar a rede de Atenção Primária à Saúde com equipes multidisciplinares especializadas em geriatria, garantindo acompanhamento preventivo e tratamento adequado para doenças crônicas comuns ao envelhecimento. Somente assim será possível construir uma sociedade verdadeiramente inclusiva que valorize e proteja seus cidadãos em todas as fases da vida.`
+Portanto, diante desse cenário, é imprescindível que o Estado amplie o investimento em políticas públicas de inclusão e proteção à pessoa idosa. Programas que incentivem a empregabilidade na terceira idade, campanhas de conscientização sobre o etarismo e o fortalecimento da rede de atenção à saúde devem ser priorizados. Além disso, a escola e a mídia têm papel crucial na formação de uma mentalidade de respeito e valorização do envelhecimento. Somente assim o Brasil poderá garantir que envelhecer seja, de fato, sinônimo de conquista e dignidade, e não de exclusão e esquecimento.`
   }
 ];
 
 export function TemasProvaveis() {
   const [temaSelecionado, setTemaSelecionado] = useState(1);
+  const [modeloRedacaoSelecionado, setModeloRedacaoSelecionado] = useState(1);
   const [modoTimer, setModoTimer] = useState(false);
   const [tempoRestante, setTempoRestante] = useState(40 * 60); // 40 minutos
   const [timerAtivo, setTimerAtivo] = useState(false);
   const [minhaRedacao, setMinhaRedacao] = useState("");
 
   const tema = TEMAS.find(t => t.id === temaSelecionado)!;
+  const modeloRedacao = TEMAS.find(t => t.id === modeloRedacaoSelecionado)!;
+
+  // Quando o tema muda, atualiza também o modelo de redação
+  const handleTemaChange = (temaId: number) => {
+    setTemaSelecionado(temaId);
+    setModeloRedacaoSelecionado(temaId);
+  };
 
   useEffect(() => {
     let intervalo: NodeJS.Timeout;
@@ -113,7 +119,7 @@ export function TemasProvaveis() {
           <Button
             key={t.id}
             variant={temaSelecionado === t.id ? "default" : "outline"}
-            onClick={() => setTemaSelecionado(t.id)}
+            onClick={() => handleTemaChange(t.id)}
             className={`h-auto py-4 px-4 text-left justify-start transition-all ${
               temaSelecionado === t.id 
                 ? "bg-primary text-primary-foreground shadow-md scale-[1.02]" 
@@ -191,12 +197,39 @@ export function TemasProvaveis() {
       {/* Modo Visualização */}
       {!modoTimer && (
         <Card className="p-4 sm:p-6">
-          <h5 className="font-semibold mb-4 text-base sm:text-lg text-foreground">
-            Redação Modelo Nota 1000
-          </h5>
-          <div className="p-3 sm:p-4 rounded-lg bg-secondary whitespace-pre-line font-serif text-xs sm:text-sm leading-relaxed text-foreground overflow-x-auto">
-            {tema.exemplo}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
+            <h5 className="font-semibold text-base sm:text-lg text-foreground">
+              Redação Modelo Nota 1000
+            </h5>
+            <div className="flex flex-wrap gap-2">
+              {TEMAS.map((t) => (
+                <Button
+                  key={t.id}
+                  variant={modeloRedacaoSelecionado === t.id ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setModeloRedacaoSelecionado(t.id)}
+                  className={`text-xs sm:text-sm ${
+                    modeloRedacaoSelecionado === t.id 
+                      ? "bg-primary text-primary-foreground" 
+                      : ""
+                  }`}
+                >
+                  Modelo {t.id}
+                </Button>
+              ))}
+            </div>
           </div>
+          
+          <div className="mb-3 p-2 rounded-lg bg-primary/5 border border-primary/20">
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              <span className="font-semibold text-foreground">Tema do modelo:</span> {modeloRedacao.titulo}
+            </p>
+          </div>
+
+          <div className="p-3 sm:p-4 rounded-lg bg-secondary whitespace-pre-line font-serif text-xs sm:text-sm leading-relaxed text-foreground overflow-x-auto">
+            {modeloRedacao.exemplo}
+          </div>
+          
           <div className="mt-4 p-3 rounded-lg bg-green-500/10 border border-green-500/30 text-xs sm:text-sm text-foreground leading-relaxed">
             ✅ Esta redação atende todos os critérios: estrutura clara, repertórios legítimos, 
             proposta de intervenção completa (agente, ação, modo, finalidade, detalhamento) e respeito aos direitos humanos.
@@ -241,8 +274,8 @@ export function TemasProvaveis() {
             </span>
             <Button 
               onClick={() => {
-                localStorage.setItem(`redacao-${tema.id}`, minhaRedacao);
-                alert("Redação salva!");
+              localStorage.setItem(`redacao-${tema.id}`, minhaRedacao);
+              alert("Redação salva!");
               }}
               className="w-full sm:w-auto"
             >
